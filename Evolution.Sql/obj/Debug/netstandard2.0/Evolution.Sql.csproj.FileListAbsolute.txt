@@ -1,0 +1,9 @@
+C:\Users\locke.duan\source\Evolution.Sql\Evolution.Sql\bin\Debug\netstandard2.0\Evolution.Sql.deps.json
+C:\Users\locke.duan\source\Evolution.Sql\Evolution.Sql\bin\Debug\netstandard2.0\Evolution.Sql.dll
+C:\Users\locke.duan\source\Evolution.Sql\Evolution.Sql\obj\Debug\netstandard2.0\Evolution.Sql.csprojAssemblyReference.cache
+C:\Users\locke.duan\source\Evolution.Sql\Evolution.Sql\obj\Debug\netstandard2.0\Evolution.Sql.csproj.CoreCompileInputs.cache
+C:\Users\locke.duan\source\Evolution.Sql\Evolution.Sql\obj\Debug\netstandard2.0\Evolution.Sql.AssemblyInfoInputs.cache
+C:\Users\locke.duan\source\Evolution.Sql\Evolution.Sql\obj\Debug\netstandard2.0\Evolution.Sql.AssemblyInfo.cs
+C:\Users\locke.duan\source\Evolution.Sql\Evolution.Sql\bin\Debug\netstandard2.0\Evolution.Sql.pdb
+C:\Users\locke.duan\source\Evolution.Sql\Evolution.Sql\obj\Debug\netstandard2.0\Evolution.Sql.dll
+C:\Users\locke.duan\source\Evolution.Sql\Evolution.Sql\obj\Debug\netstandard2.0\Evolution.Sql.pdb
