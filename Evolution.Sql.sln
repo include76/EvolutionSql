@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evolution.Sql", "Evolution.Sql\Evolution.Sql.csproj", "{6C00AE49-5695-489F-A646-07A43580B9C4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evolution.Sql.TestSqlServer", "Evolution.Sql.TestSqlServer\Evolution.Sql.TestSqlServer.csproj", "{FC5248FC-2D8A-4C31-B393-5A18ED169F44}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evolution.Sql.TestCommon", "Evolution.Sql.TestCommon\Evolution.Sql.TestCommon.csproj", "{2077AEB5-9336-4EE6-B982-FA4F8CA52446}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evolution.Sql.SqlServerTest", "Evolution.Sql.SqlServerTest\Evolution.Sql.SqlServerTest.csproj", "{B2EB220B-3239-4D0C-AC89-8E50FF58C5C7}"
@@ -21,10 +19,6 @@ Global
 		{6C00AE49-5695-489F-A646-07A43580B9C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C00AE49-5695-489F-A646-07A43580B9C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C00AE49-5695-489F-A646-07A43580B9C4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FC5248FC-2D8A-4C31-B393-5A18ED169F44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FC5248FC-2D8A-4C31-B393-5A18ED169F44}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FC5248FC-2D8A-4C31-B393-5A18ED169F44}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FC5248FC-2D8A-4C31-B393-5A18ED169F44}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2077AEB5-9336-4EE6-B982-FA4F8CA52446}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2077AEB5-9336-4EE6-B982-FA4F8CA52446}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2077AEB5-9336-4EE6-B982-FA4F8CA52446}.Release|Any CPU.ActiveCfg = Release|Any CPU
