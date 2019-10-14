@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 
-namespace Evolution.Sql.TestSqlServer
+namespace Evolution.Sql.SqlServerTest
 {
     [TestFixture]
     public class InsertTest
     {
-        private string connectionStr = @"";
+        private string connectionStr = @"Data Source =.\sqlexpress; Initial Catalog = Blog; Integrated Security = True";
         [SetUp]
         public void Setup()
         {
@@ -50,17 +50,19 @@ namespace Evolution.Sql.TestSqlServer
                 };
                 sqlSession.Execute<User>("insert", user);
 
-                var post = new Post
+                var blog = new Blog
                 {
-                    Content = "this is a test post",
+                    Title = "this is a test post title",
+                    Content = "this is a test post content",
                     CreatedBy = userId,
                     CreatedOn = DateTime.Now
                 };
 
-                var postId = sqlSession.ExecuteScalar<Post>("uspBlogIns", post);
+                var postId = sqlSession.ExecuteScalar<Blog>("insert", blog);
                 Assert.NotNull(postId);
-                Assert.Greater((int)postId, 0);
+                Assert.Greater(int.Parse(postId.ToString()), 0);
             }
         }
     }
 }
+

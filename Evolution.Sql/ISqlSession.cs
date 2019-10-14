@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Text;
 
 namespace Evolution.Sql
 {
     public interface ISqlSession: IDisposable
     {
-        IDbConnection Connection { get; set; }
+        DbConnection Connection { get; set; }
 
-        IEnumerable<TEntity> Query<TEntity>(Dictionary<string, dynamic> parameters) where TEntity : class, new();
-        IEnumerable<TEntity> Query<TEntity>(string queryName, Dictionary<string, dynamic> parameters) where TEntity : class, new();
+        //IEnumerable<TEntity> Query<TEntity>(Dictionary<string, dynamic> parameters) where TEntity : class, new();
+        IEnumerable<T> Query<T>(string commandName, Dictionary<string, dynamic> parameters) where T : class, new();
 
-        TEntity QueryOne<TEntity>(Dictionary<string, dynamic> parameters) where TEntity : class, new();
-        TEntity QueryOne<TEntity>(string queryName, Dictionary<string, dynamic> parameters) where TEntity : class, new();
+        //TEntity QueryOne<TEntity>(Dictionary<string, dynamic> parameters) where TEntity : class, new();
+        T QueryOne<T>(string commandName, Dictionary<string, dynamic> parameters) where T : class, new();
+        T QueryOne<T>(string commandName, object parameters) where T : class, new();
 
         /// <summary>
         /// execute command and return number of rows affected

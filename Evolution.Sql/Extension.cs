@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Evolution.Sql
@@ -25,12 +26,14 @@ namespace Evolution.Sql
             while (dataReader.Read())
             {
                 var entity = new T();
-                foreach (DataColumn column in dataReader.GetSchemaTable().Columns)
+                for (int i = 0; i < dataReader.FieldCount; i++)
                 {
-                    var property = properties.FirstOrDefault(x => x.Name == column.ColumnName);
+                    var columnName = dataReader.GetName(i);
+                    var property = properties.FirstOrDefault(x => x.Name.Equals(columnName, StringComparison.OrdinalIgnoreCase));
                     if (property != null)
                     {
-                        property.SetValue(entity, dataReader[column.ColumnName]);
+                        //property.SetValue(entity, dataReader[i]);
+                        SetPropertyValue<T>(entity, property, dataReader[i]);
                     }
                 }
                 list.Add(entity);
@@ -44,20 +47,43 @@ namespace Evolution.Sql
 
             var entity = new T();
             // TODO: cache properties of entity
-            var properties = type.GetProperties(System.Reflection.BindingFlags.Public);
+            var properties = type.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
             while (dataReader.Read())
             {
-                foreach (DataColumn column in dataReader.GetSchemaTable().Columns)
+                for (int i = 0; i < dataReader.FieldCount; i++)
                 {
-                    var property = properties.FirstOrDefault(x => x.Name == column.ColumnName);
+                    var columnName = dataReader.GetName(i);
+                    var property = properties.FirstOrDefault(x => x.Name.Equals(columnName, StringComparison.OrdinalIgnoreCase));
                     if (property != null)
                     {
-                        property.SetValue(entity, dataReader[column.ColumnName]);
+                        //property.SetValue(entity, dataReader[i]);
+                        SetPropertyValue<T>(entity, property, dataReader[i]);
                     }
                 }
                 break;
             }
             return entity;
+        }
+
+        private static void SetPropertyValue<T>( T entity, PropertyInfo property, object value)
+        {
+            if(value == DBNull.Value)
+            {
+                var defaultValue = GetDefaultValue(property.PropertyType);
+                property.SetValue(entity, defaultValue);
+            }
+            else
+            {
+                property.SetValue(entity, value);
+            }
+        }
+
+        private static object GetDefaultValue(Type t)
+        {
+            if (t.IsValueType)
+                return Activator.CreateInstance(t);
+
+            return null;
         }
     }
 }

@@ -9,6 +9,7 @@ create table [User](
 	UserId varchar(256) not null,
 	FirstName nvarchar(256) not null,
 	LastName nvarchar(256) not null,
+	CreatedOn datetime2,
 	constraint pk_user primary key(UserId)
 )
 

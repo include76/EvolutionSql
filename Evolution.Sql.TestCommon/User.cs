@@ -6,13 +6,16 @@ using System.Text;
 namespace Evolution.Sql.TestCommon
 {
     [Command(Name = "insert"
-        , Text = @"isnert into user(UserId, FirstName, LastName) values(@FirstName, @LastName);"
+        , Text = @"insert into [user](UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);"
         , CommandType = System.Data.CommandType.Text)]
-    [Command(Name = "get" , Text = @"select * from user where id = @Id")]
+    [Command(Name = "get" , Text = @"select * from [user] where userid = @UserId", CommandType = System.Data.CommandType.Text)]
+    [Command(Name = "getPartialCol", Text = @"select UserId, FirstName, CreatedOn from [user] where userid = @userId", CommandType = System.Data.CommandType.Text)]
     public class User
     {
-        public string Id { get; set; }
-        public string FristName { get; set; }
+        public string UserId { get; set; }
+        public string FirstName { get; set; }
         public string LastName { get; set; }
+
+        public DateTime CreatedOn { get; set; }
     }
 }

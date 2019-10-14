@@ -1,7 +1,9 @@
 ﻿using Evolution.Sql.Attribute;
+using Evolution.Sql.CommandAdapter;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 
@@ -9,31 +11,31 @@ namespace Evolution.Sql
 {
     public class SqlSession : ISqlSession, IDisposable
     {
-        IDbConnection _dbConnection;
-        IDbTransaction _dbTransaction;
+        DbConnection _dbConnection;
+        DbTransaction _dbTransaction;
         private bool disposed = false;
-        public IDbConnection Connection
+        public DbConnection Connection
         {
             get { return _dbConnection; }
             set { _dbConnection = value; }
         }
 
-        public SqlSession()
-        {
+        protected AbstractCommandAdapter _commandAdapter;
 
-        }
-
-        public SqlSession(IDbConnection dbConnection)
+        public SqlSession(DbConnection dbConnection)
         {
             _dbConnection = dbConnection;
+            var factory = DbProviderFactories.GetFactory(dbConnection);
+            //var connectionStringBuilder = factory.CreateConnectionStringBuilder();
+            //var dbProviderInvariant = connectionStringBuilder["Provider"].ToString();
+            _commandAdapter = CommandAdapterFactory(factory.GetType().Name);
         }
 
         public int Execute<T>(string commandName, T obj)
         {
             _dbConnection.TryOpen();
-            using (var command = _dbConnection.CreateCommand())
+            using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, obj))
             {
-                BuildCommand<T>(command, commandName);
                 return command.ExecuteNonQuery();
             }
         }
@@ -41,60 +43,71 @@ namespace Evolution.Sql
         public object ExecuteScalar<T>(string commandName, T obj)
         {
             _dbConnection.TryOpen();
-            using (var command = _dbConnection.CreateCommand())
+            using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, obj))
             {
-                BuildCommand<T>(command, commandName);
                 return command.ExecuteScalar();
             }
         }
 
-        public IEnumerable<TEntity> Query<TEntity>(Dictionary<string, dynamic> parameters) where TEntity : class, new()
+        //public IEnumerable<T> Query<T>(Dictionary<string, dynamic> parameters) where T : class, new()
+        //{
+        //    _dbConnection.TryOpen();
+        //    using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, obj))
+        //    {
+        //        using (var dataReader = command.ExecuteReader())
+        //        {
+        //            return dataReader.ToEntities<T>();
+        //        }
+        //    }
+        //}
+
+        public IEnumerable<T> Query<T>(string commandName, Dictionary<string, dynamic> parameters) where T : class, new()
         {
             _dbConnection.TryOpen();
-            using (var command = _dbConnection.CreateCommand())
+            using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, parameters))
             {
                 using (var dataReader = command.ExecuteReader())
                 {
-                    return dataReader.ToEntities<TEntity>();
+                    return dataReader.ToEntities<T>();
                 }
             }
         }
 
-        public IEnumerable<TEntity> Query<TEntity>(string queryName, Dictionary<string, dynamic> parameters) where TEntity : class, new()
+        #region QueryOne
+        //public T QueryOne<T>(Dictionary<string, dynamic> parameters) where T : class, new()
+        //{
+        //    _dbConnection.TryOpen();
+        //    using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, parameters))
+        //    {
+        //        using (var dataReader = command.ExecuteReader())
+        //        {
+        //            return dataReader.ToEntity<T>();
+        //        }
+        //    }
+        //}
+
+        public T QueryOne<T>(string commandName, Dictionary<string, dynamic> parameters) where T : class, new()
         {
-            _dbConnection.TryOpen();
-            using (var command = _dbConnection.CreateCommand())
-            {
-                using (var dataReader = command.ExecuteReader())
-                {
-                    return dataReader.ToEntities<TEntity>();
-                }
-            }
+            return QueryOneInner<T>(commandName, parameters);
         }
 
-        public TEntity QueryOne<TEntity>(Dictionary<string, dynamic> parameters) where TEntity : class, new()
+        public T QueryOne<T>(string commandName, object parameters) where T : class, new()
         {
-            _dbConnection.TryOpen();
-            using (var command = _dbConnection.CreateCommand())
-            {
-                using (var dataReader = command.ExecuteReader())
-                {
-                    return dataReader.ToEntity<TEntity>();
-                }
-            }
+            return QueryOneInner<T>(commandName, parameters);
         }
 
-        public TEntity QueryOne<TEntity>(string queryName, Dictionary<string, dynamic> parameters) where TEntity : class, new()
+        private T QueryOneInner<T>(string commandName, object parameters) where T : class, new()
         {
             _dbConnection.TryOpen();
-            using (var command = _dbConnection.CreateCommand())
+            using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, parameters))
             {
                 using (var dataReader = command.ExecuteReader())
                 {
-                    return dataReader.ToEntity<TEntity>();
+                    return dataReader.ToEntity<T>();
                 }
             }
         }
+        #endregion
 
         #region transaction
         public void BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
@@ -123,6 +136,20 @@ namespace Evolution.Sql
                 dbCommand.CommandText = string.IsNullOrEmpty(attr.Text) ? commandName : attr.Text;
             }
         }
+
+        private AbstractCommandAdapter CommandAdapterFactory(string dbProviderInvariant)
+        {
+            switch (dbProviderInvariant)
+            {
+                case "SqlClientFactory":
+                    return new CommandAdapterSqlServer();
+                case "MySqlClientFactory":
+                    return new CommandAdapterMySql();
+                default:
+                    throw new Exception($"{dbProviderInvariant} is not supported.");
+            }
+        }
+
         #endregion
 
         #region IDisposable
