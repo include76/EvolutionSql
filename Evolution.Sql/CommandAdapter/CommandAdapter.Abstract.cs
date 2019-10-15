@@ -20,7 +20,7 @@ namespace Evolution.Sql.CommandAdapter
             get { return ParameterPrefix + "([^',;=<>\\s\\)]+)"; }
         }
 
-        protected virtual string sqlParameters
+        protected virtual string Sql2GetProcedureParameters
         {
             get { return @"select PARAMETER_NAME, PARAMETER_MODE, DATA_TYPE from INFORMATION_SCHEMA.PARAMETERS where SPECIFIC_SCHEMA= @schema and SPECIFIC_NAME = @name"; }
         }
@@ -45,7 +45,7 @@ namespace Evolution.Sql.CommandAdapter
                 { "datetime2",          DbType.DateTime2 },
                 { "datetimeoffset",     DbType.DateTimeOffset },
                 { "decimal",            DbType.Decimal },
-                { "FILESTREAM attribute ", DbType.Binary },//???
+                //{ "FILESTREAM", DbType.Binary },//???
                 { "float",              DbType.Double },
                 { "image",              DbType.Int64 },
                 { "int",                DbType.Int32 },
@@ -67,7 +67,8 @@ namespace Evolution.Sql.CommandAdapter
                 { "uniqueidentifier",   DbType.Guid },
                 { "varbinary",          DbType.Binary },
                 { "varchar",            DbType.AnsiStringFixedLength },
-                { "xml",                DbType.Xml }
+                { "xml",                DbType.Xml },
+                //{ "table type",         DbType.Object }:::Not works, when it's table type, let clr infer the DbType
                 //------MySql Specific
 
                 //------Oracle Specific
@@ -78,7 +79,7 @@ namespace Evolution.Sql.CommandAdapter
         {
             var dbCommand = connection.CreateCommand();
             var type = typeof(T);
-
+            //TODO: cache command object
             var attr = type.GetCustomAttributes<CommandAttribute>(false)?.FirstOrDefault(x => x.Name.Equals(commandName, StringComparison.OrdinalIgnoreCase));
             if(attr == null)
             {
@@ -128,7 +129,7 @@ namespace Evolution.Sql.CommandAdapter
 
             using (var cmd = command.Connection.CreateCommand())
             {
-                cmd.CommandText = sqlParameters;
+                cmd.CommandText = Sql2GetProcedureParameters;
                 cmd.CommandType = CommandType.Text;
                 var pSchema = cmd.CreateParameter();
                 pSchema.ParameterName = "schema";
@@ -152,7 +153,8 @@ namespace Evolution.Sql.CommandAdapter
                         var parameter = command.CreateParameter();
                         parameter.ParameterName = parameterName;
                         parameter.Direction = GetDirection(reader.GetString(1));
-                        parameter.DbType = GetDbTypeByString(reader.GetString(2).Trim());
+                        //parameter.DbType = GetDbTypeByString(reader.GetString(2).Trim());
+                        SetParameterType(parameter, reader.GetString(2).Trim());
                         command.Parameters.Add(parameter);
                     }
                 }
@@ -230,6 +232,14 @@ namespace Evolution.Sql.CommandAdapter
             else
             {
                 throw new Exception(string.Format("DbType {0} not supported.", dbTypeString));
+            }
+        }
+
+        private void SetParameterType(DbParameter dbParameter, string dbTypeString)
+        {
+            if (this.DbEgineTypeToDbTypeMap.ContainsKey(dbTypeString))
+            {
+                dbParameter.DbType = DbEgineTypeToDbTypeMap[dbTypeString];
             }
         }
     }

@@ -16,7 +16,7 @@ namespace Evolution.Sql.TestCommon
         public string Title { get; set; }
         public string Content { get; set; }
         public DateTime CreatedOn { get; set; }
-        public string CreatedBy { get; set; }
+        public Guid CreatedBy { get; set; }
         public User CreatedUser { get; set; }
         public IList<Tag> Tags { get; set; }
         public IList<Post> Posts { get; set; }

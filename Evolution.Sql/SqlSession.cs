@@ -28,7 +28,7 @@ namespace Evolution.Sql
             var factory = DbProviderFactories.GetFactory(dbConnection);
             //var connectionStringBuilder = factory.CreateConnectionStringBuilder();
             //var dbProviderInvariant = connectionStringBuilder["Provider"].ToString();
-            _commandAdapter = CommandAdapterFactory(factory.GetType().Name);
+            _commandAdapter = CommandAdapterFactory.Instance(factory.GetType().Name);
         }
 
         public int Execute<T>(string commandName, T obj)
@@ -62,6 +62,16 @@ namespace Evolution.Sql
         //}
 
         public IEnumerable<T> Query<T>(string commandName, Dictionary<string, dynamic> parameters) where T : class, new()
+        {
+            return QueryInner<T>(commandName, parameters);
+        }
+
+        public IEnumerable<T> Query<T>(string commandName, object parameters) where T : class, new()
+        {
+            return QueryInner<T>(commandName, parameters);
+        }
+
+        private IEnumerable<T> QueryInner<T>(string commandName, object parameters) where T : class, new()
         {
             _dbConnection.TryOpen();
             using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, parameters))
@@ -125,30 +135,6 @@ namespace Evolution.Sql
         #endregion
 
         #region private methods
-        private void BuildCommand<T>(IDbCommand dbCommand, string commandName)
-        {
-            var type = typeof(T);
-            foreach (var item in type.GetCustomAttributes(typeof(CommandAttribute), false))
-            {
-                var attr = item as CommandAttribute;
-                dbCommand.CommandType = attr.CommandType;
-                // if attribute.Command not set, we suppose commandName is sp name, and use as commandText
-                dbCommand.CommandText = string.IsNullOrEmpty(attr.Text) ? commandName : attr.Text;
-            }
-        }
-
-        private AbstractCommandAdapter CommandAdapterFactory(string dbProviderInvariant)
-        {
-            switch (dbProviderInvariant)
-            {
-                case "SqlClientFactory":
-                    return new CommandAdapterSqlServer();
-                case "MySqlClientFactory":
-                    return new CommandAdapterMySql();
-                default:
-                    throw new Exception($"{dbProviderInvariant} is not supported.");
-            }
-        }
 
         #endregion
 

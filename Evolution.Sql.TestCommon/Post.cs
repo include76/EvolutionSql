@@ -8,7 +8,7 @@ namespace Evolution.Sql.TestCommon
     {
         public int Id { get; set; }
         public string Content { get; set; }
-        public string CreatedBy { get; set; }
+        public Guid CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
     }
 }

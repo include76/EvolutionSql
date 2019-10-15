@@ -23,12 +23,13 @@ namespace Evolution.Sql.SqlServerTest
             var connection = new SqlConnection(connectionStr);
             using (var sqlSession = new SqlSession(connection))
             {
-                var userId = Guid.NewGuid().ToString();
+                var userId = Guid.NewGuid();
                 var user = new User
                 {
                     UserId = userId,
                     FirstName = "Bruce",
-                    LastName = "Lee"
+                    LastName = "Lee",
+                    CreatedOn = DateTime.Now
                 };
                 var result = sqlSession.Execute<User>("insert", user);
                 Assert.Greater(result, 0);
@@ -50,7 +51,7 @@ namespace Evolution.Sql.SqlServerTest
             var connection = new SqlConnection(connectionStr);
             using (var sqlSession = new SqlSession(connection))
             {
-                var userId = Guid.NewGuid().ToString();
+                var userId = Guid.NewGuid();
                 var user = new User
                 {
                     UserId = userId,
@@ -63,6 +64,7 @@ namespace Evolution.Sql.SqlServerTest
                 var userFromDb = sqlSession.QueryOne<User>("getPartialCol", new { UserId = userId });
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
+                Assert.AreEqual(default(DateTime), userFromDb.CreatedOn);
             }
         }
     }

@@ -6,7 +6,7 @@ use Blog;
 
 
 create table [User](
-	UserId varchar(256) not null,
+	UserId uniqueidentifier not null,
 	FirstName nvarchar(256) not null,
 	LastName nvarchar(256) not null,
 	CreatedOn datetime2,
@@ -24,7 +24,7 @@ create table Blog(
 	Id int not null identity,
 	Title nvarchar(1000) not null,
 	Content nvarchar(max) not null,
-	CreatedBy varchar(256) not null,
+	CreatedBy uniqueidentifier not null,
 	CreatedOn datetime2 not null,
 	constraint pk_blog primary key(Id),
 	constraint fk_blog_user foreign key(CreatedBy) references [User](UserId)
@@ -33,7 +33,7 @@ create table Blog(
 create table Post(
 	Id int not null identity,
 	Content nvarchar(max) not null,
-	CreatedBy varchar(256) not null,
+	CreatedBy uniqueidentifier not null,
 	CreatedOn datetime not null,
 	PostId int not null,
 	constraint pk_post primary key(Id),

@@ -21,7 +21,7 @@ namespace Evolution.Sql
         public static IEnumerable<T> ToEntities<T>(this IDataReader dataReader) where T : class, new()
         {
             var type = typeof(T);
-            var properties = type.GetProperties(System.Reflection.BindingFlags.Public);
+            var properties = type.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
             var list = new List<T>();
             while (dataReader.Read())
             {
@@ -41,7 +41,7 @@ namespace Evolution.Sql
             return list.AsEnumerable();
         }
 
-        public static T ToEntity<T>(this IDataReader dataReader) where T: class, new()
+        public static T ToEntity<T>(this IDataReader dataReader) where T : class, new()
         {
             var type = typeof(T);
 
@@ -65,23 +65,25 @@ namespace Evolution.Sql
             return entity;
         }
 
-        private static void SetPropertyValue<T>( T entity, PropertyInfo property, object value)
+        private static void SetPropertyValue<T>(T entity, PropertyInfo property, object value)
         {
-            if(value == DBNull.Value)
+            if (value == DBNull.Value)
             {
                 var defaultValue = GetDefaultValue(property.PropertyType);
                 property.SetValue(entity, defaultValue);
             }
             else
             {
-                property.SetValue(entity, value);
+                property.SetValue(entity, Convert.ChangeType(value, property.PropertyType));
             }
         }
 
         private static object GetDefaultValue(Type t)
         {
             if (t.IsValueType)
+            {
                 return Activator.CreateInstance(t);
+            }
 
             return null;
         }

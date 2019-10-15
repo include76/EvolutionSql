@@ -10,9 +10,10 @@ namespace Evolution.Sql.TestCommon
         , CommandType = System.Data.CommandType.Text)]
     [Command(Name = "get" , Text = @"select * from [user] where userid = @UserId", CommandType = System.Data.CommandType.Text)]
     [Command(Name = "getPartialCol", Text = @"select UserId, FirstName, CreatedOn from [user] where userid = @userId", CommandType = System.Data.CommandType.Text)]
+    [Command(Name = "testTableParameter", Text = "[dbo].[uspWithTableParameter]")]
     public class User
     {
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
 

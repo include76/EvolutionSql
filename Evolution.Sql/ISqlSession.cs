@@ -12,6 +12,7 @@ namespace Evolution.Sql
 
         //IEnumerable<TEntity> Query<TEntity>(Dictionary<string, dynamic> parameters) where TEntity : class, new();
         IEnumerable<T> Query<T>(string commandName, Dictionary<string, dynamic> parameters) where T : class, new();
+        IEnumerable<T> Query<T>(string commandName, object parameters) where T : class, new();
 
         //TEntity QueryOne<TEntity>(Dictionary<string, dynamic> parameters) where TEntity : class, new();
         T QueryOne<T>(string commandName, Dictionary<string, dynamic> parameters) where T : class, new();

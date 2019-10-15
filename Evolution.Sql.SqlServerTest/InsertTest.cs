@@ -25,7 +25,7 @@ namespace Evolution.Sql.SqlServerTest
             {
                 var user = new User
                 {
-                    UserId = Guid.NewGuid().ToString(),
+                    UserId = Guid.NewGuid(),
                     FirstName = "Bruce",
                     LastName = "Lee"
                 };
@@ -41,7 +41,7 @@ namespace Evolution.Sql.SqlServerTest
             var connection = new SqlConnection(connectionStr);
             using (ISqlSession sqlSession = new SqlSession(connection))
             {
-                var userId = Guid.NewGuid().ToString();
+                var userId = Guid.NewGuid();
                 var user = new User
                 {
                     UserId = userId,
