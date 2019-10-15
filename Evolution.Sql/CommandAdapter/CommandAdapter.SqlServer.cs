@@ -14,16 +14,6 @@ namespace Evolution.Sql.CommandAdapter
             }
         }
 
-        protected override string ParameterPrefix
-        {
-            get
-            {
-                return "@";
-            }
-            set
-            {
-                base.ParameterPrefix = value;
-            }
-        }
+        protected override string ParameterPrefix => "@";
     }
 }

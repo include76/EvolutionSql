@@ -6,10 +6,10 @@ using System.Text;
 namespace Evolution.Sql.TestCommon
 {
     // command with all properties set
-    [Command(Name = "insert", Text ="uspBlogIns", CommandType = System.Data.CommandType.StoredProcedure)]
-    // command only with Text, Name defalut to Text, CommandType default to SP
-    [Command(Name = "update", Text ="uspBlogUpd")]
-    [Command(Name = "get", Text = "uspBlogGet")]
+    [Command(Name = "Insert", Text ="uspBlogIns", CommandType = System.Data.CommandType.StoredProcedure)]
+    //CommandType default to SP
+    [Command(Name = "Update", Text ="uspBlogUpd")]
+    [Command(Name = "Get", Text = "uspBlogGet")]
     public class Blog
     {
         public int Id { get; set; }
@@ -17,6 +17,7 @@ namespace Evolution.Sql.TestCommon
         public string Content { get; set; }
         public DateTime CreatedOn { get; set; }
         public Guid CreatedBy { get; set; }
+        public DateTime UpdatedOn { get; set; }
         public User CreatedUser { get; set; }
         public IList<Tag> Tags { get; set; }
         public IList<Post> Posts { get; set; }

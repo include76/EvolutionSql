@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace Evolution.Sql.SqlServerTest
+namespace Evolution.Sql.MySqlTest
 {
     public class Tests
     {

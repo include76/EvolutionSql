@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evolution.Sql.TestCommon", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evolution.Sql.SqlServerTest", "Evolution.Sql.SqlServerTest\Evolution.Sql.SqlServerTest.csproj", "{B2EB220B-3239-4D0C-AC89-8E50FF58C5C7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evolution.Sql.MySqlTest", "Evolution.Sql.MySqlTest\Evolution.Sql.MySqlTest.csproj", "{26D3403D-76C3-45F7-8880-EF3C3970342D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B2EB220B-3239-4D0C-AC89-8E50FF58C5C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2EB220B-3239-4D0C-AC89-8E50FF58C5C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2EB220B-3239-4D0C-AC89-8E50FF58C5C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26D3403D-76C3-45F7-8880-EF3C3970342D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26D3403D-76C3-45F7-8880-EF3C3970342D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26D3403D-76C3-45F7-8880-EF3C3970342D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26D3403D-76C3-45F7-8880-EF3C3970342D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

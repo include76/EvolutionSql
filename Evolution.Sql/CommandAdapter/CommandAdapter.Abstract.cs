@@ -27,7 +27,7 @@ namespace Evolution.Sql.CommandAdapter
 
         protected virtual string DefaultSchema { get; }
 
-        protected virtual string ParameterPrefix { get; set; }
+        protected virtual string ParameterPrefix => "@";
 
         protected virtual Dictionary<string, DbType> DbEgineTypeToDbTypeMap { get; set; }
 

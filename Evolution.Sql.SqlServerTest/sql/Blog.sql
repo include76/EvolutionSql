@@ -10,6 +10,7 @@ create table [User](
 	FirstName nvarchar(256) not null,
 	LastName nvarchar(256) not null,
 	CreatedOn datetime2,
+	UpdatedOn datetime2,
 	constraint pk_user primary key(UserId)
 )
 
@@ -26,6 +27,7 @@ create table Blog(
 	Content nvarchar(max) not null,
 	CreatedBy uniqueidentifier not null,
 	CreatedOn datetime2 not null,
+	UpdatedOn datetime2 not null,
 	constraint pk_blog primary key(Id),
 	constraint fk_blog_user foreign key(CreatedBy) references [User](UserId)
 )
@@ -35,6 +37,7 @@ create table Post(
 	Content nvarchar(max) not null,
 	CreatedBy uniqueidentifier not null,
 	CreatedOn datetime not null,
+	UpdatedOn datetime2 not null,
 	PostId int not null,
 	constraint pk_post primary key(Id),
 	constraint fk_post_user foreign key(CreatedBy) references [User](UserId),

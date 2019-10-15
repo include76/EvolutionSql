@@ -1,4 +1,5 @@
 ﻿using Evolution.Sql.TestCommon;
+using Evolution.Sql.TestCommon.Interface;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Text;
 namespace Evolution.Sql.SqlServerTest
 {
     [TestFixture]
-    public class GetTest
+    public class QueryTest: IQueryTest
     {
         private string connectionStr = @"Data Source =.\sqlexpress; Initial Catalog = Blog; Integrated Security = True";
         [SetUp]
@@ -18,7 +19,7 @@ namespace Evolution.Sql.SqlServerTest
         }
 
         [Test]
-        public void GetOne_With_Inline_Sql()
+        public void QueryOne_With_Inline_Sql()
         {
             var connection = new SqlConnection(connectionStr);
             using (var sqlSession = new SqlSession(connection))
@@ -46,6 +47,24 @@ namespace Evolution.Sql.SqlServerTest
         }
 
         [Test]
+        public void QueryOne_With_StoredProcedure()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Query_With_Inline_Sql()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void Query_With_StoredProcedure()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
         public void Get_Null_Value_From_DB_Property_Should_Set_Default_Value()
         {
             var connection = new SqlConnection(connectionStr);
@@ -67,5 +86,6 @@ namespace Evolution.Sql.SqlServerTest
                 Assert.AreEqual(default(DateTime), userFromDb.CreatedOn);
             }
         }
+
     }
 }

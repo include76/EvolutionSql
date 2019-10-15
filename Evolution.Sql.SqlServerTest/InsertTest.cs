@@ -1,4 +1,5 @@
 ﻿using Evolution.Sql.TestCommon;
+using Evolution.Sql.TestCommon.Interface;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Text;
 namespace Evolution.Sql.SqlServerTest
 {
     [TestFixture]
-    public class InsertTest
+    public class InsertTest: IInsertTest
     {
         private string connectionStr = @"Data Source =.\sqlexpress; Initial Catalog = Blog; Integrated Security = True";
         [SetUp]
@@ -32,7 +33,6 @@ namespace Evolution.Sql.SqlServerTest
                 var result = sqlSession.Execute<User>("insert", user);
                 Assert.Greater(result, 0);
             }
-
         }
 
         [Test]
@@ -55,7 +55,8 @@ namespace Evolution.Sql.SqlServerTest
                     Title = "this is a test post title",
                     Content = "this is a test post content",
                     CreatedBy = userId,
-                    CreatedOn = DateTime.Now
+                    CreatedOn = DateTime.Now,
+                    UpdatedOn = DateTime.Now
                 };
 
                 var postId = sqlSession.ExecuteScalar<Blog>("insert", blog);

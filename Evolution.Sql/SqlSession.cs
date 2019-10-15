@@ -31,6 +31,7 @@ namespace Evolution.Sql
             _commandAdapter = CommandAdapterFactory.Instance(factory.GetType().Name);
         }
 
+        #region Execute
         public int Execute<T>(string commandName, T obj)
         {
             _dbConnection.TryOpen();
@@ -48,7 +49,9 @@ namespace Evolution.Sql
                 return command.ExecuteScalar();
             }
         }
+        #endregion
 
+        #region Query
         //public IEnumerable<T> Query<T>(Dictionary<string, dynamic> parameters) where T : class, new()
         //{
         //    _dbConnection.TryOpen();
@@ -82,6 +85,7 @@ namespace Evolution.Sql
                 }
             }
         }
+        #endregion
 
         #region QueryOne
         //public T QueryOne<T>(Dictionary<string, dynamic> parameters) where T : class, new()
