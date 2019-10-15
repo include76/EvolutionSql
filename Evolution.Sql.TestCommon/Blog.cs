@@ -1,12 +1,13 @@
 ﻿using Evolution.Sql.Attribute;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace Evolution.Sql.TestCommon
 {
     // command with all properties set
-    [Command(Name = "Insert", Text ="uspBlogIns", CommandType = System.Data.CommandType.StoredProcedure)]
+    [Command(Name = "Insert", Text ="uspBlogIns", CommandType = CommandType.StoredProcedure)]
     //CommandType default to SP
     [Command(Name = "Update", Text ="uspBlogUpd")]
     [Command(Name = "Get", Text = "uspBlogGet")]
