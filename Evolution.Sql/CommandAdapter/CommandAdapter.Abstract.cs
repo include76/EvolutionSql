@@ -1,4 +1,5 @@
 ﻿using Evolution.Sql.Attribute;
+using Evolution.Sql.Cache;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -91,16 +92,16 @@ namespace Evolution.Sql.CommandAdapter
             }
             dbCommand.CommandType = attr.CommandType;
             dbCommand.CommandText = attr.Text;
-            SetParameters(dbCommand);
+            SetParameters(dbCommand, type.FullName);
             AssignParameterValues(dbCommand, parameters);
             return dbCommand;
         }
 
-        public void SetParameters(DbCommand command)
+        public void SetParameters(DbCommand command, string typeFullName)
         {
             if (command.CommandType == CommandType.StoredProcedure)
             {
-                SetStoredProcedureParameters(command);
+                SetStoredProcedureParameters(command, typeFullName);
             }
             else
             {
@@ -108,8 +109,24 @@ namespace Evolution.Sql.CommandAdapter
             }
         }
 
-        public virtual void SetStoredProcedureParameters(DbCommand command)
+        public virtual void SetStoredProcedureParameters(DbCommand command, string typeFullName)
         {
+            var cachedParameters = CacheHelper.GetDbParameters($"{typeFullName}_{command.CommandText}");
+            if(cachedParameters != null)
+            {
+                foreach (var item in cachedParameters)
+                {
+                    var parameter = command.CreateParameter();
+                    parameter.ParameterName = item.Name;
+                    parameter.Direction = item.Direction;
+                    parameter.DbType = item.DbType;
+                    command.Parameters.Add(parameter);
+                }
+
+                return;
+            }
+            cachedParameters = new List<DbParameterCacheItem>();
+
             var schemaAndName = command.CommandText.Split('.');
             string schema = string.Empty, name = string.Empty;
             if (schemaAndName.Length == 2)
@@ -156,9 +173,13 @@ namespace Evolution.Sql.CommandAdapter
                         //parameter.DbType = GetDbTypeByString(reader.GetString(2).Trim());
                         SetParameterType(parameter, reader.GetString(2).Trim());
                         command.Parameters.Add(parameter);
+                        // cache the parameter
+                        cachedParameters.Add(new DbParameterCacheItem { Name = parameterName, DbType = parameter.DbType, Direction = parameter.Direction });
                     }
                 }
             }
+            // cache parameters
+            CacheHelper.AddDbParameters($"{typeFullName}_{command.CommandText}", cachedParameters);
         }
 
         public virtual void SetSqlParameters(DbCommand command)

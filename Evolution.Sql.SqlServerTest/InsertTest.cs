@@ -62,6 +62,10 @@ namespace Evolution.Sql.SqlServerTest
                 var postId = sqlSession.ExecuteScalar<Blog>("insert", blog);
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
+                // just for test cache parameter
+                postId = sqlSession.ExecuteScalar<Blog>("insert", blog);
+                Assert.NotNull(postId);
+                Assert.Greater(int.Parse(postId.ToString()), 0);
             }
         }
     }
