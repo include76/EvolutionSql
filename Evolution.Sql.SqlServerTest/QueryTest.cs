@@ -40,7 +40,7 @@ namespace Evolution.Sql.SqlServerTest
                 Assert.AreEqual(userId, userFromDb.UserId);
 
                 userFromDb = null;
-                userFromDb = sqlSession.QueryOne<User>("get", new Dictionary<string, dynamic> { { "UserId", userId } });
+                userFromDb = sqlSession.QueryOne<User>("get", new { UserId = userId});
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
             }

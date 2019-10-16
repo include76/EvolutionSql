@@ -41,10 +41,28 @@ namespace Evolution.Sql
             }
         }
 
+        public int Execute<T>(string commandName, object parameters)
+        {
+            _dbConnection.TryOpen();
+            using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, parameters))
+            {
+                return command.ExecuteNonQuery();
+            }
+        }
+
         public object ExecuteScalar<T>(string commandName, T obj)
         {
             _dbConnection.TryOpen();
             using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, obj))
+            {
+                return command.ExecuteScalar();
+            }
+        }
+
+        public object ExecuteScalar<T>(string commandName, object parameters)
+        {
+            _dbConnection.TryOpen();
+            using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, parameters))
             {
                 return command.ExecuteScalar();
             }
@@ -63,11 +81,6 @@ namespace Evolution.Sql
         //        }
         //    }
         //}
-
-        public IEnumerable<T> Query<T>(string commandName, Dictionary<string, dynamic> parameters) where T : class, new()
-        {
-            return QueryInner<T>(commandName, parameters);
-        }
 
         public IEnumerable<T> Query<T>(string commandName, object parameters) where T : class, new()
         {
@@ -99,11 +112,6 @@ namespace Evolution.Sql
         //        }
         //    }
         //}
-
-        public T QueryOne<T>(string commandName, Dictionary<string, dynamic> parameters) where T : class, new()
-        {
-            return QueryOneInner<T>(commandName, parameters);
-        }
 
         public T QueryOne<T>(string commandName, object parameters) where T : class, new()
         {

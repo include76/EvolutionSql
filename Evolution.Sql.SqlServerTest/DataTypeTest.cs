@@ -20,7 +20,7 @@ namespace Evolution.Sql.SqlServerTest
         }
 
         [Test]
-        public void TestDataTableParameter()
+        public void DataTableParameter_Test()
         {
             var connection = new SqlConnection(connectionStr);
             using (var sqlSession = new SqlSession(connection))
@@ -36,6 +36,15 @@ namespace Evolution.Sql.SqlServerTest
 
                 Assert.NotNull(users);
                 Assert.AreEqual("XYZ", users.First().FirstName);
+            }
+        }
+
+        [Test]
+        public void StoredProcedure_Parameter_Direction_Test()
+        {
+            using (var sqlSession = new SqlSession(new SqlConnection(connectionStr)))
+            {
+                var result = sqlSession.Execute<DummyModel>("uspParamDirection", new { pIn = 2, pInOut= 5 });
             }
         }
     }

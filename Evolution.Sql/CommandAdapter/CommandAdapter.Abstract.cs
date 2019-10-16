@@ -81,7 +81,7 @@ namespace Evolution.Sql.CommandAdapter
             var type = typeof(T);
             //TODO: cache command object
             var attr = type.GetCustomAttributes<CommandAttribute>(false)?.FirstOrDefault(x => x.Name.Equals(commandName, StringComparison.OrdinalIgnoreCase));
-            if(attr == null)
+            if (attr == null)
             {
                 throw new Exception(@$"Command {commandName} not found, {type.FullName}");
             }
@@ -185,10 +185,18 @@ namespace Evolution.Sql.CommandAdapter
                     var dic = parameters as Dictionary<string, dynamic>;
                     foreach (DbParameter param in dbCommand.Parameters)
                     {
+                        if (param.Direction == ParameterDirection.Output)
+                        {
+                            continue;
+                        }
                         var kv = dic.FirstOrDefault(d => d.Key.ToUpper() == param.ParameterName.ToUpper());
                         if (!string.IsNullOrEmpty(kv.Key))
                         {
                             param.Value = kv.Value;
+                        }
+                        else if (param.Direction == ParameterDirection.InputOutput)
+                        {
+                            param.Value = DBNull.Value;
                         }
                     }
                 }
@@ -198,10 +206,19 @@ namespace Evolution.Sql.CommandAdapter
                     PropertyInfo property;
                     foreach (DbParameter param in dbCommand.Parameters)
                     {
+                        if (param.Direction == ParameterDirection.Output)
+                        {
+                            continue;
+                        }
                         property = propertyInfos.FirstOrDefault(p => p.Name.ToUpper() == param.ParameterName.ToUpper());
                         if (property != null)
                         {
                             param.Value = property.GetValue(parameters);
+                        }
+                        // if it's pure OUT parameter, Value of InputOutput parameter should set to DBNull.Value, or parameter not provided excetpion would be thrown
+                        else if (param.Direction == ParameterDirection.InputOutput)
+                        {
+                            param.Value = DBNull.Value;
                         }
                     }
                 }
