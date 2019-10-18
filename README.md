@@ -54,13 +54,13 @@ Simple dot net decoration style database access library, if you don't like Full-
   //c#
   using (var sqlSession = new SqlSession(new SqlConnection(connectionStr)))
   {
-    var userFromDb = sqlSession.QueryOne<User>("uspUserGet", new { UserId = userId });
+    var userFromDb = sqlSession.QueryOne&lt;User&gt;("uspUserGet", new { UserId = userId });
   }
   
   // if you want the output value from the stored procedure
   var outPuts = new Dictionary<string, dynamic>();
   using (var sqlSession = new SqlSession(new SqlConnection(connectionStr)))
   {
-    var userFromDb = sqlSession.QueryOne<User>("uspUserGet", new { UserId = userId }, out outPuts);
+    var userFromDb = sqlSession.QueryOne&lt;User&gt;("uspUserGet", new { UserId = userId }, out outPuts);
   }
 </pre>
