@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evolution.Sql", "Evolution.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evolution.Sql.TestCommon", "Evolution.Sql.TestCommon\Evolution.Sql.TestCommon.csproj", "{2077AEB5-9336-4EE6-B982-FA4F8CA52446}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evolution.Sql.SqlServerTest", "Evolution.Sql.SqlServerTest\Evolution.Sql.SqlServerTest.csproj", "{B2EB220B-3239-4D0C-AC89-8E50FF58C5C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evolution.Sql.SqlServerTest", "Evolution.Sql.SqlServerTest\Evolution.Sql.SqlServerTest.csproj", "{B2EB220B-3239-4D0C-AC89-8E50FF58C5C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evolution.Sql.MySqlTest", "Evolution.Sql.MySqlTest\Evolution.Sql.MySqlTest.csproj", "{26D3403D-76C3-45F7-8880-EF3C3970342D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evolution.Sql.MySqlTest", "Evolution.Sql.MySqlTest\Evolution.Sql.MySqlTest.csproj", "{26D3403D-76C3-45F7-8880-EF3C3970342D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

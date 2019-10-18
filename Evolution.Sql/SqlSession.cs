@@ -131,11 +131,13 @@ namespace Evolution.Sql
             _dbConnection.TryOpen();
             using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, parameters))
             {
+                IEnumerable<T> result;
                 using (var dataReader = command.ExecuteReader())
                 {
-                    outPuts = GetOutputParameters(command);
-                    return dataReader.ToEntities<T>();
+                    result = dataReader.ToEntities<T>();
                 }
+                outPuts = GetOutputParameters(command);
+                return result;
             }
         }
         #endregion
@@ -160,9 +162,10 @@ namespace Evolution.Sql
             {
                 T result;
                 using (var dataReader = command.ExecuteReader())
-                {
+                {                    
                     result = dataReader.ToEntity<T>();
                 }
+                // output parameter must get after datareader closed
                 outPuts = GetOutputParameters(command);
                 return result;
             }

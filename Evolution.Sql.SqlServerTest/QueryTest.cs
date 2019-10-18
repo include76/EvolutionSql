@@ -9,7 +9,7 @@ using System.Text;
 namespace Evolution.Sql.SqlServerTest
 {
     [TestFixture]
-    public class QueryTest: IQueryTest
+    public class QueryTest : IQueryTest
     {
         private string connectionStr = @"Data Source =.\sqlexpress; Initial Catalog = Blog; Integrated Security = True";
         [SetUp]
@@ -35,12 +35,12 @@ namespace Evolution.Sql.SqlServerTest
                 var result = sqlSession.Execute<User>("insert", user);
                 Assert.Greater(result, 0);
 
-                var userFromDb = sqlSession.QueryOne<User>("get", new  { UserId = userId });
+                var userFromDb = sqlSession.QueryOne<User>("get", new { UserId = userId });
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
 
                 userFromDb = null;
-                userFromDb = sqlSession.QueryOne<User>("get", new { UserId = userId});
+                userFromDb = sqlSession.QueryOne<User>("get", new { UserId = userId });
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
             }
@@ -67,6 +67,7 @@ namespace Evolution.Sql.SqlServerTest
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
                 Assert.True(outPuts.ContainsKey("totalCount"));
+                Assert.Greater(outPuts["totalCount"], 0);
             }
         }
 
