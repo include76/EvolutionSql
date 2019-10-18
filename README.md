@@ -34,7 +34,7 @@ Simple dot net decoration style database access library, if you don't like Full-
   //
   using (var sqlSession = new SqlSession(new SqlConnection(connectionStr)))
   {
-    var result = sqlSession.Execute<User>("insert", user);
+    var result = sqlSession.Execute&lt;User&gt;("insert", user);
   }
 </pre>
 
