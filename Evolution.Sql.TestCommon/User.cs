@@ -22,6 +22,7 @@ namespace Evolution.Sql.TestCommon
         , CommandType = CommandType.Text)]
     [Command(Name = "TestTableParameter"
         , Text = "[dbo].[uspWithTableParameter]")]
+    [Command(Name = "uspUserGet", Text = "uspUserGet")]
     #endregion
     public class User
     {

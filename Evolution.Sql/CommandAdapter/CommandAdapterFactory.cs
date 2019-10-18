@@ -6,16 +6,16 @@ namespace Evolution.Sql.CommandAdapter
 {
     internal class CommandAdapterFactory
     {
-        internal static AbstractCommandAdapter Instance(string dbProviderInvariant)
+        internal static AbstractCommandAdapter Instance(string dbFactoryName)
         {
-            switch (dbProviderInvariant)
+            switch (dbFactoryName)
             {
                 case "SqlClientFactory":
                     return new CommandAdapterSqlServer();
                 case "MySqlClientFactory":
                     return new CommandAdapterMySql();
                 default:
-                    throw new Exception($"{dbProviderInvariant} is not supported.");
+                    throw new Exception($"{dbFactoryName} is not supported.");
             }
         }
     }

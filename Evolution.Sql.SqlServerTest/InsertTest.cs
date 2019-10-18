@@ -36,6 +36,12 @@ namespace Evolution.Sql.SqlServerTest
         }
 
         [Test]
+        public void Insert_With_Inline_Sql_Auto_Generated_Id()
+        {
+
+        }
+
+        [Test]
         public void Insert_With_StoredProcedure()
         {
             var connection = new SqlConnection(connectionStr);
@@ -59,11 +65,14 @@ namespace Evolution.Sql.SqlServerTest
                     UpdatedOn = DateTime.Now
                 };
 
-                var postId = sqlSession.ExecuteScalar<Blog>("insert", blog);
+                var outPuts = new Dictionary<string, dynamic> ();
+                sqlSession.Execute<Blog>("insert", blog, out outPuts);
+                var postId = outPuts["Id"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
                 // just for test cache parameter
-                postId = sqlSession.ExecuteScalar<Blog>("insert", blog);
+                sqlSession.Execute<Blog>("insert", blog, out outPuts);
+                postId = outPuts["Id"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
             }

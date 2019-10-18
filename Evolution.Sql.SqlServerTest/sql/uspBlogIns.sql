@@ -2,10 +2,11 @@
 	@content nvarchar(max),
 	@CreatedBy uniqueidentifier,
 	@CreatedOn datetime2,
-	@UpdatedOn datetime2
+	@UpdatedOn datetime2,
+	@Id			int output
 )
 as
 begin
 	insert into Blog values(@Title, @content, @CreatedBy, @CreatedOn, @UpdatedOn)
-	select SCOPE_IDENTITY()
+	select @Id = SCOPE_IDENTITY()
 end

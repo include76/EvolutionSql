@@ -58,7 +58,7 @@ namespace Evolution.Sql.SqlServerTest
         [Test]
         public void Update_With_StoredProcedure()
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
     }
 }

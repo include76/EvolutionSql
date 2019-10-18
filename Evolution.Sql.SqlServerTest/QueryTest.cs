@@ -49,19 +49,37 @@ namespace Evolution.Sql.SqlServerTest
         [Test]
         public void QueryOne_With_StoredProcedure()
         {
-            throw new NotImplementedException();
+            var connection = new SqlConnection(connectionStr);
+            using (var sqlSession = new SqlSession(connection))
+            {
+                var userId = Guid.NewGuid();
+                var user = new User
+                {
+                    UserId = userId,
+                    FirstName = "Bruce",
+                    LastName = "Lee"
+                };
+                var result = sqlSession.Execute<User>("insert", user);
+                Assert.Greater(result, 0);
+
+                var outPuts = new Dictionary<string, dynamic>();
+                var userFromDb = sqlSession.QueryOne<User>("uspUserGet", new { UserId = userId }, out outPuts);
+                Assert.IsNotNull(userFromDb);
+                Assert.AreEqual(userId, userFromDb.UserId);
+                Assert.True(outPuts.ContainsKey("totalCount"));
+            }
         }
 
         [Test]
         public void Query_With_Inline_Sql()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         [Test]
         public void Query_With_StoredProcedure()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         [Test]

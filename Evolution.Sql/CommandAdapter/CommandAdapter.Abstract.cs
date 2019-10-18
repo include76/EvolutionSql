@@ -97,7 +97,7 @@ namespace Evolution.Sql.CommandAdapter
             return dbCommand;
         }
 
-        public void SetParameters(DbCommand command, string typeFullName)
+        protected void SetParameters(DbCommand command, string typeFullName)
         {
             if (command.CommandType == CommandType.StoredProcedure)
             {

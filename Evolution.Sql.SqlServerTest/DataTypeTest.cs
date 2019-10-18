@@ -44,7 +44,8 @@ namespace Evolution.Sql.SqlServerTest
         {
             using (var sqlSession = new SqlSession(new SqlConnection(connectionStr)))
             {
-                var result = sqlSession.Execute<DummyModel>("uspParamDirection", new { pIn = 2, pInOut= 5 });
+                var outPuts = new Dictionary<string, dynamic>();
+                var result = sqlSession.Execute<DummyModel>("uspParamDirection", new { pIn = 2, pInOut= 5 }, out outPuts);
             }
         }
     }
