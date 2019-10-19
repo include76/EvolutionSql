@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace Evolution.Sql.TestCommon
+namespace Evolution.Sql.MySqlTest.Modal
 {
-    // command with all properties set
-    [Command(Name = "Insert", Text ="uspBlogIns", CommandType = CommandType.StoredProcedure)]
-    //CommandType default to SP
-    [Command(Name = "Update", Text ="uspBlogUpd")]
-    [Command(Name = "Get", Text = "uspBlogGet")]
+    [Command(Name = "Insert", Text = "usp_blog_ins")]
+    [Command(Name = "Update", Text = "usp_blog_upd")]
+    [Command(Name = "Get", Text = "usp_blog_get")]
+    [Command(Name = "GetAll", Text = "select * from `blog`", CommandType = CommandType.Text)]
     public class Blog
     {
         public int Id { get; set; }
@@ -18,7 +17,7 @@ namespace Evolution.Sql.TestCommon
         public string Content { get; set; }
         public DateTime CreatedOn { get; set; }
         public Guid CreatedBy { get; set; }
-        public DateTime UpdatedOn { get; set; }
+        public DateTime? UpdatedOn { get; set; }
         public User CreatedUser { get; set; }
         public IList<Tag> Tags { get; set; }
         public IList<Post> Posts { get; set; }

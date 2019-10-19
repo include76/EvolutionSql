@@ -72,6 +72,14 @@ namespace Evolution.Sql
                 var defaultValue = GetDefaultValue(property.PropertyType);
                 property.SetValue(entity, defaultValue);
             }
+            else if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                var genericType = Nullable.GetUnderlyingType(property.PropertyType);
+                if (genericType != null)
+                {
+                    property.SetValue(entity, Convert.ChangeType(value, genericType), null);
+                }
+            }
             else
             {
                 property.SetValue(entity, Convert.ChangeType(value, property.PropertyType));

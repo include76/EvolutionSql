@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace Evolution.Sql.TestCommon
+namespace Evolution.Sql.SqlServerTest.Modal
 {
     #region sql server commands
     [Command(Name = "Insert"

@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Evolution.Sql\Evolution.Sql.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Modal\" />
+  </ItemGroup>
+
 </Project>

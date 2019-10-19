@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Evolution.Sql.TestCommon
+namespace Evolution.Sql.SqlServerTest.Modal
 {
     public class Tag
     {

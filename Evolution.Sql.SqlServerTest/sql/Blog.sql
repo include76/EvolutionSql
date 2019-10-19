@@ -27,7 +27,7 @@ create table Blog(
 	Content nvarchar(max) not null,
 	CreatedBy uniqueidentifier not null,
 	CreatedOn datetime2 not null,
-	UpdatedOn datetime2 not null,
+	UpdatedOn datetime2 null,
 	constraint pk_blog primary key(Id),
 	constraint fk_blog_user foreign key(CreatedBy) references [User](UserId)
 )

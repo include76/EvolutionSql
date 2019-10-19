@@ -4,6 +4,7 @@ using MySql.Data.MySqlClient;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Evolution.Sql.MySqlTest
@@ -73,7 +74,42 @@ namespace Evolution.Sql.MySqlTest
         [Test]
         public void Query_With_Inline_Sql()
         {
-            //throw new NotImplementedException();
+            var connection = new MySqlConnection(connectionStr);
+            using (var sqlSession = new SqlSession(connection))
+            {
+                var userId = Guid.NewGuid();
+                var user = new User
+                {
+                    UserId = userId,
+                    FirstName = "Bruce",
+                    LastName = "Lee"
+                };
+                sqlSession.Execute<User>("insert", user);
+
+                var blog = new Blog
+                {
+                    Title = "this is a test post title",
+                    Content = "this is a test post content",
+                    CreatedBy = userId,
+                    CreatedOn = DateTime.Now,
+                    UpdatedOn = DateTime.Now
+                };
+
+                var outPuts = new Dictionary<string, dynamic>();
+                sqlSession.Execute<Blog>("insert", blog, out outPuts);
+                var postId = outPuts["Id"];
+                Assert.NotNull(postId);
+                Assert.Greater(int.Parse(postId.ToString()), 0);
+                sqlSession.Execute<Blog>("insert", blog, out outPuts);
+                postId = outPuts["Id"];
+                Assert.NotNull(postId);
+                Assert.Greater(int.Parse(postId.ToString()), 0);
+
+                // query
+                var blogs = sqlSession.Query<Blog>("getall", null);
+                Assert.NotNull(blogs);
+                Assert.Greater(blogs.ToList().Count, 1);
+            }
         }
 
         [Test]

@@ -1,11 +1,9 @@
-﻿using Evolution.Sql.Attribute;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Evolution.Sql.TestCommon
+namespace Evolution.Sql.MySqlTest.Modal
 {
-    [Command(Name = "Insert", Text = "insert into Post values(@content, @createdBy, @CreatedOn) select SCOPE_IDENTITY()", CommandType = System.Data.CommandType.Text)]
     public class Post
     {
         public int Id { get; set; }

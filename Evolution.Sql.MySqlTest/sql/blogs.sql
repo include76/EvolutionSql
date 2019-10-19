@@ -25,7 +25,7 @@ create table blog(
 	Content text not null,
 	CreatedBy char(36) not null,
 	CreatedOn datetime not null,
-	UpdatedOn datetime not null,
+	UpdatedOn datetime null,
 	constraint pk_blog primary key(Id),
 	constraint fk_blog_user foreign key(CreatedBy) references `User`(UserId)
 )engine=InnoDB default charset = utf8;

@@ -1,18 +1,16 @@
-﻿using Evolution.Sql.SqlServerTest.Modal;
-using Evolution.Sql.TestCommon;
+﻿using Evolution.Sql.MySqlTest.Modal;
 using Evolution.Sql.TestCommon.Interface;
+using MySql.Data.MySqlClient;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Text;
 
-namespace Evolution.Sql.SqlServerTest
+namespace Evolution.Sql.MySqlTest
 {
-    [TestFixture]
     public class InsertTest: IInsertTest
     {
-        private string connectionStr = @"Data Source =.\sqlexpress; Initial Catalog = Blog; Integrated Security = True";
+        private string connectionStr = @"server=localhost;user=root;database=blog;port=3306;password=root";
         [SetUp]
         public void Setup()
         {
@@ -22,7 +20,7 @@ namespace Evolution.Sql.SqlServerTest
         [Test]
         public void Insert_With_Inline_Sql()
         {
-            var connection = new SqlConnection(connectionStr);
+            var connection = new MySqlConnection(connectionStr);
             using (var sqlSession = new SqlSession(connection))
             {
                 var user = new User
@@ -45,7 +43,7 @@ namespace Evolution.Sql.SqlServerTest
         [Test]
         public void Insert_With_StoredProcedure()
         {
-            var connection = new SqlConnection(connectionStr);
+            var connection = new MySqlConnection(connectionStr);
             using (ISqlSession sqlSession = new SqlSession(connection))
             {
                 var userId = Guid.NewGuid();
@@ -63,10 +61,10 @@ namespace Evolution.Sql.SqlServerTest
                     Content = "this is a test post content",
                     CreatedBy = userId,
                     CreatedOn = DateTime.Now,
-                    UpdatedOn = DateTime.Now
+                    UpdatedOn = null
                 };
 
-                var outPuts = new Dictionary<string, dynamic> ();
+                var outPuts = new Dictionary<string, dynamic>();
                 sqlSession.Execute<Blog>("insert", blog, out outPuts);
                 var postId = outPuts["Id"];
                 Assert.NotNull(postId);
@@ -80,4 +78,3 @@ namespace Evolution.Sql.SqlServerTest
         }
     }
 }
-
