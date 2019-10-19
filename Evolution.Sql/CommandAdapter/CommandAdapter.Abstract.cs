@@ -32,47 +32,49 @@ namespace Evolution.Sql.CommandAdapter
 
         protected virtual Dictionary<string, DbType> DbEgineTypeToDbTypeMap { get; set; }
 
+        protected virtual Dictionary<Type, DbType> ClrTypeDbTypeMap { get; set; }
+
         public AbstractCommandAdapter()
         {
             regex = new Regex(ParameterPattern);
-            //https://msdn.microsoft.com/en-us/library/cc716729(v=vs.110).aspx
-            DbEgineTypeToDbTypeMap = new Dictionary<string, DbType>() {
-                { "bigint",             DbType.Int64 },
-                { "binary",             DbType.Binary },
-                { "bit",                DbType.Boolean },
-                { "char",               DbType.AnsiStringFixedLength },
-                { "date",               DbType.Date },
-                { "datetime",           DbType.DateTime },
-                { "datetime2",          DbType.DateTime2 },
-                { "datetimeoffset",     DbType.DateTimeOffset },
-                { "decimal",            DbType.Decimal },
-                //{ "FILESTREAM", DbType.Binary },//???
-                { "float",              DbType.Double },
-                { "image",              DbType.Int64 },
-                { "int",                DbType.Int32 },
-                { "money",              DbType.Decimal },
-                { "nchar",              DbType.AnsiStringFixedLength },
-                { "ntext",              DbType.String },
-                { "numeric",            DbType.Decimal },
-                { "nvarchar",           DbType.String },
-                { "real",               DbType.Single },
-                { "rowversion",         DbType.Binary },
-                { "smalldatetime",      DbType.DateTime },
-                { "smallint",           DbType.Int16 },
-                { "smallmoney",         DbType.Decimal },
-                { "sql_variant",        DbType.Object },
-                { "text",               DbType.String },
-                { "time",               DbType.Time },
-                { "timestamp",          DbType.Binary },
-                { "tinyint",            DbType.Byte },
-                { "uniqueidentifier",   DbType.Guid },
-                { "varbinary",          DbType.Binary },
-                { "varchar",            DbType.AnsiStringFixedLength },
-                { "xml",                DbType.Xml },
-                //{ "table type",         DbType.Object }:::Not works, when it's table type, let clr infer the DbType
-                //------MySql Specific
-
-                //------Oracle Specific
+            ClrTypeDbTypeMap = new Dictionary<Type, DbType> {
+                [typeof(byte)] = DbType.Byte,
+                [typeof(sbyte)] = DbType.SByte,
+                [typeof(short)] = DbType.Int16,
+                [typeof(ushort)] = DbType.UInt16,
+                [typeof(int)] = DbType.Int32,
+                [typeof(uint)] = DbType.UInt32,
+                [typeof(long)] = DbType.Int64,
+                [typeof(ulong)] = DbType.UInt64,
+                [typeof(float)] = DbType.Single,
+                [typeof(double)] = DbType.Double,
+                [typeof(decimal)] = DbType.Decimal,
+                [typeof(bool)] = DbType.Boolean,
+                [typeof(string)] = DbType.String,
+                [typeof(char)] = DbType.StringFixedLength,
+                [typeof(Guid)] = DbType.Guid,
+                [typeof(DateTime)] = DbType.DateTime,
+                [typeof(DateTimeOffset)] = DbType.DateTimeOffset,
+                [typeof(TimeSpan)] = DbType.Time,
+                [typeof(byte[])] = DbType.Binary,
+                [typeof(byte?)] = DbType.Byte,
+                [typeof(sbyte?)] = DbType.SByte,
+                [typeof(short?)] = DbType.Int16,
+                [typeof(ushort?)] = DbType.UInt16,
+                [typeof(int?)] = DbType.Int32,
+                [typeof(uint?)] = DbType.UInt32,
+                [typeof(long?)] = DbType.Int64,
+                [typeof(ulong?)] = DbType.UInt64,
+                [typeof(float?)] = DbType.Single,
+                [typeof(double?)] = DbType.Double,
+                [typeof(decimal?)] = DbType.Decimal,
+                [typeof(bool?)] = DbType.Boolean,
+                [typeof(char?)] = DbType.StringFixedLength,
+                [typeof(Guid?)] = DbType.Guid,
+                [typeof(DateTime?)] = DbType.DateTime,
+                [typeof(DateTimeOffset?)] = DbType.DateTimeOffset,
+                [typeof(TimeSpan?)] = DbType.Time,
+                [typeof(object)] = DbType.Object
             };
         }
 
@@ -171,7 +173,7 @@ namespace Evolution.Sql.CommandAdapter
                         parameter.ParameterName = parameterName;
                         parameter.Direction = GetDirection(reader.GetString(1));
                         //parameter.DbType = GetDbTypeByString(reader.GetString(2).Trim());
-                        SetParameterType(parameter, reader.GetString(2).Trim());
+                        //SetParameterType(parameter, reader.GetString(2).Trim());
                         command.Parameters.Add(parameter);
                         // cache the parameter
                         cachedParameters.Add(new DbParameterCacheItem { Name = parameterName, DbType = parameter.DbType, Direction = parameter.Direction });
@@ -234,6 +236,7 @@ namespace Evolution.Sql.CommandAdapter
                         property = propertyInfos.FirstOrDefault(p => p.Name.ToUpper() == param.ParameterName.ToUpper());
                         if (property != null)
                         {
+                            param.DbType = GetDbTypeByClrType(property.PropertyType);
                             param.Value = property.GetValue(parameters);
                         }
                         // if it's pure OUT parameter, Value of InputOutput parameter should set to DBNull.Value, or parameter not provided excetpion would be thrown
@@ -270,6 +273,18 @@ namespace Evolution.Sql.CommandAdapter
             else
             {
                 throw new Exception(string.Format("DbType {0} not supported.", dbTypeString));
+            }
+        }
+
+        private DbType GetDbTypeByClrType(Type clrType)
+        {
+            if (this.ClrTypeDbTypeMap.ContainsKey(clrType))
+            {
+                return ClrTypeDbTypeMap[clrType];
+            }
+            else
+            {
+                throw new Exception(string.Format($"{clrType.Name} not supported"));
             }
         }
 
