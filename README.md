@@ -58,7 +58,7 @@ Simple dot net decoration style database access library, if you don't like Full-
   }
   
   // if you want the output value from the stored procedure
-  var outPuts = new Dictionary<string, dynamic>();
+  var outPuts = new Dictionary&lt;string, dynamic&gt;();
   using (var sqlSession = new SqlSession(new SqlConnection(connectionStr)))
   {
     var userFromDb = sqlSession.QueryOne&lt;User&gt;("uspUserGet", new { UserId = userId }, out outPuts);
