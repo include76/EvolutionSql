@@ -6,7 +6,7 @@ Simple dot net decoration style database access library, if you don't like Full-
 2.SqlSession, which manage connection, transaction and execute your command
 
 ## Smaple
-<pre>
+```c#
   //define your command via CommandAttribute on you modal
   [Command(Name = "Insert"
         , Text = @"insert into [user](UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);"
@@ -21,7 +21,7 @@ Simple dot net decoration style database access library, if you don't like Full-
       public DateTime CreatedOn { get; set; }
       public DateTime UpdatedOn { get; set; }
   }
-</pre>
+```
 
 ####insert sample with inline sql
 <pre>
