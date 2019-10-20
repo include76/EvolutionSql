@@ -1,9 +1,14 @@
 # EvolutionSql
 Simple dot net decoration style database access library, if you don't like Full-ORM framework like EntityFramework, and you want to write your own sql and/or stored procedure, EvolutionSql is what you want.
 
+## Supported Database
+- [x] Mysql
+- [x] SqlServer
+- [ ] PostgreSql in near furture
+
 ## Core component
-1.CommandAttribute, attribute to decorate your modals, define your command <br/>
-2.SqlSession, which manage connection, transaction and execute your command
+1. CommandAttribute, attribute to decorate your modals, define your command <br/>
+2. SqlSession, which manage connection, transaction and execute your command
 
 ## Smaple
 ```c#
