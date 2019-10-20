@@ -24,10 +24,10 @@ namespace Evolution.Sql.MySqlTest
             var connection = new MySqlConnection(connectionStr);
             using (var sqlSession = new SqlSession(connection))
             {
-                var userId = Guid.NewGuid();
+                var userId1 = Guid.NewGuid();
                 var user = new User
                 {
-                    UserId = userId,
+                    UserId = userId1,
                     FirstName = "Bruce",
                     LastName = "Lee",
                     CreatedOn = DateTime.Now
@@ -35,14 +35,27 @@ namespace Evolution.Sql.MySqlTest
                 var result = sqlSession.Execute<User>("insert", user);
                 Assert.Greater(result, 0);
 
-                var userFromDb = sqlSession.QueryOne<User>("get", new { UserId = userId });
-                Assert.IsNotNull(userFromDb);
-                Assert.AreEqual(userId, userFromDb.UserId);
+                var bruce = sqlSession.QueryOne<User>("get", new { UserId = userId1 });
+                Assert.IsNotNull(bruce);
+                Assert.AreEqual(userId1, bruce.UserId);
 
-                userFromDb = null;
-                userFromDb = sqlSession.QueryOne<User>("get", new { UserId = userId });
-                Assert.IsNotNull(userFromDb);
-                Assert.AreEqual(userId, userFromDb.UserId);
+                var userId2 = Guid.NewGuid();
+                user = new User
+                {
+                    UserId = userId2,
+                    FirstName = "Tom",
+                    LastName = "Ren",
+                    CreatedOn = DateTime.Now
+                };
+
+                result = sqlSession.Execute<User>("insert", user);
+                Assert.Greater(result, 0);
+
+                var tom = sqlSession.QueryOne<User>("get", new { UserId = userId2 });
+                Assert.IsNotNull(tom);
+                Assert.AreEqual(userId2, tom.UserId);
+
+                Assert.AreNotEqual(bruce.FirstName, tom.FirstName);
             }
         }
 
