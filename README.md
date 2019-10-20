@@ -23,7 +23,7 @@ Simple dot net decoration style database access library, if you don't like Full-
   }
 ```
 
-####insert sample with inline sql
+###insert sample with inline sql
 ```c#
   var user = new User
   {
@@ -38,9 +38,8 @@ Simple dot net decoration style database access library, if you don't like Full-
   }
 ```
 
-####get sample with stored procedure
+###get sample with stored procedure
   ```sql
-  //stored procedure
   create procedure uspUserGet(
     @userId uniqueidentifier,
     @totalCount int out
@@ -53,7 +52,6 @@ Simple dot net decoration style database access library, if you don't like Full-
   ```
   
   ```c#
-  //c#
   using (var sqlSession = new SqlSession(new SqlConnection(connectionStr)))
   {
     var userFromDb = sqlSession.QueryOne&lt;User&gt;("uspUserGet", new { UserId = userId });
