@@ -150,7 +150,7 @@ namespace Evolution.Sql
             {
                 using (var dataReader = command.ExecuteReader())
                 {
-                    return dataReader.ToEntity<T>();
+                    return dataReader.ToEntities<T>()?.FirstOrDefault();
                 }
             }
         }
@@ -163,7 +163,7 @@ namespace Evolution.Sql
                 T result;
                 using (var dataReader = command.ExecuteReader())
                 {                    
-                    result = dataReader.ToEntity<T>();
+                    result = dataReader.ToEntities<T>()?.FirstOrDefault();
                 }
                 // output parameter must get after datareader closed
                 outPuts = GetOutputParameters(command);

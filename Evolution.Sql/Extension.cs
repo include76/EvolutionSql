@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Evolution.Sql.Cache;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Evolution.Sql
@@ -18,10 +21,23 @@ namespace Evolution.Sql
             }
         }
 
-        public static IEnumerable<T> ToEntities<T>(this IDataReader dataReader) where T : class, new()
+        public static IEnumerable<T> ToEntities<T>(this DbDataReader dataReader) where T : class, new()
         {
+            if(dataReader == null || !dataReader.HasRows)
+            {
+                return null;
+            }
             var type = typeof(T);
-            var properties = type.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            var properties = CacheHelper.GetTypePropertyInfos(type.FullName);
+            if (properties == null)
+            {
+                properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                // cache type PropertInfos
+                if (properties != null)
+                {
+                    CacheHelper.AddTypePropertyInfos(type.FullName, properties);
+                }
+            }
             var list = new List<T>();
             while (dataReader.Read())
             {
@@ -41,28 +57,23 @@ namespace Evolution.Sql
             return list.AsEnumerable();
         }
 
-        public static T ToEntity<T>(this IDataReader dataReader) where T : class, new()
+        /// <summary>
+        /// Determines whether the given type is anonymous or not.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns><see langword="true"/> if type is anonymous, <see langword="false"/> otherwise</returns>
+        public static bool IsAnonymousType(this Type type)
         {
-            var type = typeof(T);
-
-            var entity = new T();
-            // TODO: cache properties of entity
-            var properties = type.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-            while (dataReader.Read())
+            if (type == null)
             {
-                for (int i = 0; i < dataReader.FieldCount; i++)
-                {
-                    var columnName = dataReader.GetName(i);
-                    var property = properties.FirstOrDefault(x => x.Name.Equals(columnName, StringComparison.OrdinalIgnoreCase));
-                    if (property != null)
-                    {
-                        //property.SetValue(entity, dataReader[i]);
-                        SetPropertyValue<T>(entity, property, dataReader[i]);
-                    }
-                }
-                break;
+                return false;
             }
-            return entity;
+
+            return type.GetTypeInfo().IsGenericType
+                   && (type.GetTypeInfo().Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic
+                   && (type.Name.StartsWith("<>", StringComparison.OrdinalIgnoreCase) || type.Name.StartsWith("VB$", StringComparison.OrdinalIgnoreCase))
+                   && (type.Name.Contains("AnonymousType") || type.Name.Contains("AnonType"))
+                   && type.GetTypeInfo().GetCustomAttributes(typeof(CompilerGeneratedAttribute)).Any();
         }
 
         private static void SetPropertyValue<T>(T entity, PropertyInfo property, object value)

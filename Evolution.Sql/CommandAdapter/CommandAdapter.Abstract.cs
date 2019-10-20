@@ -37,7 +37,8 @@ namespace Evolution.Sql.CommandAdapter
         public AbstractCommandAdapter()
         {
             regex = new Regex(ParameterPattern);
-            ClrTypeDbTypeMap = new Dictionary<Type, DbType> {
+            ClrTypeDbTypeMap = new Dictionary<Type, DbType>
+            {
                 [typeof(byte)] = DbType.Byte,
                 [typeof(sbyte)] = DbType.SByte,
                 [typeof(short)] = DbType.Int16,
@@ -114,7 +115,7 @@ namespace Evolution.Sql.CommandAdapter
         public virtual void SetStoredProcedureParameters(DbCommand command, string typeFullName)
         {
             var cachedParameters = CacheHelper.GetDbParameters($"{typeFullName}_{command.CommandText}");
-            if(cachedParameters != null)
+            if (cachedParameters != null)
             {
                 foreach (var item in cachedParameters)
                 {
@@ -223,9 +224,17 @@ namespace Evolution.Sql.CommandAdapter
                         }
                     }
                 }
-                else//is an anonymouse type
+                else//is modal or anonymouse type
                 {
-                    var propertyInfos = type.GetProperties();
+                    var properties = CacheHelper.GetTypePropertyInfos(type.FullName);
+                    if (properties == null)
+                    {
+                        properties = type.GetProperties();
+                        if (!type.IsAnonymousType())
+                        {
+                            CacheHelper.AddTypePropertyInfos(type.FullName, properties);
+                        }
+                    }
                     PropertyInfo property;
                     foreach (DbParameter param in dbCommand.Parameters)
                     {
@@ -233,7 +242,7 @@ namespace Evolution.Sql.CommandAdapter
                         {
                             continue;
                         }
-                        property = propertyInfos.FirstOrDefault(p => p.Name.ToUpper() == param.ParameterName.ToUpper());
+                        property = properties.FirstOrDefault(p => p.Name.ToUpper() == param.ParameterName.ToUpper());
                         if (property != null)
                         {
                             param.DbType = GetDbTypeByClrType(property.PropertyType);

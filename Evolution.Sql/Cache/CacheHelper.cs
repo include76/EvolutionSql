@@ -16,7 +16,7 @@ namespace Evolution.Sql.Cache
         /// <summary>
         /// to cache properties of Types, so that no need to reflect to get properties repeatedlly
         /// </summary>
-        internal static ConcurrentDictionary<string, List<PropertyInfo>> TypePropertyCache = new ConcurrentDictionary<string, List<PropertyInfo>>();
+        internal static ConcurrentDictionary<string, PropertyInfo[]> TypePropertyCache = new ConcurrentDictionary<string, PropertyInfo[]>();
 
         internal static List<DbParameterCacheItem> GetDbParameters(string key)
         {
@@ -46,11 +46,11 @@ namespace Evolution.Sql.Cache
             }
         }
 
-        internal static List<PropertyInfo> GetTypePropertyInfos(string key)
+        internal static PropertyInfo[] GetTypePropertyInfos(string key)
         {
             try
             {
-                if (TypePropertyCache.TryGetValue(key, out List<PropertyInfo> propertyInfos))
+                if (TypePropertyCache.TryGetValue(key, out PropertyInfo[] propertyInfos))
                 {
                     return propertyInfos;
                 }
@@ -62,7 +62,7 @@ namespace Evolution.Sql.Cache
             }
         }
 
-        internal static void AddTypePropertyInfos(string key, List<PropertyInfo> propertyInfos)
+        internal static void AddTypePropertyInfos(string key, PropertyInfo[] propertyInfos)
         {
             try
             {
