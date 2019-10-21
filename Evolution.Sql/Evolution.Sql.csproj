@@ -2,8 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Authors>Locke Duan</Authors>
+    <PackageProjectUrl>https://github.com/lockeduan/EvolutionSql</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/lockeduan/EvolutionSql</RepositoryUrl>
+    <Description>Simple decoration style database access library</Description>
   </PropertyGroup>
 
   <ItemGroup>

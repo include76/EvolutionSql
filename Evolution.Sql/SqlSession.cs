@@ -31,6 +31,18 @@ namespace Evolution.Sql
             _commandAdapter = CommandAdapterFactory.Instance(factory.GetType().Name);
         }
 
+        public SqlSession(string providerInvariantName, string connectionString)
+        {
+            DbProviderFactories.TryGetFactory(providerInvariantName, out DbProviderFactory factory);
+            if(factory == null)
+            {
+                throw new Exception($"{providerInvariantName} not registered, please register first. DbProviderFactories.RegisterFactory(String, DbProviderFactory)");
+            }
+            _dbConnection = factory.CreateConnection();
+            _dbConnection.ConnectionString = connectionString;
+            _commandAdapter = CommandAdapterFactory.Instance(factory.GetType().Name);
+        }
+
         #region Execute
         public int Execute<T>(string commandName, T obj)
         {

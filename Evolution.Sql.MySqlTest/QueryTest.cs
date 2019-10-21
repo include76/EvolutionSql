@@ -4,6 +4,7 @@ using MySql.Data.MySqlClient;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 
@@ -15,14 +16,13 @@ namespace Evolution.Sql.MySqlTest
         [SetUp]
         public void Setup()
         {
-
+            DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
         }
 
         [Test]
         public void QueryOne_With_Inline_Sql()
         {
-            var connection = new MySqlConnection(connectionStr);
-            using (var sqlSession = new SqlSession(connection))
+            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
             {
                 var userId1 = Guid.NewGuid();
                 var user = new User
@@ -62,8 +62,7 @@ namespace Evolution.Sql.MySqlTest
         [Test]
         public void QueryOne_With_StoredProcedure()
         {
-            var connection = new MySqlConnection(connectionStr);
-            using (var sqlSession = new SqlSession(connection))
+            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
             {
                 var userId = Guid.NewGuid();
                 var user = new User
@@ -87,8 +86,7 @@ namespace Evolution.Sql.MySqlTest
         [Test]
         public void Query_With_Inline_Sql()
         {
-            var connection = new MySqlConnection(connectionStr);
-            using (var sqlSession = new SqlSession(connection))
+            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
             {
                 var userId = Guid.NewGuid();
                 var user = new User
@@ -134,8 +132,7 @@ namespace Evolution.Sql.MySqlTest
         [Test]
         public void Get_Null_Value_From_DB_Property_Should_Set_Default_Value()
         {
-            var connection = new MySqlConnection(connectionStr);
-            using (var sqlSession = new SqlSession(connection))
+            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
             {
                 var userId = Guid.NewGuid();
                 var user = new User

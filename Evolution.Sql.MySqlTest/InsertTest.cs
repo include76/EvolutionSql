@@ -4,6 +4,7 @@ using MySql.Data.MySqlClient;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
 
 namespace Evolution.Sql.MySqlTest
@@ -14,14 +15,13 @@ namespace Evolution.Sql.MySqlTest
         [SetUp]
         public void Setup()
         {
-
+            DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
         }
 
         [Test]
         public void Insert_With_Inline_Sql()
         {
-            var connection = new MySqlConnection(connectionStr);
-            using (var sqlSession = new SqlSession(connection))
+            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
             {
                 var user = new User
                 {
@@ -43,8 +43,7 @@ namespace Evolution.Sql.MySqlTest
         [Test]
         public void Insert_With_StoredProcedure()
         {
-            var connection = new MySqlConnection(connectionStr);
-            using (ISqlSession sqlSession = new SqlSession(connection))
+            using (ISqlSession sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
             {
                 var userId = Guid.NewGuid();
                 var user = new User
