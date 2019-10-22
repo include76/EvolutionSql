@@ -10,7 +10,7 @@ Simple dot net decoration style database access library, if you don't like Full-
 1. CommandAttribute, attribute to decorate your modals, define your command <br/>
 2. SqlSession, which manage connection, transaction and execute your command
 
-## Smaple
+## Sample
 ```c#
   //define your command via CommandAttribute on you modal
   [Command(Name = "Insert"
