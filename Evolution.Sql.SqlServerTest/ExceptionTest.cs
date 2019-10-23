@@ -36,7 +36,7 @@ namespace Evolution.Sql.SqlServerTest
 
                 //var postId = sqlSession.ExecuteScalar<Blog>("insert", blog);
                 var outPuts = new Dictionary<string, dynamic> { { "Id", 0 } };
-                Assert.Throws<SqlException>(() => sqlSession.Execute<Blog>("insert", blog, out outPuts ));
+                Assert.Throws<SqlException>(() => sqlSession.Execute<Blog>("insert", blog, outPuts ));
             }
         }
     }

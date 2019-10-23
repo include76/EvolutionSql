@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Evolution.Sql.CommandAdapter
 {
-    public class CommandAdapterSqlServer: AbstractCommandAdapter
+    public class CommandAdapterSqlServer : AbstractCommandAdapter
     {
         protected override string DefaultSchema
         {
@@ -20,8 +20,7 @@ namespace Evolution.Sql.CommandAdapter
         public CommandAdapterSqlServer()
         {
             //https://msdn.microsoft.com/en-us/library/cc716729(v=vs.110).aspx
-            /*
-            DbEgineTypeToDbTypeMap = new Dictionary<string, DbType>() {
+            DbEgineTypeDbTypeMap = new Dictionary<string, DbType>() {
                 { "bigint",             DbType.Int64 },
                 { "binary",             DbType.Binary },
                 { "bit",                DbType.Boolean },
@@ -33,10 +32,10 @@ namespace Evolution.Sql.CommandAdapter
                 { "decimal",            DbType.Decimal },
                 //{ "FILESTREAM", DbType.Binary },//???
                 { "float",              DbType.Double },
-                { "image",              DbType.Int64 },
+                { "image",              DbType.Binary },
                 { "int",                DbType.Int32 },
                 { "money",              DbType.Decimal },
-                { "nchar",              DbType.AnsiStringFixedLength },
+                { "nchar",              DbType.StringFixedLength },
                 { "ntext",              DbType.String },
                 { "numeric",            DbType.Decimal },
                 { "nvarchar",           DbType.String },
@@ -56,7 +55,7 @@ namespace Evolution.Sql.CommandAdapter
                 { "xml",                DbType.Xml },
                 //{ "table type",         DbType.Object }:::Not works, when it's table type, let clr infer the DbType
             };
-            */
+
         }
     }
 }

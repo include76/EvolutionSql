@@ -67,13 +67,14 @@ namespace Evolution.Sql.SqlServerTest
                 };
 
                 var outPuts = new Dictionary<string, dynamic> ();
-                sqlSession.Execute<Blog>("insert", blog, out outPuts);
-                var postId = outPuts["Id"];
+                sqlSession.Execute<Blog>("insert", blog, outPuts);
+                var postId = outPuts["BlogId"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
                 // just for test cache parameter
-                sqlSession.Execute<Blog>("insert", blog, out outPuts);
-                postId = outPuts["Id"];
+                outPuts = new Dictionary<string, dynamic>();
+                sqlSession.Execute<Blog>("insert", blog, outPuts);
+                postId = outPuts["BlogId"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
             }

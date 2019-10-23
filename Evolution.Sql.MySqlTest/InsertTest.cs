@@ -64,12 +64,12 @@ namespace Evolution.Sql.MySqlTest
                 };
 
                 var outPuts = new Dictionary<string, dynamic>();
-                sqlSession.Execute<Blog>("insert", blog, out outPuts);
+                sqlSession.Execute<Blog>("insert", blog, outPuts);
                 var postId = outPuts["Id"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
                 // just for test cache parameter
-                sqlSession.Execute<Blog>("insert", blog, out outPuts);
+                sqlSession.Execute<Blog>("insert", blog, outPuts);
                 postId = outPuts["Id"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);

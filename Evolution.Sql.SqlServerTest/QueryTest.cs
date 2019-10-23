@@ -64,7 +64,7 @@ namespace Evolution.Sql.SqlServerTest
                 Assert.Greater(result, 0);
 
                 var outPuts = new Dictionary<string, dynamic>();
-                var userFromDb = sqlSession.QueryOne<User>("uspUserGet", new { UserId = userId }, out outPuts);
+                var userFromDb = sqlSession.QueryOne<User>("uspUserGet", new { UserId = userId }, outPuts);
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
                 Assert.True(outPuts.ContainsKey("totalCount"));

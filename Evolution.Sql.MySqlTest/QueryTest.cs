@@ -75,7 +75,7 @@ namespace Evolution.Sql.MySqlTest
                 Assert.Greater(result, 0);
 
                 var outPuts = new Dictionary<string, dynamic>();
-                var userFromDb = sqlSession.QueryOne<User>("usp_user_get", new { pUserId = userId }, out outPuts);
+                var userFromDb = sqlSession.QueryOne<User>("usp_user_get", new { pUserId = userId }, outPuts);
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
                 Assert.True(outPuts.ContainsKey("totalCount"));
@@ -107,11 +107,11 @@ namespace Evolution.Sql.MySqlTest
                 };
 
                 var outPuts = new Dictionary<string, dynamic>();
-                sqlSession.Execute<Blog>("insert", blog, out outPuts);
+                sqlSession.Execute<Blog>("insert", blog, outPuts);
                 var postId = outPuts["Id"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
-                sqlSession.Execute<Blog>("insert", blog, out outPuts);
+                sqlSession.Execute<Blog>("insert", blog, outPuts);
                 postId = outPuts["Id"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);

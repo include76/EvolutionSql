@@ -30,7 +30,7 @@ namespace Evolution.Sql.CommandAdapter
 
         protected virtual string ParameterPrefix => "@";
 
-        protected virtual Dictionary<string, DbType> DbEgineTypeToDbTypeMap { get; set; }
+        protected virtual Dictionary<string, DbType> DbEgineTypeDbTypeMap { get; set; }
 
         protected virtual Dictionary<Type, DbType> ClrTypeDbTypeMap { get; set; }
 
@@ -174,7 +174,7 @@ namespace Evolution.Sql.CommandAdapter
                         parameter.ParameterName = parameterName;
                         parameter.Direction = GetDirection(reader.GetString(1));
                         //parameter.DbType = GetDbTypeByString(reader.GetString(2).Trim());
-                        //SetParameterType(parameter, reader.GetString(2).Trim());
+                        SetParameterType(parameter, reader.GetString(2).Trim());
                         command.Parameters.Add(parameter);
                         // cache the parameter
                         cachedParameters.Add(new DbParameterCacheItem { Name = parameterName, DbType = parameter.DbType, Direction = parameter.Direction });
@@ -245,7 +245,7 @@ namespace Evolution.Sql.CommandAdapter
                         property = properties.FirstOrDefault(p => p.Name.ToUpper() == param.ParameterName.ToUpper());
                         if (property != null)
                         {
-                            param.DbType = GetDbTypeByClrType(property.PropertyType);
+                            //param.DbType = GetDbTypeByClrType(property.PropertyType);
                             param.Value = property.GetValue(parameters);
                         }
                         // if it's pure OUT parameter, Value of InputOutput parameter should set to DBNull.Value, or parameter not provided excetpion would be thrown
@@ -275,9 +275,9 @@ namespace Evolution.Sql.CommandAdapter
 
         private DbType GetDbTypeByString(string dbTypeString)
         {
-            if (this.DbEgineTypeToDbTypeMap.ContainsKey(dbTypeString))
+            if (this.DbEgineTypeDbTypeMap.ContainsKey(dbTypeString))
             {
-                return DbEgineTypeToDbTypeMap[dbTypeString];
+                return DbEgineTypeDbTypeMap[dbTypeString];
             }
             else
             {
@@ -299,9 +299,9 @@ namespace Evolution.Sql.CommandAdapter
 
         private void SetParameterType(DbParameter dbParameter, string dbTypeString)
         {
-            if (this.DbEgineTypeToDbTypeMap.ContainsKey(dbTypeString))
+            if (this.DbEgineTypeDbTypeMap.ContainsKey(dbTypeString))
             {
-                dbParameter.DbType = DbEgineTypeToDbTypeMap[dbTypeString];
+                dbParameter.DbType = DbEgineTypeDbTypeMap[dbTypeString];
             }
         }
     }

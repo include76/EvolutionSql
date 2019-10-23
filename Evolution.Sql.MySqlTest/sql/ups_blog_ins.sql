@@ -5,10 +5,10 @@ CREATE PROCEDURE usp_blog_ins(Title VARCHAR(1000),
 	CreatedBy CHAR(36),
 	CreatedOn DATETIME,
 	UpdatedOn DATETIME,
-	OUT Id	int 
+	OUT BlogId	int 
 )
 BEGIN
 	INSERT INTO Blog VALUES(NULL, Title, content, CreatedBy, CreatedOn, UpdatedOn);
-	SELECT LAST_INSERT_ID() INTO Id;
+	SELECT LAST_INSERT_ID() INTO BlogId;
 END//
 DELIMITER ;

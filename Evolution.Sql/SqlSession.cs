@@ -53,13 +53,13 @@ namespace Evolution.Sql
             }
         }
 
-        public int Execute<T>(string commandName, T obj, out Dictionary<string, dynamic> outPuts)
+        public int Execute<T>(string commandName, T obj, Dictionary<string, dynamic> outPuts)
         {
             _dbConnection.TryOpen();
             using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, obj))
             {
                 var result = command.ExecuteNonQuery();
-                outPuts = GetOutputParameters(command);
+                SetOutputParameters(command, outPuts);
                 return result;
             }
         }
@@ -73,13 +73,13 @@ namespace Evolution.Sql
             }
         }
 
-        public int Execute<T>(string commandName, object parameters, out Dictionary<string, dynamic> outPuts)
+        public int Execute<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts)
         {
             _dbConnection.TryOpen();
             using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, parameters))
             {
                 var result = command.ExecuteNonQuery();
-                outPuts = GetOutputParameters(command);
+                SetOutputParameters(command, outPuts);
                 return result;
             }
         }
@@ -95,12 +95,12 @@ namespace Evolution.Sql
             }
         }
 
-        public object ExecuteScalar<T>(string commandName, T obj, out Dictionary<string, dynamic> outPuts)
+        public object ExecuteScalar<T>(string commandName, T obj, Dictionary<string, dynamic> outPuts)
         {
             _dbConnection.TryOpen();
             using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, obj))
             {
-                outPuts = GetOutputParameters(command);
+                SetOutputParameters(command, outPuts);
                 return command.ExecuteScalar();
             }
         }
@@ -114,12 +114,12 @@ namespace Evolution.Sql
             }
         }
 
-        public object ExecuteScalar<T>(string commandName, object parameters, out Dictionary<string, dynamic> outPuts)
+        public object ExecuteScalar<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts)
         {
             _dbConnection.TryOpen();
             using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, parameters))
             {
-                outPuts = GetOutputParameters(command);
+                SetOutputParameters(command, outPuts);
                 return command.ExecuteScalar();
             }
         }
@@ -138,7 +138,7 @@ namespace Evolution.Sql
             }
         }
 
-        public IEnumerable<T> Query<T>(string commandName, object parameters, out Dictionary<string, dynamic> outPuts) where T : class, new()
+        public IEnumerable<T> Query<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts) where T : class, new()
         {
             _dbConnection.TryOpen();
             using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, parameters))
@@ -148,7 +148,7 @@ namespace Evolution.Sql
                 {
                     result = dataReader.ToEntities<T>();
                 }
-                outPuts = GetOutputParameters(command);
+                SetOutputParameters(command, outPuts);
                 return result;
             }
         }
@@ -167,7 +167,7 @@ namespace Evolution.Sql
             }
         }
 
-        public T QueryOne<T>(string commandName, object parameters, out Dictionary<string, dynamic> outPuts) where T : class, new()
+        public T QueryOne<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts) where T : class, new()
         {
             _dbConnection.TryOpen();
             using (var command = _commandAdapter.Build<T>(_dbConnection, commandName, parameters))
@@ -178,7 +178,7 @@ namespace Evolution.Sql
                     result = dataReader.ToEntities<T>()?.FirstOrDefault();
                 }
                 // output parameter must get after datareader closed
-                outPuts = GetOutputParameters(command);
+                SetOutputParameters(command, outPuts);
                 return result;
             }
         }
@@ -200,13 +200,12 @@ namespace Evolution.Sql
         #endregion
 
         #region private methods
-        private Dictionary<string, dynamic> GetOutputParameters(DbCommand dbCommand)
+        private void SetOutputParameters(DbCommand dbCommand, Dictionary<string, dynamic> outPuts)
         {
             if (dbCommand.Parameters == null || dbCommand.Parameters.Count <= 0)
             {
-                return null;
+                return;
             }
-            var outPuts = new Dictionary<string, dynamic>();
             foreach (DbParameter parameter in dbCommand.Parameters)
             {
                 if (parameter.Direction == ParameterDirection.InputOutput || parameter.Direction == ParameterDirection.Output)
@@ -214,7 +213,6 @@ namespace Evolution.Sql
                     outPuts.Add(parameter.ParameterName, parameter.Value);
                 }
             }
-            return outPuts;
         }
         #endregion
 

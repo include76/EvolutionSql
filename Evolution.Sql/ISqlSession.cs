@@ -27,7 +27,7 @@ namespace Evolution.Sql
         /// <param name="parameters"></param>
         /// <param name="outPuts"></param>
         /// <returns></returns>
-        IEnumerable<T> Query<T>(string commandName, object parameters, out Dictionary<string, dynamic> outPuts) where T : class, new();
+        IEnumerable<T> Query<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts) where T : class, new();
 
         /// <summary>
         /// 
@@ -46,7 +46,7 @@ namespace Evolution.Sql
         /// <param name="parameters"></param>
         /// <param name="outPuts"></param>
         /// <returns></returns>
-        T QueryOne<T>(string commandName, object parameters, out Dictionary<string, dynamic> outPuts) where T : class, new();
+        T QueryOne<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts) where T : class, new();
 
         /// <summary>
         /// execute command and return number of rows affected
@@ -65,7 +65,7 @@ namespace Evolution.Sql
         /// <param name="obj"></param>
         /// <param name="outPuts"></param>
         /// <returns></returns>
-        int Execute<T>(string commandName, T obj, out Dictionary<string, dynamic> outPuts);
+        int Execute<T>(string commandName, T obj, Dictionary<string, dynamic> outPuts);
 
         /// <summary>
         /// execute command and return number of rows affected
@@ -84,7 +84,7 @@ namespace Evolution.Sql
         /// <param name="parameters"></param>
         /// <param name="outPuts"></param>
         /// <returns></returns>
-        int Execute<T>(string commandName, object parameters, out Dictionary<string, dynamic> outPuts);
+        int Execute<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts);
 
         /// <summary>
         /// execute command and return first colomn of first row, other are ignored
@@ -103,7 +103,7 @@ namespace Evolution.Sql
         /// <param name="obj"></param>
         /// <param name="outPuts"></param>
         /// <returns></returns>
-        object ExecuteScalar<T>(string commandName, T obj, out Dictionary<string, dynamic> outPuts);
+        object ExecuteScalar<T>(string commandName, T obj, Dictionary<string, dynamic> outPuts);
 
         /// <summary>
         /// execute command and return first colomn of first row, other are ignored
@@ -123,7 +123,7 @@ namespace Evolution.Sql
         /// <param name="parameters"></param>
         /// <param name="outPuts"></param>
         /// <returns></returns>
-        object ExecuteScalar<T>(string commandName, object parameters, out Dictionary<string, dynamic> outPuts);
+        object ExecuteScalar<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts);
 
         #region Transaction
         void BeginTransaction(IsolationLevel isolationLevel = System.Data.IsolationLevel.ReadCommitted);

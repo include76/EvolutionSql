@@ -13,50 +13,48 @@ namespace Evolution.Sql.CommandAdapter
     {
         public CommandAdapterMySql() : base()
         {
-            //
-            /*
-            DbEgineTypeToDbTypeMap = new Dictionary<string, DbType>()
+            //https://dev.mysql.com/doc/workbench/en/wb-migration-database-mssql-typemapping.html
+            DbEgineTypeDbTypeMap = new Dictionary<string, DbType>()
             {
                 //Integer
-                {"TINYINT",  },
-                {"SMALLINT",  },
-                {"MEDIUMINT",  },
-                {"INT",  },
-                {"BIGINT",  },
+                {"TINYINT", DbType.Byte},
+                {"SMALLINT", DbType.Int16},
+                {"MEDIUMINT", DbType.Int16},
+                {"INT", DbType.Int32 },
+                {"BIGINT", DbType.Int64 },
                 //
-                {"DECIMAL",  },
-                {"NUMERIC",  },
+                {"DECIMAL", DbType.Decimal},
+                {"NUMERIC", DbType.Decimal},
                 //
-                {"FLOAT ",  },
-                {"DOUBLE ",  },
-                {"REAL",  },
-                {"NUMERIC",  },
+                {"FLOAT ", DbType.Double},
+                {"DOUBLE ", DbType.Double},
+                {"REAL", DbType.Single },
                 //
-                {"BIT ",  },
+                {"BIT ", DbType.Boolean},
                 //date type
-                {"DATETIME ",  },
-                {"DATE ",  },
-                {"TIME ",  },
-                {"TIMESTAMP ",  },
-                {"YEAR ",  },
+                {"DATETIME ", DbType.DateTime},
+                {"DATE ", DbType.Date },
+                {"TIME ", DbType.Time  },
+                {"TIMESTAMP ", DbType.Binary },
+                {"YEAR ", DbType.Int16 },
+                {"YEAR ", DbType.Int16 },
                 //string type
-                {"CHAR ",  },
-                {"VARCHAR ",  },
-                {"TINYTEXT ",  },
-                {"TEXT ",  },
-                {"MEDIUMTEXT ",  },
-                {"LONGTEXT ",  },
+                {"CHAR ", DbType.StringFixedLength},
+                {"VARCHAR ", DbType.String},
+                {"TINYTEXT ", DbType.String},
+                {"TEXT ", DbType.String },
+                {"MEDIUMTEXT ", DbType.String},
+                {"LONGTEXT ",  DbType.String},
                 //
-                {"BINARY ",  },
-                {"VARBINARY ",  },
-                {"TINYBLOB ",  },
-                {"BLOB ",  },
-                {"MEDIUMBLOB ",  },
-                {"LONGBLOB ",  },
-                //{"BLOB ",  },
-                {"LONGBLOB ",  },
-                {"JSON",  }
-            };*/
+                {"BINARY ", DbType.Binary},
+                {"VARBINARY ", DbType.Binary},
+                {"TINYBLOB ", DbType.Binary},
+                {"BLOB ",  DbType.Binary},
+                {"MEDIUMBLOB ", DbType.Binary},
+                {"LONGBLOB ", DbType.Binary},
+                //Json
+                {"JSON",  DbType.String}
+            };
         }
     }
 }

@@ -3,10 +3,10 @@
 	@CreatedBy uniqueidentifier,
 	@CreatedOn datetime2,
 	@UpdatedOn datetime2,
-	@Id			int output
+	@BlogId			int output
 )
 as
 begin
 	insert into Blog values(@Title, @content, @CreatedBy, @CreatedOn, @UpdatedOn)
-	select @Id = SCOPE_IDENTITY()
+	select @BlogId = SCOPE_IDENTITY()
 end
