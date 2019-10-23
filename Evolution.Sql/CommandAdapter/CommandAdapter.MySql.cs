@@ -17,42 +17,42 @@ namespace Evolution.Sql.CommandAdapter
             DbEgineTypeDbTypeMap = new Dictionary<string, DbType>()
             {
                 //Integer
-                {"TINYINT", DbType.Byte},
-                {"SMALLINT", DbType.Int16},
-                {"MEDIUMINT", DbType.Int16},
-                {"INT", DbType.Int32 },
-                {"BIGINT", DbType.Int64},
+                {"tinyint", DbType.Byte},
+                {"smallint", DbType.Int16},
+                {"mediumint", DbType.Int16},
+                {"int", DbType.Int32 },
+                {"bigint", DbType.Int64},
                 //
-                {"DECIMAL", DbType.Decimal},
-                {"NUMERIC", DbType.Decimal},
+                {"decimal", DbType.Decimal},
+                {"numeric", DbType.Decimal},
                 //
-                {"FLOAT", DbType.Double},
-                {"DOUBLE", DbType.Double},
-                {"REAL", DbType.Single},
+                {"float", DbType.Double},
+                {"double", DbType.Double},
+                {"real", DbType.Single},
                 //
-                {"BIT", DbType.Boolean},
+                {"bit", DbType.Boolean},
                 //date type
-                {"DATETIME", DbType.DateTime2},
-                {"DATE", DbType.Date},
-                {"TIME", DbType.Time},
-                {"TIMESTAMP", DbType.Binary},
-                {"YEAR", DbType.Int16},
+                {"datetime", DbType.DateTime},
+                {"date", DbType.Date},
+                {"time", DbType.Time},
+                {"timestamp", DbType.Binary},
+                {"year", DbType.Int16},
                 //string type
-                {"CHAR", DbType.StringFixedLength},
-                {"VARCHAR", DbType.String},
-                {"TINYTEXT", DbType.String},
-                {"TEXT", DbType.String },
-                {"MEDIUMTEXT", DbType.String},
-                {"LONGTEXT", DbType.String},
+                {"char", DbType.StringFixedLength},
+                {"varchar", DbType.String},
+                {"tinytext", DbType.String},
+                {"text", DbType.String },
+                {"mediumtext", DbType.String},
+                {"longtext", DbType.String},
                 //
-                {"BINARY", DbType.Binary},
-                {"VARBINARY", DbType.Binary},
-                {"TINYBLOB", DbType.Binary},
-                {"BLOB",  DbType.Binary},
-                {"MEDIUMBLOB", DbType.Binary},
-                {"LONGBLOB", DbType.Binary},
+                {"binary", DbType.Binary},
+                {"varbinary", DbType.Binary},
+                {"tinyblog", DbType.Binary},
+                {"blob",  DbType.Binary},
+                {"mediumblob", DbType.Binary},
+                {"longblob", DbType.Binary},
                 //Json
-                {"JSON", DbType.String}
+                {"json", DbType.String}
             };
         }
     }

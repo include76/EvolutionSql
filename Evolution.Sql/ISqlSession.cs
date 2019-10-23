@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Evolution.Sql
 {
@@ -11,7 +12,7 @@ namespace Evolution.Sql
         DbConnection Connection { get; set; }
 
         /// <summary>
-        /// 
+        /// query
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="commandName"></param>
@@ -20,7 +21,16 @@ namespace Evolution.Sql
         IEnumerable<T> Query<T>(string commandName, object parameters) where T : class, new();
 
         /// <summary>
-        /// 
+        /// query async
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="commandName"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<IEnumerable<T>> QueryAsync<T>(string commandName, object parameters) where T : class, new();
+
+        /// <summary>
+        /// query and get output parameter(s) from stored procedure
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="commandName"></param>
@@ -28,6 +38,16 @@ namespace Evolution.Sql
         /// <param name="outPuts"></param>
         /// <returns></returns>
         IEnumerable<T> Query<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts) where T : class, new();
+
+        /// <summary>
+        /// query async and get output parameter(s) from stored procedure
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="commandName"></param>
+        /// <param name="parameters"></param>
+        /// <param name="outPuts"></param>
+        /// <returns></returns>
+        Task<IEnumerable<T>> QueryAsync<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts) where T : class, new();
 
         /// <summary>
         /// 
@@ -44,9 +64,28 @@ namespace Evolution.Sql
         /// <typeparam name="T"></typeparam>
         /// <param name="commandName"></param>
         /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<T> QueryOneAsync<T>(string commandName, object parameters) where T : class, new();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="commandName"></param>
+        /// <param name="parameters"></param>
         /// <param name="outPuts"></param>
         /// <returns></returns>
         T QueryOne<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts) where T : class, new();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="commandName"></param>
+        /// <param name="parameters"></param>
+        /// <param name="outPuts"></param>
+        /// <returns></returns>
+        Task<T> QueryOneAsync<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts) where T : class, new();
 
         /// <summary>
         /// execute command and return number of rows affected
@@ -63,9 +102,20 @@ namespace Evolution.Sql
         /// <typeparam name="T"></typeparam>
         /// <param name="commandName"></param>
         /// <param name="obj"></param>
+        /// <returns></returns>
+        Task<int> ExecuteAsync<T>(string commandName, T obj);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="commandName"></param>
+        /// <param name="obj"></param>
         /// <param name="outPuts"></param>
         /// <returns></returns>
         int Execute<T>(string commandName, T obj, Dictionary<string, dynamic> outPuts);
+
+        Task<int> ExecuteAsync<T>(string commandName, T obj, Dictionary<string, dynamic> outPuts);
 
         /// <summary>
         /// execute command and return number of rows affected
@@ -82,9 +132,28 @@ namespace Evolution.Sql
         /// <typeparam name="T"></typeparam>
         /// <param name="commandName"></param>
         /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<int> ExecuteAsync<T>(string commandName, object parameters);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="commandName"></param>
+        /// <param name="parameters"></param>
         /// <param name="outPuts"></param>
         /// <returns></returns>
         int Execute<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="commandName"></param>
+        /// <param name="parameters"></param>
+        /// <param name="outPuts"></param>
+        /// <returns></returns>
+        Task<int> ExecuteAsync<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts);
 
         /// <summary>
         /// execute command and return first colomn of first row, other are ignored
@@ -101,9 +170,28 @@ namespace Evolution.Sql
         /// <typeparam name="T"></typeparam>
         /// <param name="commandName"></param>
         /// <param name="obj"></param>
+        /// <returns></returns>
+        Task<object> ExecuteScalarAsync<T>(string commandName, T obj);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="commandName"></param>
+        /// <param name="obj"></param>
         /// <param name="outPuts"></param>
         /// <returns></returns>
         object ExecuteScalar<T>(string commandName, T obj, Dictionary<string, dynamic> outPuts);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="commandName"></param>
+        /// <param name="obj"></param>
+        /// <param name="outPuts"></param>
+        /// <returns></returns>
+        Task<object> ExecuteScalarAsync<T>(string commandName, T obj, Dictionary<string, dynamic> outPuts);
 
         /// <summary>
         /// execute command and return first colomn of first row, other are ignored
@@ -121,10 +209,28 @@ namespace Evolution.Sql
         /// <typeparam name="T"></typeparam>
         /// <param name="commandName"></param>
         /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<object> ExecuteScalarAsync<T>(string commandName, object parameters);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="commandName"></param>
+        /// <param name="parameters"></param>
         /// <param name="outPuts"></param>
         /// <returns></returns>
         object ExecuteScalar<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="commandName"></param>
+        /// <param name="parameters"></param>
+        /// <param name="outPuts"></param>
+        /// <returns></returns>
+        Task<object> ExecuteScalarAsync<T>(string commandName, object parameters, Dictionary<string, dynamic> outPuts);
         #region Transaction
         void BeginTransaction(IsolationLevel isolationLevel = System.Data.IsolationLevel.ReadCommitted);
         void Commit();

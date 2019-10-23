@@ -11,6 +11,7 @@ namespace Evolution.Sql.MySqlTest
         [SetUp]
         public void Setup()
         {
+            DbProviderFactories.UnregisterFactory("MySql.Data.MySqlClient");
             //DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
         }
 

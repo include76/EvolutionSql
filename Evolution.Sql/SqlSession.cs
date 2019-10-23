@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Evolution.Sql
 {
-    public class SqlSession : ISqlSession, IDisposable
+    public partial class SqlSession : ISqlSession, IDisposable
     {
         DbConnection _dbConnection;
         DbTransaction _dbTransaction;
@@ -26,8 +26,6 @@ namespace Evolution.Sql
         {
             _dbConnection = dbConnection;
             var factory = DbProviderFactories.GetFactory(dbConnection);
-            //var connectionStringBuilder = factory.CreateConnectionStringBuilder();
-            //var dbProviderInvariant = connectionStringBuilder["Provider"].ToString();
             _commandAdapter = CommandAdapterFactory.Instance(factory.GetType().Name);
         }
 
@@ -187,7 +185,7 @@ namespace Evolution.Sql
         #region transaction
         public void BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
-            _dbTransaction = _dbConnection.BeginTransaction();
+            _dbTransaction = _dbConnection.BeginTransaction(isolationLevel);
         }
         public void Commit()
         {

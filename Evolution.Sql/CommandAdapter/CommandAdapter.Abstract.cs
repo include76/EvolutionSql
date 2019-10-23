@@ -299,6 +299,7 @@ namespace Evolution.Sql.CommandAdapter
 
         private void SetParameterType(DbParameter dbParameter, string dbTypeString)
         {
+            dbTypeString = dbTypeString.ToLower();
             if (this.DbEgineTypeDbTypeMap.ContainsKey(dbTypeString))
             {
                 dbParameter.DbType = DbEgineTypeDbTypeMap[dbTypeString];

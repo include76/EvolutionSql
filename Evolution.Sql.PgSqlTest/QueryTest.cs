@@ -1,23 +1,21 @@
-﻿using Evolution.Sql.MySqlTest.Modal;
+﻿using Evolution.Sql.PgSqlTest.Modal;
 using Evolution.Sql.TestCommon.Interface;
-using MySql.Data.MySqlClient;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Evolution.Sql.MySqlTest
+namespace Evolution.Sql.PgSqlTest
 {
-    public class QueryTest : IQueryTest
+    public class QueryTest: IQueryTest
     {
         private string connectionStr = @"server=localhost;user=root;database=blog;port=3306;password=root";
         [SetUp]
         public void Setup()
         {
-            DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
+            DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient",Npgsql.NpgsqlFactory.Instance);
         }
 
         [Test]
@@ -109,12 +107,11 @@ namespace Evolution.Sql.MySqlTest
 
                 var outPuts = new Dictionary<string, dynamic>();
                 sqlSession.Execute<Blog>("insert", blog, outPuts);
-                var postId = outPuts["BlogId"];
+                var postId = outPuts["Id"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
-                outPuts = new Dictionary<string, dynamic>();
                 sqlSession.Execute<Blog>("insert", blog, outPuts);
-                postId = outPuts["BlogId"];
+                postId = outPuts["Id"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
 
@@ -129,29 +126,6 @@ namespace Evolution.Sql.MySqlTest
         public void Query_With_StoredProcedure()
         {
             //throw new NotImplementedException();
-        }
-
-        [Test]
-        public async Task QueryAsyn_With_StoredProcedure()
-        {
-            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
-            {
-                var userId = Guid.NewGuid();
-                var user = new User
-                {
-                    UserId = userId,
-                    FirstName = "Bruce",
-                    LastName = "Lee"
-                };
-                var result = sqlSession.Execute<User>("insert", user);
-                Assert.Greater(result, 0);
-
-                var outPuts = new Dictionary<string, dynamic>();
-                var users = await sqlSession.QueryAsync<User>("usp_user_get", new { pUserId = userId }, outPuts);
-                Assert.IsNotNull(users);
-                Assert.True(outPuts.ContainsKey("totalCount"));
-                Assert.Greater(outPuts["totalCount"], 0);
-            }
         }
 
         [Test]
@@ -175,6 +149,5 @@ namespace Evolution.Sql.MySqlTest
                 Assert.AreEqual(default(DateTime), userFromDb.CreatedOn);
             }
         }
-
     }
 }
