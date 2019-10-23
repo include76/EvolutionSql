@@ -66,6 +66,6 @@ Simple dot net decoration style database access library, if you don't like Full-
   var outPuts = new Dictionary<string, dynamic>();
   using (var sqlSession = new SqlSession(new SqlConnection(connectionStr)))
   {
-    var userFromDb = sqlSession.QueryOne<User>("uspUserGet", new { UserId = userId }, out outPuts);
+    var userFromDb = sqlSession.QueryOne<User>("uspUserGet", new { UserId = userId }, outPuts);
   }
 ```
