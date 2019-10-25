@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Evolution.Sql.SqlServerTest
 {
@@ -37,9 +38,26 @@ namespace Evolution.Sql.SqlServerTest
         }
 
         [Test]
-        public void Insert_With_Inline_Sql_Auto_Generated_Id()
+        public async Task Insert_With_Inline_Sql_Auto_Generated_Id()
         {
-
+            using (ISqlSession sqlSession = new SqlSession(new SqlConnection(connectionStr)))
+            {
+                var tag = new Tag
+                {
+                    Name = "CSharp",
+                    Description = "programe language i love"
+                };
+                var tagId1 = sqlSession.ExecuteScalar<Tag>("insert", tag);
+                Assert.Greater(int.Parse(tagId1.ToString()), 0);
+                tag = new Tag
+                {
+                    Name = "C",
+                    Description = "mother langugae"
+                };
+                var tagId2 = await sqlSession.ExecuteScalarAsync("insert", tag);
+                Assert.Greater(int.Parse(tagId2.ToString()), 0);
+                Assert.AreNotEqual(tagId1, tagId2);
+            }
         }
 
         [Test]
