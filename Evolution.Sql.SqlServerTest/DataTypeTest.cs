@@ -58,17 +58,17 @@ namespace Evolution.Sql.SqlServerTest
             using (var sqlSession = new SqlSession(new SqlConnection(connectionStr)))
             {
                 var location = new Uri(Assembly.GetEntryAssembly().GetName().CodeBase);
-                var directory =  new FileInfo(location.AbsolutePath).Directory.FullName;
+                var directory = new FileInfo(location.AbsolutePath).Directory.FullName;
                 var bytes = File.ReadAllBytes(Path.Combine(directory, "bridge.jpg"));
 
                 var dataTypeModel = new DataTypeModal
                 {
                     ColBigInt = 9223372036854775807,
                     ColBit = true,
-                    ColDecimal = 100000000.123456789m,
+                    ColDecimal = 100000000.1234m,
                     ColInt = 123456789,
-                    ColMoney = 100000000.123456789m,
-                    ColNumeric = 100000000.123456789m,
+                    ColMoney = 100000000.1234m,//money only has 4 numbers at right
+                    ColNumeric = 100000000.1234m,
                     ColSmallInt = (short)32767,
                     ColSmallMoney = 1.1m,
                     ColTinyInt = 225,
@@ -79,24 +79,53 @@ namespace Evolution.Sql.SqlServerTest
                     ColDatetime2 = DateTime.Now,
                     ColDatetimeOffset = DateTimeOffset.Now,
                     ColSmallDatetime = DateTime.Now,
+                    //ColTime = new TimeSpan(23, 59, 59),
                     ColTime = DateTime.Now,
-                    ColChar = new char[] { 'a', 'b', 'c' },
-                    ColText = "abcdefg",
-                    ColVarchar = new char[] { 'a', 'b', 'c' },
+                    ColChar = new char[] { 't', 'h', 'i', 's', ' ', 'a', ' ', 'c', 'h', 'a', 'r' },
+                    ColText = "this is a text",
+                    ColVarchar = new char[] { 't', 'h', 'i', 's', ' ', 'a', ' ', 'v', 'a', 'r', ' ', 'c', 'h', 'a', 'r' },
                     ColNChar = new char[] { 'a', 'b', 'c' },
-                    ColNText = "abcdefg",
-                    ColNVarchar = "abcdefg",
+                    ColNText = "这是一段文字",
+                    ColNVarchar = new char[] { '这', '也', '是', '一', '段', '文', '字' },
                     ColBinary = bytes,
                     ColImage = bytes,
                     ColVarBinary = bytes,
-                    ColXml = @"<note>
-                          <to>Tove</to>
-                          <from>Jani</from>
-                          <heading>Reminder</heading>
-                          <body>Don't forget me this weekend!</body>
-                        </note>"
+                    ColXml = @"<note><to>Tove</to><from>Jani</from><heading>Reminder</heading><body>Don't forget me this weekend!</body></note>"
                 };
                 var result = sqlSession.Execute<DataTypeModal>("insert", dataTypeModel);
+                Assert.Greater(result, 0);
+                var dataFromDb = sqlSession.Query<DataTypeModal>("getall", null);
+                Assert.NotNull(dataFromDb);
+                Assert.Greater(dataFromDb.Count(), 0);
+                var newOne = dataFromDb.First();
+                Assert.AreEqual(dataTypeModel.ColBigInt, newOne.ColBigInt);
+                Assert.AreEqual(dataTypeModel.ColBinary.Take(1000), newOne.ColBinary);
+                Assert.AreEqual(dataTypeModel.ColBit, newOne.ColBit);
+                Assert.AreEqual(dataTypeModel.ColChar, newOne.ColChar.Take(11));
+                //Assert.AreEqual(dataTypeModel.ColDate, newOne.ColDate);
+                //Assert.AreEqual(dataTypeModel.ColDatetime, newOne.ColDatetime);
+                Assert.AreEqual(dataTypeModel.ColDatetime2, newOne.ColDatetime2);
+                Assert.AreEqual(dataTypeModel.ColDatetimeOffset, newOne.ColDatetimeOffset);
+                Assert.AreEqual(dataTypeModel.ColDecimal, newOne.ColDecimal);
+                Assert.AreEqual(dataTypeModel.ColFloat, newOne.ColFloat);
+                Assert.AreEqual(dataTypeModel.ColImage, newOne.ColImage);
+                Assert.AreEqual(dataTypeModel.ColInt, newOne.ColInt);
+                Assert.AreEqual(dataTypeModel.ColMoney, newOne.ColMoney);
+                Assert.AreEqual(dataTypeModel.ColNChar, newOne.ColNChar.Take(3));
+                Assert.AreEqual(dataTypeModel.ColNText, newOne.ColNText);
+                Assert.AreEqual(dataTypeModel.ColNumeric, newOne.ColNumeric);
+                Assert.AreEqual(dataTypeModel.ColNVarchar, newOne.ColNVarchar);
+                Assert.AreEqual(dataTypeModel.ColReal, newOne.ColReal);
+                //Assert.AreEqual(dataTypeModel.ColSmallDatetime, newOne.ColSmallDatetime);
+                Assert.AreEqual(dataTypeModel.ColSmallInt, newOne.ColSmallInt);
+                Assert.AreEqual(dataTypeModel.ColSmallMoney, newOne.ColSmallMoney);
+                Assert.AreEqual(dataTypeModel.ColText, newOne.ColText);
+                //Assert.AreEqual(dataTypeModel.ColTime, newOne.ColTime);
+                //Assert.AreEqual(dataTypeModel.ColTimestamp, newOne.ColTimestamp);
+                Assert.AreEqual(dataTypeModel.ColTinyInt, newOne.ColTinyInt);
+                Assert.AreEqual(dataTypeModel.ColVarBinary, newOne.ColVarBinary);
+                Assert.AreEqual(dataTypeModel.ColVarchar, newOne.ColVarchar);
+                Assert.AreEqual(dataTypeModel.ColXml, newOne.ColXml);
             }
         }
     }

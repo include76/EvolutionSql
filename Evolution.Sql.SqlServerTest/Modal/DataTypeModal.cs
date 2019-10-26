@@ -1,11 +1,13 @@
 ﻿using Evolution.Sql.Attribute;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace Evolution.Sql.SqlServerTest.Modal
 {
     [Command(Name = "insert", Text = "uspDataTypeIns")]
+    [Command(Name = "getall", Text = "SELECT * FROM [DataTypeTable] ORDER BY ColDateTime DESC", CommandType = CommandType.Text)]
     public class DataTypeModal
     {
         public long? ColBigInt { get; set; }
@@ -26,6 +28,7 @@ namespace Evolution.Sql.SqlServerTest.Modal
         public DateTime? ColDatetime2 { get; set; }
         public DateTimeOffset? ColDatetimeOffset { get; set; }
         public DateTime? ColSmallDatetime { get; set; }
+        //public TimeSpan? ColTime { get; set; } do NOT use TimeSpan
         public DateTime? ColTime { get; set; }
 
         public char[] ColChar { get; set; }
@@ -33,7 +36,7 @@ namespace Evolution.Sql.SqlServerTest.Modal
         public char[] ColVarchar { get; set; }
         public char[] ColNChar { get; set; }
         public string ColNText { get; set; }
-        public string ColNVarchar { get; set; }
+        public char[] ColNVarchar { get; set; }
 
         public byte[] ColBinary { get; set; }
         public byte[] ColImage { get; set; }

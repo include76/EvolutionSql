@@ -14,7 +14,7 @@ namespace Evolution.Sql.CommandAdapter
         public CommandAdapterMySql() : base()
         {
             //https://dev.mysql.com/doc/workbench/en/wb-migration-database-mssql-typemapping.html
-            DbEgineTypeDbTypeMap = new Dictionary<string, DbType>()
+            DbDataTypeDbTypeMap = new Dictionary<string, DbType>()
             {
                 //Integer
                 {"tinyint", DbType.Byte},

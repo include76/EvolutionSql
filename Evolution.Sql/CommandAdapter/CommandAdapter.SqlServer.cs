@@ -20,7 +20,7 @@ namespace Evolution.Sql.CommandAdapter
         public CommandAdapterSqlServer()
         {
             //https://msdn.microsoft.com/en-us/library/cc716729(v=vs.110).aspx
-            DbEgineTypeDbTypeMap = new Dictionary<string, DbType>() {
+            DbDataTypeDbTypeMap = new Dictionary<string, DbType>() {
                 { "bigint",             DbType.Int64 },
                 { "binary",             DbType.Binary },
                 { "bit",                DbType.Boolean },

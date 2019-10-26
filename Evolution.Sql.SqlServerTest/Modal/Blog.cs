@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Evolution.Sql.SqlServerTest.Modal
 {
-    [Command(Name = "Insert", Text ="uspBlogIns", CommandType = CommandType.StoredProcedure)]
+    [Command(Name = "Insert", Text ="uspBlogIns")]
     [Command(Name = "Update", Text ="uspBlogUpd")]
     [Command(Name = "Get", Text = "uspBlogGet")]
     public class Blog

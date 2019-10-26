@@ -30,7 +30,7 @@ namespace Evolution.Sql.CommandAdapter
 
         protected virtual string ParameterPrefix => "@";
 
-        protected virtual Dictionary<string, DbType> DbEgineTypeDbTypeMap { get; set; }
+        protected virtual Dictionary<string, DbType> DbDataTypeDbTypeMap { get; set; }
 
         protected virtual Dictionary<Type, DbType> ClrTypeDbTypeMap { get; set; }
 
@@ -194,6 +194,8 @@ namespace Evolution.Sql.CommandAdapter
                 parameterName = item.ToString().TrimStart(ParameterPrefix.ToCharArray());
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = parameterName;
+                //#Note: sql parameter not set DbType, the DbType will infered when assign value
+                //#whether set explicitly or not need to be determined
                 command.Parameters.Add(parameter);
             }
         }
@@ -203,7 +205,7 @@ namespace Evolution.Sql.CommandAdapter
             if (parameters != null)
             {
                 var type = parameters.GetType();
-                //is a dictionary
+                //is a dictionary, not used currently
                 if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
                 {
                     var dic = parameters as Dictionary<string, dynamic>;
@@ -275,9 +277,9 @@ namespace Evolution.Sql.CommandAdapter
 
         private DbType GetDbTypeByString(string dbTypeString)
         {
-            if (this.DbEgineTypeDbTypeMap.ContainsKey(dbTypeString))
+            if (this.DbDataTypeDbTypeMap.ContainsKey(dbTypeString))
             {
-                return DbEgineTypeDbTypeMap[dbTypeString];
+                return DbDataTypeDbTypeMap[dbTypeString];
             }
             else
             {
@@ -300,9 +302,9 @@ namespace Evolution.Sql.CommandAdapter
         private void SetParameterType(DbParameter dbParameter, string dbTypeString)
         {
             dbTypeString = dbTypeString.ToLower();
-            if (this.DbEgineTypeDbTypeMap.ContainsKey(dbTypeString))
+            if (this.DbDataTypeDbTypeMap.ContainsKey(dbTypeString))
             {
-                dbParameter.DbType = DbEgineTypeDbTypeMap[dbTypeString];
+                dbParameter.DbType = DbDataTypeDbTypeMap[dbTypeString];
             }
         }
     }
