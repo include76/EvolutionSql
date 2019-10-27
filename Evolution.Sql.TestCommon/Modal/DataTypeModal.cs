@@ -1,13 +1,14 @@
 ﻿using Evolution.Sql.Attribute;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Text;
 
-namespace Evolution.Sql.SqlServerTest.Modal
+namespace Evolution.Sql.TestCommon.Modal
 {
-    [Command(Name = "insert", Text = "uspDataTypeIns")]
-    [Command(Name = "getall", Text = "SELECT * FROM [DataTypeTable] ORDER BY ColDateTime DESC", CommandType = CommandType.Text)]
+    #region mysql command
+    [Command(Name = "get_mysql", Text = "SELECT * FROM `data_type` ORDER BY ColDateTime", CommandType = System.Data.CommandType.Text)]
+    [Command(Name = "insert_mysql", Text = "usp_data_type_ins")]
+    #endregion
     public class DataTypeModal
     {
         public long? ColBigInt { get; set; }

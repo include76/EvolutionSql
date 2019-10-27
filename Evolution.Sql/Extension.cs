@@ -76,6 +76,7 @@ namespace Evolution.Sql
                    && type.GetTypeInfo().GetCustomAttributes(typeof(CompilerGeneratedAttribute)).Any();
         }
 
+        /*
         private static void SetPropertyValue<T>(T obj, PropertyInfo property, DbDataReader dataReader, int index)
         {
             if (dataReader.GetValue(index) == DBNull.Value)
@@ -246,7 +247,7 @@ namespace Evolution.Sql
             {
                 property.SetValue(obj, dataReader.GetValue(index));
             }
-        }
+        }*/
 
         /// <summary>
         /// this does not work when
@@ -254,27 +255,52 @@ namespace Evolution.Sql
         /// db is time and property is DateTime, because dataReader[i] is TimeSpan
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="entity"></param>
+        /// <param name="obj"></param>
         /// <param name="property"></param>
         /// <param name="value"></param>
-        private static void SetPropertyValue<T>(T entity, PropertyInfo property, object value)
+        private static void SetPropertyValue<T>(T obj, PropertyInfo property, DbDataReader dataReader, int index)
         {
-            if (value == DBNull.Value)
+            if (dataReader.GetValue(index) == DBNull.Value)
             {
                 var defaultValue = GetDefaultValue(property.PropertyType);
-                property.SetValue(entity, defaultValue);
+                property.SetValue(obj, defaultValue);
+            }
+            else if (property.PropertyType == typeof(char[]))
+            {
+                //property.SetValue(obj, dataReader.GetFieldValue<char[]>(index));
+                property.SetValue(obj, dataReader.GetString(index).ToCharArray());
+            }
+            else if (property.PropertyType == typeof(DateTime))
+            {
+                if (dataReader.GetFieldType(index) == typeof(TimeSpan))
+                {
+                    var datetime = new DateTime(dataReader.GetFieldValue<TimeSpan>(index).Ticks);
+                    property.SetValue(obj, datetime);
+                    return;
+                }
+                property.SetValue(obj, dataReader.GetFieldValue<DateTime>(index));
+            }
+            else if (property.PropertyType == typeof(DateTime?))
+            {
+                if (dataReader.GetFieldType(index) == typeof(TimeSpan))
+                {
+                    var datetime = new DateTime(dataReader.GetFieldValue<TimeSpan>(index).Ticks);
+                    property.SetValue(obj, datetime);
+                    return;
+                }
+                property.SetValue(obj, dataReader.GetFieldValue<DateTime?>(index));
             }
             else if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 var genericType = Nullable.GetUnderlyingType(property.PropertyType);
                 if (genericType != null)
                 {
-                    property.SetValue(entity, Convert.ChangeType(value, genericType), null);
+                    property.SetValue(obj, Convert.ChangeType(dataReader.GetValue(index), genericType), null);
                 }
             }
             else
             {
-                property.SetValue(entity, Convert.ChangeType(value, property.PropertyType));
+                property.SetValue(obj, Convert.ChangeType(dataReader.GetValue(index), property.PropertyType));
             }
         }
 
