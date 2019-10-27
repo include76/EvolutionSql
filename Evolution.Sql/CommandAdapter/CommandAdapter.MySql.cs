@@ -26,9 +26,9 @@ namespace Evolution.Sql.CommandAdapter
                 {"decimal", DbType.Decimal},
                 {"numeric", DbType.Decimal},
                 //
-                {"float", DbType.Double},
+                {"float", DbType.Single},
                 {"double", DbType.Double},
-                {"real", DbType.Single},
+                {"real", DbType.Double},
                 //
                 {"bit", DbType.Boolean},
                 //date type

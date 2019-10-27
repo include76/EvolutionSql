@@ -264,8 +264,9 @@ namespace Evolution.Sql
             {
                 var defaultValue = GetDefaultValue(property.PropertyType);
                 property.SetValue(obj, defaultValue);
+                return;
             }
-            else if (property.PropertyType == typeof(char[]))
+            if (property.PropertyType == typeof(char[]))
             {
                 //property.SetValue(obj, dataReader.GetFieldValue<char[]>(index));
                 property.SetValue(obj, dataReader.GetString(index).ToCharArray());
