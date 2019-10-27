@@ -52,7 +52,10 @@ namespace Evolution.Sql.CommandAdapter
                 {"mediumblob", DbType.Binary},
                 {"longblob", DbType.Binary},
                 //Json
-                {"json", DbType.String}
+                {"json", DbType.String},
+                // synonym
+                {"bool", DbType.Boolean },
+                {"boolean", DbType.Boolean }
             };
         }
     }

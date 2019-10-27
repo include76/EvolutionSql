@@ -52,5 +52,7 @@ namespace Evolution.Sql.MySqlTest.Modal
         public byte[] ColLongBlob { get; set; }
         //
         public string ColJson { get; set; }
+        //
+        public bool ColBool { get; set; }
     }
 }

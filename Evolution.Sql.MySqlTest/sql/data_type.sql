@@ -27,5 +27,6 @@ CREATE TABLE data_type(
     ColBlob			blob,
     ColMediumBlob	mediumBlob,
     ColLongBlob		longblob,
-    ColJson			json
+    ColJson			json,
+	ColBool			BOOL
 ) Engine=InnoDB default charset=utf8;

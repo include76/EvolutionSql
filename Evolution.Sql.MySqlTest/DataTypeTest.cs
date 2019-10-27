@@ -68,7 +68,8 @@ namespace Evolution.Sql.MySqlTest
                     ColBlob = bytes.Take(8000).ToArray(),
                     ColMediumBlob = bytes,
                     ColLongBlob = bytes,
-                    ColJson = "{\"employee\":{\"name\":\"sonoo\",\"salary\":56000,\"married\":true}}"
+                    ColJson = "{\"employee\":{\"name\":\"sonoo\",\"salary\":56000,\"married\":true}}",
+                    ColBool = true
                 };
                 var result = sqlSession.Execute<DataTypeModal>("insert", dataTypeModel);
                 Assert.Greater(result, 0);
@@ -101,7 +102,7 @@ namespace Evolution.Sql.MySqlTest
                 Assert.AreEqual(dataTypeModel.ColTinyInt, newOne.ColTinyInt);
                 Assert.AreEqual(dataTypeModel.ColVarBinary, newOne.ColVarBinary);
                 Assert.AreEqual(dataTypeModel.ColVarchar, newOne.ColVarchar);
-
+                Assert.AreEqual(dataTypeModel.ColBool, newOne.ColBool);
             }
         }
     }
