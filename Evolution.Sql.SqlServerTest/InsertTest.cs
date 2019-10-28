@@ -23,16 +23,18 @@ namespace Evolution.Sql.SqlServerTest
         [Test]
         public void Insert_With_Inline_Sql()
         {
-            var connection = new SqlConnection(connectionStr);
-            using (var sqlSession = new SqlSession(connection))
+            using(var connection = new SqlConnection(connectionStr))
             {
                 var user = new User
                 {
                     UserId = Guid.NewGuid(),
                     FirstName = "Bruce",
-                    LastName = "Lee"
+                    LastName = "Lee",
+                    CreatedOn = DateTime.Now
                 };
-                var result = sqlSession.Execute<User>("insert", user);
+                var result = connection.Sql(@"insert into [user](UserId, FirstName, LastName, CreatedOn) 
+                                                values(@UserId, @FirstName, @LastName, @CreatedOn)")
+                    .Execute(user);
                 Assert.Greater(result, 0);
             }
         }
