@@ -52,11 +52,6 @@ by using EvolutionSql, it's very simple to execute either inline sql or stored p
   ```
   
   ```c#
-  using (var sqlSession = new SqlSession(new SqlConnection(connectionStr)))
-  {
-    var userFromDb = sqlSession.QueryOne<User>("uspUserGet", new { UserId = userId });
-  }
-  
   // if you want the output value from the stored procedure
   var outPuts = new Dictionary<string, dynamic>();
   using (var connection = new SqlConnection(connectionStr))
