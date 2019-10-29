@@ -5,8 +5,6 @@ using System.Text;
 
 namespace Evolution.Sql.MySqlTest.Modal
 {
-    [Command(Name = "getall", Text = "SELECT * FROM `data_type` ORDER BY ColDateTime", CommandType = System.Data.CommandType.Text)]
-    [Command(Name = "insert", Text = "usp_data_type_ins")]
     public class DataTypeModal
     {
         //int

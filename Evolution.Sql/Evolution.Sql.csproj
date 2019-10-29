@@ -6,9 +6,15 @@
     <Authors>Locke Duan</Authors>
     <PackageProjectUrl>https://github.com/lockeduan/EvolutionSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/lockeduan/EvolutionSql</RepositoryUrl>
-    <Description>Simple .NET  Data Access library</Description>
+    <Description>Simple .NET Data Access library for SQL Server, MySQL</Description>
     <PackageReleaseNotes>Use DbConnection Extension</PackageReleaseNotes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="CommandAdapter\**" />
+    <EmbeddedResource Remove="CommandAdapter\**" />
+    <None Remove="CommandAdapter\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="ISqlSession.cs" />

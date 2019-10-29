@@ -13,6 +13,8 @@ namespace Evolution.Sql.TestCommon.Interface
         void Query_With_Inline_Sql();
         void Query_With_StoredProcedure();
 
+        Task Query_Column_Name_Contain_UnderScore_Can_Map_To_Property();
+
         void Get_Null_Value_From_DB_Property_Should_Set_Default_Value();
     }
 }

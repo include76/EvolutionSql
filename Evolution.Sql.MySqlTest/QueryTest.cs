@@ -33,11 +33,11 @@ namespace Evolution.Sql.MySqlTest
                     LastName = "Lee",
                     CreatedOn = DateTime.Now
                 };
-                var result = connection.Sql("insert into `user`(UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);")
+                var result = connection.Sql("insert into `user`(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
                     .Execute(user);
                 Assert.Greater(result, 0);
 
-                var bruce = connection.Sql("select * from `user` where userid = @UserId")
+                var bruce = connection.Sql("select * from `user` where user_id = @UserId")
                     .Query<User>(new { UserId = userId1 })?.FirstOrDefault();
                 Assert.IsNotNull(bruce);
                 Assert.AreEqual(userId1, bruce.UserId);
@@ -51,11 +51,11 @@ namespace Evolution.Sql.MySqlTest
                     CreatedOn = DateTime.Now
                 };
 
-                result = await connection.Sql("insert into `user`(UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);")
+                result = await connection.Sql("insert into `user`(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
                     .ExecuteAsync(user);
                 Assert.Greater(result, 0);
 
-                var tom = (await connection.Sql("select * from `user` where userid = @UserId").QueryAsync<User>(new { UserId = userId2 }))?.FirstOrDefault();
+                var tom = (await connection.Sql("select * from `user` where user_id = @UserId").QueryAsync<User>(new { UserId = userId2 }))?.FirstOrDefault();
                 Assert.IsNotNull(tom);
                 Assert.AreEqual(userId2, tom.UserId);
 
@@ -75,7 +75,7 @@ namespace Evolution.Sql.MySqlTest
                     FirstName = "Bruce",
                     LastName = "Lee"
                 };
-                var result = connection.Sql("insert into `user`(UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);")
+                var result = connection.Sql("insert into `user`(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
                     .Execute(user);
                 Assert.Greater(result, 0);
 
@@ -100,7 +100,7 @@ namespace Evolution.Sql.MySqlTest
                     FirstName = "Bruce",
                     LastName = "Lee"
                 };
-                connection.Sql("insert into `user`(UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);")
+                connection.Sql("insert into `user`(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
                     .Execute(user);
 
                 var blog = new Blog
@@ -148,7 +148,7 @@ namespace Evolution.Sql.MySqlTest
                     FirstName = "Bruce",
                     LastName = "Lee"
                 };
-                var result = connection.Sql("insert into `user`(UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);")
+                var result = connection.Sql("insert into `user`(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
                     .Execute(user);
                 Assert.Greater(result, 0);
 
@@ -172,16 +172,39 @@ namespace Evolution.Sql.MySqlTest
                     FirstName = "Bruce",
                     LastName = "Lee"
                 };
-                var result = connection.Sql("insert into `user`(UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);")
+                var result = connection.Sql("insert into `user`(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
                     .Execute(user);
                 Assert.Greater(result, 0);
 
-                var userFromDb = connection.Sql("select UserId, FirstName, CreatedOn from `user` where userid = @userId").Query<User>(new { UserId = userId })?.FirstOrDefault();
+                var userFromDb = connection.Sql("select user_id, first_name, created_on from `user` where user_id = @userId").Query<User>(new { UserId = userId })?.FirstOrDefault();
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
                 Assert.AreEqual(default(DateTime), userFromDb.CreatedOn);
             }
         }
 
+        [Test]
+        public async Task Query_Column_Name_Contain_UnderScore_Can_Map_To_Property()
+        {
+            using (var connection = new MySqlConnection(connectionStr))
+            {
+                var userId = Guid.NewGuid();
+                var user = new User
+                {
+                    UserId = userId,
+                    FirstName = "Lily",
+                    LastName = "Chang",
+                    CreatedOn = DateTime.Now
+                };
+                var result = connection.Sql("insert into `user`(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
+                    .Execute(user);
+                Assert.AreEqual(1, result);
+
+                var userFromDb = (await connection.Procedure("usp_user_get").QueryAsync<User>(new { pUserId = userId }))?.FirstOrDefault();
+                Assert.NotNull(userFromDb);
+                Assert.AreEqual("Lily", userFromDb.FirstName);
+                Assert.AreEqual("Chang", userFromDb.LastName);
+            }
+        }
     }
 }

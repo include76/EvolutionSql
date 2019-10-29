@@ -6,7 +6,7 @@ CREATE PROCEDURE usp_user_get(
 )
 BEGIN
 	SELECT * FROM `user` 
-    WHERE UserId = pUserId;
+    WHERE user_id = pUserId;
 	SELECT count(1) into totalCount FROM `user`;
 END//
 DELIMITER ;

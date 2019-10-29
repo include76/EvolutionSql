@@ -115,5 +115,9 @@ namespace Evolution.Sql.SqlServerTest
             }
         }
 
+        public Task Query_Column_Name_Contain_UnderScore_Can_Map_To_Property()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

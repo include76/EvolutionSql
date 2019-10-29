@@ -45,7 +45,9 @@ namespace Evolution.Sql
                 for (int i = 0; i < dataReader.FieldCount; i++)
                 {
                     var columnName = dataReader.GetName(i);
-                    var property = properties.FirstOrDefault(x => x.Name.Equals(columnName, StringComparison.OrdinalIgnoreCase));
+                    // if column contains underscore, make sure it can be map to C-Sharp property too
+                    // for example: column first_name can map to property FirstName
+                    var property = properties.FirstOrDefault(x => x.Name.Equals(columnName.Replace("_", ""), StringComparison.OrdinalIgnoreCase));
                     if (property != null)
                     {
                         //property.SetValue(entity, dataReader[i]);

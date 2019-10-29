@@ -1,5 +1,4 @@
 ﻿using Evolution.Sql.Cache;
-using Evolution.Sql.CommandAdapter;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -33,7 +32,6 @@ namespace Evolution.Sql
         public DbConnection Connection { get ; set ; }
         public CommandType CommandType { get ; set ; }
         public string CommandText { get ; set ; }
-        public object Parameters { get ; set ; }
 
         protected virtual Dictionary<string, DbType> DbDataTypeDbTypeMap { get; set; }
 

@@ -1,43 +1,43 @@
 ﻿
-drop database blog ;
-create database blog;
-use blog;
+DROP DATABASE blog ;
+CREATE DATABASE blog;
+USE blog;
 
-create table `user`(
-	UserId char(36) not null,
-	FirstName varchar(256) not null,
-	LastName varchar(256) not null,
-	CreatedOn datetime,
-	UpdatedOn datetime,
-	constraint pk_user primary key(UserId)
-)engine=InnoDB default charset = utf8;
+CREATE TABLE `user`(
+	user_id CHAR(36) NOT NULL,
+	first_name VARCHAR(256) NOT NULL,
+	last_name VARCHAR(256) NOT NULL,
+	created_by DATETIME,
+	created_on DATETIME,
+	CONSTRAINT pk_user PRIMARY KEY(user_id)
+)ENGINE=INNODB DEFAULT CHARSET = UTF8;
 
-create table tag(
-	Id int not null auto_increment,
-	`Name` varchar(256) not null,
-	Description varchar(2000),
-	constraint pk_tag primary key(Id)
-)engine=InnoDB default charset = utf8;
+CREATE TABLE tag(
+	Id INT NOT NULL AUTO_INCREMENT,
+	`Name` VARCHAR(256) NOT NULL,
+	Description VARCHAR(2000),
+	CONSTRAINT pk_tag PRIMARY KEY(Id)
+)ENGINE=INNODB DEFAULT CHARSET = UTF8;
 
-create table blog(
-	Id int not null auto_increment,
-	Title varchar(1000) not null,
-	Content text not null,
-	CreatedBy char(36) not null,
-	CreatedOn datetime not null,
-	UpdatedOn datetime null,
-	constraint pk_blog primary key(Id),
-	constraint fk_blog_user foreign key(CreatedBy) references `User`(UserId)
-)engine=InnoDB default charset = utf8;
+CREATE TABLE blog(
+	Id INT NOT NULL AUTO_INCREMENT,
+	Title VARCHAR(1000) NOT NULL,
+	Content TEXT NOT NULL,
+	CreatedBy CHAR(36) NOT NULL,
+	CreatedOn DATETIME NOT NULL,
+	UpdatedOn DATETIME NULL,
+	CONSTRAINT pk_blog PRIMARY KEY(Id),
+	CONSTRAINT fk_blog_user FOREIGN KEY(CreatedBy) REFERENCES `User`(user_id)
+)ENGINE=INNODB DEFAULT CHARSET = UTF8;
 
-create table post(
-	Id int not null auto_increment,
-	Content text not null,
-	CreatedBy char(36) not null,
-	CreatedOn datetime not null,
-	UpdatedOn datetime not null,
-	PostId int not null,
-	constraint pk_post primary key(Id),
-	constraint fk_post_user foreign key(CreatedBy) references `user`(UserId),
-	constraint fk_post_blog foreign key(PostId) references blog(Id)
-)engine=InnoDB default charset = utf8;
+CREATE TABLE post(
+	Id INT NOT NULL AUTO_INCREMENT,
+	Content TEXT NOT NULL,
+	CreatedBy CHAR(36) NOT NULL,
+	CreatedOn DATETIME NOT NULL,
+	UpdatedOn DATETIME NOT NULL,
+	PostId INT NOT NULL,
+	CONSTRAINT pk_post PRIMARY KEY(Id),
+	CONSTRAINT fk_post_user FOREIGN KEY(CreatedBy) REFERENCES `user`(user_id),
+	CONSTRAINT fk_post_blog FOREIGN KEY(PostId) REFERENCES blog(Id)
+)ENGINE=INNODB DEFAULT CHARSET = UTF8;

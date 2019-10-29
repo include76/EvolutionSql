@@ -154,5 +154,10 @@ namespace Evolution.Sql.PgSqlTest
                 Assert.AreEqual(default(DateTime), userFromDb.CreatedOn);
             }*/
         }
+
+        public Task Query_Column_Name_Contain_UnderScore_Can_Map_To_Property()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

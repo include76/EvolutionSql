@@ -29,7 +29,7 @@ namespace Evolution.Sql.MySqlTest
                     FirstName = "Bruce",
                     LastName = "Lee"
                 };
-                var result = connection.Sql("insert into `user`(UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);")
+                var result = connection.Sql("insert into `user`(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
                     .Execute(user);
                 Assert.Greater(result, 0);
             }
@@ -72,7 +72,7 @@ namespace Evolution.Sql.MySqlTest
                     FirstName = "Bruce",
                     LastName = "Lee"
                 };
-                connection.Sql("insert into `user`(UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);")
+                connection.Sql("insert into `user`(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
                     .Execute(user);
 
                 var blog = new Blog

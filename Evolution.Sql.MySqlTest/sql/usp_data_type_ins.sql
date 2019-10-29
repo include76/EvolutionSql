@@ -1,6 +1,6 @@
 ﻿DROP PROCEDURE IF EXISTS usp_data_type_ins;
 DELIMITER //
-CREATE PROCEDURE usp_data_type_ins(Title VARCHAR(1000),
+CREATE PROCEDURE usp_data_type_ins(
 	ColTinyInt 		TINYINT,
     ColSmallInt		SMALLINT,
     ColMediumInt		mediumint,
@@ -28,7 +28,8 @@ CREATE PROCEDURE usp_data_type_ins(Title VARCHAR(1000),
     ColBlob			blob,
     ColMediumBlob	mediumBlob,
     ColLongBlob		longblob,
-    ColJson			json
+    ColJson			json,
+    ColBool			bool
 )
 BEGIN
 	INSERT INTO data_type VALUES(			
@@ -60,7 +61,8 @@ BEGIN
     ColBlob,			
     ColMediumBlob,
     ColLongBlob,
-    ColJson	
+    ColJson,
+    ColBool
     );
 END//
 DELIMITER ;

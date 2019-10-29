@@ -6,10 +6,6 @@ using System.Text;
 
 namespace Evolution.Sql.MySqlTest.Modal
 {
-    [Command(Name = "Insert", Text = "usp_blog_ins")]
-    [Command(Name = "Update", Text = "usp_blog_upd")]
-    [Command(Name = "Get", Text = "usp_blog_get")]
-    [Command(Name = "GetAll", Text = "select * from `blog`", CommandType = CommandType.Text)]
     public class Blog
     {
         public int Id { get; set; }

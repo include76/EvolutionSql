@@ -1,6 +1,5 @@
 using System;
 ﻿using Evolution.Sql.Command;
-using Evolution.Sql.CommandAdapter;
 using System.Text;
 using System.Data.Common;
 
@@ -15,7 +14,6 @@ namespace Evolution.Sql
             command.Connection = connection;
             command.CommandText = procedureName;
             command.CommandType = System.Data.CommandType.StoredProcedure;
-            //command.Parameters = parameters;
             return command;
         }
 
@@ -26,7 +24,6 @@ namespace Evolution.Sql
             command.Connection = connection;
             command.CommandText = sql;
             command.CommandType = System.Data.CommandType.Text;
-            //command.Parameters = parameters;
             return command;
         }
     }
