@@ -20,8 +20,7 @@ namespace Evolution.Sql.SqlServerTest
         [Test]
         public void StoredProcedure_Miss_Parameter_Test()
         {
-            var connection = new SqlConnection(connectionStr);
-            using (ISqlSession sqlSession = new SqlSession(connection))
+            using (var connection = new SqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
 
@@ -36,7 +35,7 @@ namespace Evolution.Sql.SqlServerTest
 
                 //var postId = sqlSession.ExecuteScalar<Blog>("insert", blog);
                 var outPuts = new Dictionary<string, dynamic> { { "Id", 0 } };
-                Assert.Throws<SqlException>(() => sqlSession.Execute<Blog>("insert", blog, outPuts ));
+                Assert.Throws<SqlException>(() => connection.Procedure("uspBlogIns").Execute(blog, outPuts));
             }
         }
     }

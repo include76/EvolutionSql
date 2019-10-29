@@ -17,13 +17,13 @@ namespace Evolution.Sql.MySqlTest
         [SetUp]
         public void Setup()
         {
-            DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
+
         }
 
         [Test]
-        public void QueryOne_With_Inline_Sql()
+        public async Task QueryOne_With_Inline_Sql()
         {
-            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
+            using (var connection = new MySqlConnection(connectionStr))
             {
                 var userId1 = Guid.NewGuid();
                 var user = new User
@@ -33,10 +33,12 @@ namespace Evolution.Sql.MySqlTest
                     LastName = "Lee",
                     CreatedOn = DateTime.Now
                 };
-                var result = sqlSession.Execute<User>("insert", user);
+                var result = connection.Sql("insert into `user`(UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);")
+                    .Execute(user);
                 Assert.Greater(result, 0);
 
-                var bruce = sqlSession.QueryOne<User>("get", new { UserId = userId1 });
+                var bruce = connection.Sql("select * from `user` where userid = @UserId")
+                    .Query<User>(new { UserId = userId1 })?.FirstOrDefault();
                 Assert.IsNotNull(bruce);
                 Assert.AreEqual(userId1, bruce.UserId);
 
@@ -49,10 +51,11 @@ namespace Evolution.Sql.MySqlTest
                     CreatedOn = DateTime.Now
                 };
 
-                result = sqlSession.Execute<User>("insert", user);
+                result = await connection.Sql("insert into `user`(UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);")
+                    .ExecuteAsync(user);
                 Assert.Greater(result, 0);
 
-                var tom = sqlSession.QueryOne<User>("get", new { UserId = userId2 });
+                var tom = (await connection.Sql("select * from `user` where userid = @UserId").QueryAsync<User>(new { UserId = userId2 }))?.FirstOrDefault();
                 Assert.IsNotNull(tom);
                 Assert.AreEqual(userId2, tom.UserId);
 
@@ -63,7 +66,7 @@ namespace Evolution.Sql.MySqlTest
         [Test]
         public void QueryOne_With_StoredProcedure()
         {
-            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
+            using (var connection = new MySqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
                 var user = new User
@@ -72,11 +75,12 @@ namespace Evolution.Sql.MySqlTest
                     FirstName = "Bruce",
                     LastName = "Lee"
                 };
-                var result = sqlSession.Execute<User>("insert", user);
+                var result = connection.Sql("insert into `user`(UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);")
+                    .Execute(user);
                 Assert.Greater(result, 0);
 
                 var outPuts = new Dictionary<string, dynamic>();
-                var userFromDb = sqlSession.QueryOne<User>("usp_user_get", new { pUserId = userId }, outPuts);
+                var userFromDb = connection.Procedure("usp_user_get").Query<User>(new { pUserId = userId }, outPuts)?.FirstOrDefault();
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
                 Assert.True(outPuts.ContainsKey("totalCount"));
@@ -87,7 +91,7 @@ namespace Evolution.Sql.MySqlTest
         [Test]
         public void Query_With_Inline_Sql()
         {
-            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
+            using (var connection = new MySqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
                 var user = new User
@@ -96,7 +100,8 @@ namespace Evolution.Sql.MySqlTest
                     FirstName = "Bruce",
                     LastName = "Lee"
                 };
-                sqlSession.Execute<User>("insert", user);
+                connection.Sql("insert into `user`(UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);")
+                    .Execute(user);
 
                 var blog = new Blog
                 {
@@ -108,18 +113,18 @@ namespace Evolution.Sql.MySqlTest
                 };
 
                 var outPuts = new Dictionary<string, dynamic>();
-                sqlSession.Execute<Blog>("insert", blog, outPuts);
+                connection.Procedure("usp_blog_ins").Execute(blog, outPuts);
                 var postId = outPuts["BlogId"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
                 outPuts = new Dictionary<string, dynamic>();
-                sqlSession.Execute<Blog>("insert", blog, outPuts);
+                connection.Procedure("usp_blog_ins").Execute(blog, outPuts);
                 postId = outPuts["BlogId"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
 
                 // query
-                var blogs = sqlSession.Query<Blog>("getall", null);
+                var blogs = connection.Sql("select * from `blog`").Query<Blog>(null);
                 Assert.NotNull(blogs);
                 Assert.Greater(blogs.ToList().Count, 1);
             }
@@ -134,7 +139,7 @@ namespace Evolution.Sql.MySqlTest
         [Test]
         public async Task QueryAsyn_With_StoredProcedure()
         {
-            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
+            using (var connection = new MySqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
                 var user = new User
@@ -143,11 +148,12 @@ namespace Evolution.Sql.MySqlTest
                     FirstName = "Bruce",
                     LastName = "Lee"
                 };
-                var result = sqlSession.Execute<User>("insert", user);
+                var result = connection.Sql("insert into `user`(UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);")
+                    .Execute(user);
                 Assert.Greater(result, 0);
 
                 var outPuts = new Dictionary<string, dynamic>();
-                var users = await sqlSession.QueryAsync<User>("usp_user_get", new { pUserId = userId }, outPuts);
+                var users = await connection.Procedure("usp_user_get").QueryAsync<User>(new { pUserId = userId }, outPuts);
                 Assert.IsNotNull(users);
                 Assert.True(outPuts.ContainsKey("totalCount"));
                 Assert.Greater(outPuts["totalCount"], 0);
@@ -157,7 +163,7 @@ namespace Evolution.Sql.MySqlTest
         [Test]
         public void Get_Null_Value_From_DB_Property_Should_Set_Default_Value()
         {
-            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
+            using (var connection = new MySqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
                 var user = new User
@@ -166,10 +172,11 @@ namespace Evolution.Sql.MySqlTest
                     FirstName = "Bruce",
                     LastName = "Lee"
                 };
-                var result = sqlSession.Execute<User>("insert", user);
+                var result = connection.Sql("insert into `user`(UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);")
+                    .Execute(user);
                 Assert.Greater(result, 0);
 
-                var userFromDb = sqlSession.QueryOne<User>("getPartialCol", new { UserId = userId });
+                var userFromDb = connection.Sql("select UserId, FirstName, CreatedOn from `user` where userid = @userId").Query<User>(new { UserId = userId })?.FirstOrDefault();
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
                 Assert.AreEqual(default(DateTime), userFromDb.CreatedOn);

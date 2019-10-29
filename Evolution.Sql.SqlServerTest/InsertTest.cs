@@ -23,16 +23,18 @@ namespace Evolution.Sql.SqlServerTest
         [Test]
         public void Insert_With_Inline_Sql()
         {
-            var connection = new SqlConnection(connectionStr);
-            using (var sqlSession = new SqlSession(connection))
+            using(var connection = new SqlConnection(connectionStr))
             {
                 var user = new User
                 {
                     UserId = Guid.NewGuid(),
                     FirstName = "Bruce",
-                    LastName = "Lee"
+                    LastName = "Lee",
+                    CreatedOn = DateTime.Now
                 };
-                var result = sqlSession.Execute<User>("insert", user);
+                var result = connection.Sql(@"insert into [user](UserId, FirstName, LastName, CreatedOn) 
+                                                values(@UserId, @FirstName, @LastName, @CreatedOn)")
+                    .Execute(user);
                 Assert.Greater(result, 0);
             }
         }
@@ -40,21 +42,23 @@ namespace Evolution.Sql.SqlServerTest
         [Test]
         public async Task Insert_With_Inline_Sql_Auto_Generated_Id()
         {
-            using (ISqlSession sqlSession = new SqlSession(new SqlConnection(connectionStr)))
+            using (var connection = new SqlConnection(connectionStr))
             {
                 var tag = new Tag
                 {
                     Name = "CSharp",
                     Description = "programe language i love"
                 };
-                var tagId1 = sqlSession.ExecuteScalar<Tag>("insert", tag);
+                var tagId1 = await connection.Sql("insert into [tag] values(@Name, @Description) select SCOPE_IDENTITY()")
+                    .ExecuteScalarAsync(tag);
                 Assert.Greater(int.Parse(tagId1.ToString()), 0);
                 tag = new Tag
                 {
                     Name = "C",
                     Description = "mother langugae"
                 };
-                var tagId2 = await sqlSession.ExecuteScalarAsync("insert", tag);
+                var tagId2 = await connection.Sql("insert into [tag] values(@Name, @Description) select SCOPE_IDENTITY()")
+                    .ExecuteScalarAsync(tag);
                 Assert.Greater(int.Parse(tagId2.ToString()), 0);
                 Assert.AreNotEqual(tagId1, tagId2);
             }
@@ -63,17 +67,19 @@ namespace Evolution.Sql.SqlServerTest
         [Test]
         public void Insert_With_StoredProcedure()
         {
-            var connection = new SqlConnection(connectionStr);
-            using (ISqlSession sqlSession = new SqlSession(connection))
+            using (var connection = new SqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
                 var user = new User
                 {
                     UserId = userId,
                     FirstName = "Bruce",
-                    LastName = "Lee"
+                    LastName = "Lee",
+                    CreatedOn = DateTime.Now// DateTime.MinValue
                 };
-                sqlSession.Execute<User>("insert", user);
+                connection.Sql(@"insert into [user](UserId, FirstName, LastName, CreatedOn) 
+                                                values(@UserId, @FirstName, @LastName, @CreatedOn)")
+                    .Execute(user);
 
                 var blog = new Blog
                 {
@@ -85,13 +91,13 @@ namespace Evolution.Sql.SqlServerTest
                 };
 
                 var outPuts = new Dictionary<string, dynamic> ();
-                sqlSession.Execute<Blog>("insert", blog, outPuts);
+                connection.Procedure("uspBlogIns").Execute(blog, outPuts);
                 var postId = outPuts["BlogId"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
                 // just for test cache parameter
                 outPuts = new Dictionary<string, dynamic>();
-                sqlSession.Execute<Blog>("insert", blog, outPuts);
+                connection.Procedure("uspBlogIns").Execute(blog, outPuts);
                 postId = outPuts["BlogId"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);

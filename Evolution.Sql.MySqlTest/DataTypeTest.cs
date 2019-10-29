@@ -1,4 +1,4 @@
-﻿using Evolution.Sql.TestCommon.Modal;
+﻿using Evolution.Sql.MySqlTest.Modal;
 using MySql.Data.MySqlClient;
 using NUnit.Framework;
 using System;
@@ -20,9 +20,11 @@ namespace Evolution.Sql.MySqlTest
         {
             DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
         }
+
+        [Test]
         public void DataType_Test()
         {
-            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
+            using (var connection = new MySqlConnection(connectionStr))
             {
                 var location = new Uri(Assembly.GetEntryAssembly().GetName().CodeBase);
                 var directory = new FileInfo(location.AbsolutePath).Directory.FullName;
@@ -30,69 +32,77 @@ namespace Evolution.Sql.MySqlTest
 
                 var dataTypeModel = new DataTypeModal
                 {
-                    ColBigInt = 9223372036854775807,
-                    ColBit = true,
-                    ColDecimal = 100000000.1234m,
-                    ColInt = 123456789,
-                    ColMoney = 100000000.1234m,//money only has 4 numbers at right
-                    ColNumeric = 100000000.1234m,
+                    ColTinyInt = 127,
                     ColSmallInt = (short)32767,
-                    ColSmallMoney = 1.1m,
-                    ColTinyInt = 225,
-                    ColFloat = 100000000.123456789,
-                    ColReal = 100000000.123456789f,
+                    ColMediumInt = 8388607,
+                    ColInt = 123456789,
+                    ColBigInt = 9223372036854775807,
+
+                    ColDecimal = 1.1234m,
+                    ColNumeric = 100000.1234m,
+
+                    ColFloat = 100000000.123456789f,
+                    ColDouble = 100000000.123456789,
+                    ColReal = 100000000.123456789,
+
+                    ColBit = true,
+
+                    ColDateTime = DateTime.Now,
                     ColDate = DateTime.Now,
-                    ColDatetime = DateTime.Now,
-                    ColDatetime2 = DateTime.Now,
-                    ColDatetimeOffset = DateTimeOffset.Now,
-                    ColSmallDatetime = DateTime.Now,
-                    //ColTime = new TimeSpan(23, 59, 59),
-                    ColTime = DateTime.Now,
-                    ColChar = new char[] { 't', 'h', 'i', 's', ' ', 'a', ' ', 'c', 'h', 'a', 'r' },
+                    //ColTime = DateTime.Now,
+                    ColTime = new TimeSpan(23, 59, 59),
+                    ColTimeStamp = new DateTime(2019, 10, 27, 16, 1, 1),
+                    ColYear = 2019,
+
+                    //ColChar = new char[] { 't', 'h', 'i', 's', ' ', 'a', ' ', 'c', 'h', 'a', 'r' },
+                    ColChar = "this is a char array",
+                    ColVarchar = "this is a varchar string",
+                    ColTinyText = "this is a tiny text",
                     ColText = "this is a text",
-                    ColVarchar = new char[] { 't', 'h', 'i', 's', ' ', 'a', ' ', 'v', 'a', 'r', ' ', 'c', 'h', 'a', 'r' },
-                    ColNChar = new char[] { 'a', 'b', 'c' },
-                    ColNText = "这是一段文字",
-                    ColNVarchar = new char[] { '这', '也', '是', '一', '段', '文', '字' },
-                    ColBinary = bytes,
-                    ColImage = bytes,
-                    ColVarBinary = bytes,
-                    ColXml = @"<note><to>Tove</to><from>Jani</from><heading>Reminder</heading><body>Don't forget me this weekend!</body></note>"
+                    ColMediumText = "this is a medium text",
+                    ColLongText = "this is a long text",
+
+                    ColBinary = bytes.Take(255).ToArray(),
+                    ColVarBinary = bytes.Take(8000).ToArray(),
+                    ColTinyBlob = bytes.Take(255).ToArray(),
+                    ColBlob = bytes.Take(8000).ToArray(),
+                    ColMediumBlob = bytes,
+                    ColLongBlob = bytes,
+                    ColJson = "{\"employee\":{\"name\":\"sonoo\",\"salary\":56000,\"married\":true}}",
+                    ColBool = true
                 };
-                var result = sqlSession.Execute<DataTypeModal>("insert", dataTypeModel);
+                var result = connection.Procedure("usp_data_type_ins").Execute(dataTypeModel);
                 Assert.Greater(result, 0);
-                var dataFromDb = sqlSession.Query<DataTypeModal>("getall", null);
+                var dataFromDb = connection.Sql("SELECT * FROM `data_type` ORDER BY ColDateTime").Query<DataTypeModal>(null);
                 Assert.NotNull(dataFromDb);
                 Assert.Greater(dataFromDb.Count(), 0);
                 var newOne = dataFromDb.First();
                 Assert.AreEqual(dataTypeModel.ColBigInt, newOne.ColBigInt);
                 Assert.AreEqual(dataTypeModel.ColBinary.Take(1000), newOne.ColBinary);
                 Assert.AreEqual(dataTypeModel.ColBit, newOne.ColBit);
-                Assert.AreEqual(dataTypeModel.ColChar, newOne.ColChar.Take(11));
+                Assert.AreEqual(dataTypeModel.ColChar, newOne.ColChar);
                 //Assert.AreEqual(dataTypeModel.ColDate, newOne.ColDate);
                 //Assert.AreEqual(dataTypeModel.ColDatetime, newOne.ColDatetime);
-                Assert.AreEqual(dataTypeModel.ColDatetime2, newOne.ColDatetime2);
-                Assert.AreEqual(dataTypeModel.ColDatetimeOffset, newOne.ColDatetimeOffset);
+
                 Assert.AreEqual(dataTypeModel.ColDecimal, newOne.ColDecimal);
                 Assert.AreEqual(dataTypeModel.ColFloat, newOne.ColFloat);
-                Assert.AreEqual(dataTypeModel.ColImage, newOne.ColImage);
+
                 Assert.AreEqual(dataTypeModel.ColInt, newOne.ColInt);
-                Assert.AreEqual(dataTypeModel.ColMoney, newOne.ColMoney);
-                Assert.AreEqual(dataTypeModel.ColNChar, newOne.ColNChar.Take(3));
-                Assert.AreEqual(dataTypeModel.ColNText, newOne.ColNText);
+
+
                 Assert.AreEqual(dataTypeModel.ColNumeric, newOne.ColNumeric);
-                Assert.AreEqual(dataTypeModel.ColNVarchar, newOne.ColNVarchar);
+
                 Assert.AreEqual(dataTypeModel.ColReal, newOne.ColReal);
                 //Assert.AreEqual(dataTypeModel.ColSmallDatetime, newOne.ColSmallDatetime);
                 Assert.AreEqual(dataTypeModel.ColSmallInt, newOne.ColSmallInt);
-                Assert.AreEqual(dataTypeModel.ColSmallMoney, newOne.ColSmallMoney);
+
                 Assert.AreEqual(dataTypeModel.ColText, newOne.ColText);
                 //Assert.AreEqual(dataTypeModel.ColTime, newOne.ColTime);
                 //Assert.AreEqual(dataTypeModel.ColTimestamp, newOne.ColTimestamp);
                 Assert.AreEqual(dataTypeModel.ColTinyInt, newOne.ColTinyInt);
                 Assert.AreEqual(dataTypeModel.ColVarBinary, newOne.ColVarBinary);
                 Assert.AreEqual(dataTypeModel.ColVarchar, newOne.ColVarchar);
-                Assert.AreEqual(dataTypeModel.ColXml, newOne.ColXml);
+                Assert.AreEqual(dataTypeModel.ColBool, newOne.ColBool);
             }
         }
     }

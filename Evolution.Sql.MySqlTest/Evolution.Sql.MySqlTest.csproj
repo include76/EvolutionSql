@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="SqlSessionTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Mysql.Data" Version="8.0.18" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
@@ -16,6 +20,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Evolution.Sql.TestCommon\Evolution.Sql.TestCommon.csproj" />
     <ProjectReference Include="..\Evolution.Sql\Evolution.Sql.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="bridge.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

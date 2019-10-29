@@ -5,7 +5,9 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Evolution.Sql.SqlServerTest
 {
@@ -20,10 +22,9 @@ namespace Evolution.Sql.SqlServerTest
         }
 
         [Test]
-        public void QueryOne_With_Inline_Sql()
+        public async Task QueryOne_With_Inline_Sql()
         {
-            var connection = new SqlConnection(connectionStr);
-            using (var sqlSession = new SqlSession(connection))
+            using (var connection = new SqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
                 var user = new User
@@ -33,15 +34,19 @@ namespace Evolution.Sql.SqlServerTest
                     LastName = "Lee",
                     CreatedOn = DateTime.Now
                 };
-                var result = sqlSession.Execute<User>("insert", user);
+                var result = connection.Sql(@"insert into [user](UserId, FirstName, LastName, CreatedOn) 
+                                                values(@UserId, @FirstName, @LastName, @CreatedOn)")
+                    .Execute(user);
                 Assert.Greater(result, 0);
 
-                var userFromDb = sqlSession.QueryOne<User>("get", new { UserId = userId });
+                var userFromDb = connection.Sql("select * from [user] where userid = @UserId")
+                    .Query<User>(new { UserId = userId })?.FirstOrDefault();
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
 
                 userFromDb = null;
-                userFromDb = sqlSession.QueryOne<User>("get", new { UserId = userId });
+                userFromDb = (await connection.Sql("select * from [user] where userid = @UserId")
+                    .QueryAsync<User>(new { UserId = userId }))?.FirstOrDefault();
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
             }
@@ -50,8 +55,7 @@ namespace Evolution.Sql.SqlServerTest
         [Test]
         public void QueryOne_With_StoredProcedure()
         {
-            var connection = new SqlConnection(connectionStr);
-            using (var sqlSession = new SqlSession(connection))
+            using (var connection = new SqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
                 var user = new User
@@ -60,11 +64,13 @@ namespace Evolution.Sql.SqlServerTest
                     FirstName = "Bruce",
                     LastName = "Lee"
                 };
-                var result = sqlSession.Execute<User>("insert", user);
+                var result = connection.Sql(@"insert into [user](UserId, FirstName, LastName) 
+                                                values(@UserId, @FirstName, @LastName)")
+                    .Execute(user);
                 Assert.Greater(result, 0);
 
                 var outPuts = new Dictionary<string, dynamic>();
-                var userFromDb = sqlSession.QueryOne<User>("uspUserGet", new { UserId = userId }, outPuts);
+                var userFromDb = connection.Procedure("uspUserGet").Query<User>(new { UserId = userId }, outPuts).FirstOrDefault();
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
                 Assert.True(outPuts.ContainsKey("totalCount"));
@@ -87,8 +93,7 @@ namespace Evolution.Sql.SqlServerTest
         [Test]
         public void Get_Null_Value_From_DB_Property_Should_Set_Default_Value()
         {
-            var connection = new SqlConnection(connectionStr);
-            using (var sqlSession = new SqlSession(connection))
+            using (var connection = new SqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
                 var user = new User
@@ -97,10 +102,13 @@ namespace Evolution.Sql.SqlServerTest
                     FirstName = "Bruce",
                     LastName = "Lee"
                 };
-                var result = sqlSession.Execute<User>("insert", user);
+                var result = connection.Sql(@"insert into [user](UserId, FirstName, LastName) 
+                                                values(@UserId, @FirstName, @LastName)")
+                    .Execute(user);
                 Assert.Greater(result, 0);
 
-                var userFromDb = sqlSession.QueryOne<User>("getPartialCol", new { UserId = userId });
+                var userFromDb = connection.Sql("select UserId, FirstName, CreatedOn from [user] where userid = @userId")
+                    .Query<User>(new { UserId = userId })?.FirstOrDefault(); 
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
                 Assert.AreEqual(default(DateTime), userFromDb.CreatedOn);

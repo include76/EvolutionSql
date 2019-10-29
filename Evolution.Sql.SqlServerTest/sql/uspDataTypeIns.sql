@@ -57,6 +57,6 @@ BEGIN
 		@ColImage	, 
 		@ColVarBinary ,
 		@ColXml		,
-		null
+		default
 	)
 END

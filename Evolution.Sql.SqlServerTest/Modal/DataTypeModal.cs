@@ -6,8 +6,6 @@ using System.Text;
 
 namespace Evolution.Sql.SqlServerTest.Modal
 {
-    [Command(Name = "insert", Text = "uspDataTypeIns")]
-    [Command(Name = "getall", Text = "SELECT * FROM [DataTypeTable] ORDER BY ColDateTime DESC", CommandType = CommandType.Text)]
     public class DataTypeModal
     {
         public long? ColBigInt { get; set; }

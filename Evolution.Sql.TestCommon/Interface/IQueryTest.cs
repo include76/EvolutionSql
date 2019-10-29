@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Evolution.Sql.TestCommon.Interface
 {
     public interface IQueryTest
     {
-        void QueryOne_With_Inline_Sql();
+        Task QueryOne_With_Inline_Sql();
         void QueryOne_With_StoredProcedure();
 
         void Query_With_Inline_Sql();

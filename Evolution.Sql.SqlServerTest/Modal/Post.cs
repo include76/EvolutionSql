@@ -5,7 +5,6 @@ using System.Text;
 
 namespace Evolution.Sql.SqlServerTest.Modal
 {
-    [Command(Name = "Insert", Text = "insert into Post values(@content, @createdBy, @CreatedOn) select SCOPE_IDENTITY()", CommandType = System.Data.CommandType.Text)]
     public class Post
     {
         public int Id { get; set; }

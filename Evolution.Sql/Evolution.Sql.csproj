@@ -2,13 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>0.2.0</Version>
+    <Version>0.2.2</Version>
     <Authors>Locke Duan</Authors>
     <PackageProjectUrl>https://github.com/lockeduan/EvolutionSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/lockeduan/EvolutionSql</RepositoryUrl>
     <Description>Simple decoration style database access library</Description>
-    <PackageReleaseNotes>add SqlSession.Async</PackageReleaseNotes>
+    <PackageReleaseNotes>Update datatype test</PackageReleaseNotes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ISqlSession.cs" />
+    <Compile Remove="SqlSession.Async.cs" />
+    <Compile Remove="SqlSession.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="system.data.common" Version="4.3.0" />

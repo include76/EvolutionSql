@@ -1,17 +1,13 @@
-﻿/***
- * Author: Locke Duan
- * Date: 2019-10-18
- ***/
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace Evolution.Sql.CommandAdapter
+namespace Evolution.Sql.Command
 {
-    public class CommandAdapterMySql : AbstractCommandAdapter
+    public class MySqlCommand : AbstractCommand
     {
-        public CommandAdapterMySql() : base()
+        public MySqlCommand() : base()
         {
             //https://dev.mysql.com/doc/workbench/en/wb-migration-database-mssql-typemapping.html
             DbDataTypeDbTypeMap = new Dictionary<string, DbType>()
