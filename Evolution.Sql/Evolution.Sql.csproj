@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>0.2.2</Version>
+    <Version>0.3.0</Version>
     <Authors>Locke Duan</Authors>
     <PackageProjectUrl>https://github.com/lockeduan/EvolutionSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/lockeduan/EvolutionSql</RepositoryUrl>
-    <Description>Simple decoration style database access library</Description>
-    <PackageReleaseNotes>Update datatype test</PackageReleaseNotes>
+    <Description>Simple .NET  Data Access library</Description>
+    <PackageReleaseNotes>Use DbConnection Extension</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
