@@ -1,28 +1,21 @@
 # EvolutionSql
-Simple dot net decoration style database access library, if you don't like Full-ORM framework like EntityFramework, and you want to write your own sql and/or stored procedure, EvolutionSql is what you want.
+Simple dot net database access library, if you don't like Full-ORM framework like EntityFramework, and you want to write your own sql and/or stored procedure, EvolutionSql is what you want.
+
+by using EvolutionSql, it's very simple to execute either inline sql or stored procedure; EvolutionSql extend DbConnection with two methods Sql() and Procedure(), for execute inline sql and stored procedure respectively.
 
 ## Supported Database
 - [x] Mysql
 - [x] SqlServer
 - [ ] PostgreSql in near furture
 
-## Core component
-1. CommandAttribute, attribute to decorate your modals, define your command <br/>
-2. SqlSession, which manage connection, transaction and execute your command
-
 ## Sample
 ```c#
-  //define your command via CommandAttribute on you modal
-  [Command(Name = "Insert"
-        , Text = @"insert into [user](UserId, FirstName, LastName) values(@UserId, @FirstName, @LastName);"
-        , CommandType = CommandType.Text)]
-  [Command(Name = "uspUserGet", Text = "uspUserGet")]
+
   public class User
   {
       public Guid UserId { get; set; }
       public string FirstName { get; set; }
       public string LastName { get; set; }
-
       public DateTime CreatedOn { get; set; }
       public DateTime UpdatedOn { get; set; }
   }
@@ -34,12 +27,14 @@ Simple dot net decoration style database access library, if you don't like Full-
   {
       UserId = Guid.NewGuid(),
       FirstName = "Bruce",
-      LastName = "Lee"
+      LastName = "Lee",
+      CreatedOn = DateTime.Now
   };
   //
-  using (var sqlSession = new SqlSession(new SqlConnection(connectionStr)))
+  using (var connection = new SqlConnection(connectionStr))
   {
-    var result = sqlSession.Execute<User>("insert", user);
+    var result = connection.Sql(@"insert into [user](UserId, FirstName, LastName, CreatedOn) 
+                                  values(@UserId, @FirstName, @LastName, @CreatedOn)").Execute(user);
   }
 ```
 
@@ -64,8 +59,8 @@ Simple dot net decoration style database access library, if you don't like Full-
   
   // if you want the output value from the stored procedure
   var outPuts = new Dictionary<string, dynamic>();
-  using (var sqlSession = new SqlSession(new SqlConnection(connectionStr)))
+  using (var connection = new SqlConnection(connectionStr))
   {
-    var userFromDb = sqlSession.QueryOne<User>("uspUserGet", new { UserId = userId }, outPuts);
+      var userFromDb = connection.Procedure("uspUserGet").Query<User>(new { UserId = userId }, outPuts).FirstOrDefault();
   }
 ```
