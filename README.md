@@ -1,5 +1,5 @@
 # EvolutionSql
-Simple dot net database access library, if you don't like Full-ORM framework like EntityFramework, and you want to write your own sql and/or stored procedure, EvolutionSql is what you want.
+Simple dot net database access library, if you don't like Full-ORM framework such as EntityFramework, and you want to write your own sql and/or stored procedure, EvolutionSql is what you want.
 
 by using EvolutionSql, it's very simple to execute either inline sql or stored procedure; EvolutionSql extend DbConnection with two methods ```Sql()``` and ```Procedure()```, for execute inline sql and stored procedure respectively.
 
