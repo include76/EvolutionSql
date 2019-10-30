@@ -64,3 +64,7 @@ by using EvolutionSql, it's very simple to execute either inline sql or stored p
       var userFromDb = connection.Procedure("uspUserGet").Query<User>(new { UserId = userId }, outPuts).FirstOrDefault();
   }
 ```
+## Result mapping
+When query from database, column name are auto mapped to property of modal, the following two pattern are legal, and both case-insensitive
+1. column name and property name are same: FirstName -> FirstName
+2. column name with under score: first_name -> FirstName
