@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +10,58 @@ namespace Evolution.Sql
 {
     public static class CommandExtension
     {
+        #region QueryOne
+        public static T QueryOne<T>(this ICommand iCommand, object parameters) where T : class, new()
+        {
+            using (var dbCommand = iCommand.Build(parameters))
+            {
+                using (var reader = dbCommand.ExecuteReader())
+                {
+                    return reader.ToEntities<T>()?.FirstOrDefault();
+                }
+            }
+        }
+
+        public static T QueryOne<T>(this ICommand iCommand, object parameters, Dictionary<string, dynamic> outputs) where T : class, new()
+        {
+            using (var dbCommand = iCommand.Build(parameters))
+            {
+                T result;
+                using (var reader = dbCommand.ExecuteReader())
+                {
+                    result = reader.ToEntities<T>()?.FirstOrDefault();
+                }
+                SetOutputParameters(dbCommand, outputs);
+                return result;
+            }
+        }
+
+        public static async Task<T> QueryOneAsync<T>(this ICommand iCommand, object parameters) where T : class, new()
+        {
+            using (var dbCommand = iCommand.Build(parameters))
+            {
+                using (var reader = await dbCommand.ExecuteReaderAsync())
+                {
+                    return reader.ToEntities<T>()?.FirstOrDefault();
+                }
+            }
+        }
+
+        public static async Task<T> QueryOneAsync<T>(this ICommand iCommand, object parameters, Dictionary<string, dynamic> outputs) where T : class, new()
+        {
+            using (var dbCommand = iCommand.Build(parameters))
+            {
+                T result;
+                using (var reader = await dbCommand.ExecuteReaderAsync())
+                {
+                    result = reader.ToEntities<T>()?.FirstOrDefault();
+                }
+                SetOutputParameters(dbCommand, outputs);
+                return result;
+            }
+        }
+        #endregion
+
         #region Query
         public static IEnumerable<T> Query<T>(this ICommand iCommand, object parameters) where T : class, new()
         {
