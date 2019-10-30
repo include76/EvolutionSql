@@ -190,6 +190,9 @@ namespace Evolution.Sql
                         }
                     }
                     PropertyInfo property;
+                    //# remove underscore and parameter prefix from sp parameters,
+                    //# so that can match property name
+                    //# eg. p_first_name -> FirstName
                     string normalizePrameterName;
                     foreach (DbParameter param in dbCommand.Parameters)
                     {
@@ -197,8 +200,13 @@ namespace Evolution.Sql
                         {
                             continue;
                         }
-                        
-                        property = properties.FirstOrDefault(p => p.Name.ToUpper() == param.ParameterName.ToUpper());
+                        normalizePrameterName = param.ParameterName;
+                        if (!string.IsNullOrEmpty(ParameterPrefix))
+                        {
+                            normalizePrameterName = normalizePrameterName.Substring(ParameterPrefix.Length, normalizePrameterName.Length - ParameterPrefix.Length);
+                        }
+                        normalizePrameterName = normalizePrameterName.Replace("_", "");
+                        property = properties.FirstOrDefault(p => p.Name.ToUpper() == normalizePrameterName.ToUpper());
                         if (property != null)
                         {
                             //param.DbType = GetDbTypeByClrType(property.PropertyType);

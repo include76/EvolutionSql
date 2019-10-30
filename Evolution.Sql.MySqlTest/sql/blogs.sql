@@ -7,8 +7,10 @@ CREATE TABLE `user`(
 	user_id CHAR(36) NOT NULL,
 	first_name VARCHAR(256) NOT NULL,
 	last_name VARCHAR(256) NOT NULL,
-	created_by DATETIME,
+	created_by VARCHAR(256),
 	created_on DATETIME,
+	updated_by VARCHAR(256),
+	updated_on DATETIME,
 	CONSTRAINT pk_user PRIMARY KEY(user_id)
 )ENGINE=INNODB DEFAULT CHARSET = UTF8;
 
