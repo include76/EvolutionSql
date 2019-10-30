@@ -17,7 +17,7 @@ namespace Evolution.Sql
         protected static char[] rightQuote = new char[] { ']', '\'', '`', '"' };
         protected string ParameterPattern
         {
-            get { return ParameterPrefix + "([^',;=<>\\s\\)]+)"; }
+            get { return ParameterSymbal + "([^',;=<>\\s\\)]+)"; }
         }
 
         protected virtual string Sql2GetProcedureParameters
@@ -27,11 +27,12 @@ namespace Evolution.Sql
 
         protected virtual string DefaultSchema { get; }
 
-        protected virtual string ParameterPrefix => "@";
+        protected virtual string ParameterSymbal => "@";
 
         public DbConnection Connection { get ; set ; }
         public CommandType CommandType { get ; set ; }
         public string CommandText { get ; set ; }
+        public string ParameterPrefix { get; set; }
 
         protected virtual Dictionary<string, DbType> DbDataTypeDbTypeMap { get; set; }
 
@@ -142,7 +143,7 @@ namespace Evolution.Sql
             var parameterName = string.Empty;
             foreach (var item in results)
             {
-                parameterName = item.ToString().TrimStart(ParameterPrefix.ToCharArray());
+                parameterName = item.ToString().TrimStart(ParameterSymbal.ToCharArray());
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = parameterName;
                 //#Note: sql parameter not set DbType, the DbType will infered when assign value
@@ -189,12 +190,14 @@ namespace Evolution.Sql
                         }
                     }
                     PropertyInfo property;
+                    string normalizePrameterName;
                     foreach (DbParameter param in dbCommand.Parameters)
                     {
                         if (param.Direction == ParameterDirection.Output)
                         {
                             continue;
                         }
+                        
                         property = properties.FirstOrDefault(p => p.Name.ToUpper() == param.ParameterName.ToUpper());
                         if (property != null)
                         {

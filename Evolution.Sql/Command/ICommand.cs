@@ -9,5 +9,7 @@ namespace Evolution.Sql
     public interface ICommand
     {
         DbCommand Build(object parameters);
+
+        string ParameterPrefix { get; set; }
     }
 }

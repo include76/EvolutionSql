@@ -138,6 +138,12 @@ namespace Evolution.Sql
         }
         #endregion
 
+        public static ICommand ParameterPrefix(this ICommand iCommand, string prefix)
+        {
+            iCommand.ParameterPrefix = prefix;
+            return iCommand;
+        }
+
         #region private methods
         private static void SetOutputParameters(DbCommand dbCommand, Dictionary<string, dynamic> outPuts)
         {
