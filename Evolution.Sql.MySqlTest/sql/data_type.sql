@@ -11,6 +11,7 @@ CREATE TABLE data_type(
     ColDouble		double,
     ColReal			real,
     ColBit			bit,
+	ColDate			date,
     ColDateTime		datetime,
     ColTime			time,
     ColTimeStamp	timestamp,

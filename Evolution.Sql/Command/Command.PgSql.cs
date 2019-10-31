@@ -36,8 +36,16 @@ namespace Evolution.Sql.Command
                 {"timestamp", DbType.DateTime2},
                 {"date", DbType.Date  },
                 {"time", DbType.Time },
-                //{"interval" , DbType.}
+                {"interval" , DbType.String},
+                //
+                {"boolean", DbType.Boolean  },
+                
+                //bit string
 
+                //UUID
+                {"uuid", DbType.Guid },
+                //xml
+                {"xml", DbType.Xml },
             };
         }
     }
