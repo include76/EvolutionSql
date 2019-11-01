@@ -11,5 +11,7 @@ namespace Evolution.Sql
         DbCommand Build(object parameters);
 
         string ParameterPrefix { get; set; }
+
+        DbParameter[] ExplicitParameters { get; set; }
     }
 }

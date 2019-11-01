@@ -191,9 +191,31 @@ namespace Evolution.Sql
         }
         #endregion
 
+        /// <summary>
+        /// Indicate store procedure parameters have prefix
+        /// </summary>
+        /// <param name="iCommand"></param>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
         public static ICommand ParameterPrefix(this ICommand iCommand, string prefix)
         {
             iCommand.ParameterPrefix = prefix;
+            return iCommand;
+        }
+
+        /// <summary>
+        /// Set parameters explicitly
+        /// Parameters of Query, QueryOne, Execute, ExecuteScalar will be Ignored
+        /// ParameterPrefix will be Ignored
+        /// </summary>
+        /// <param name="iCommand"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public static ICommand SetParameters(this ICommand iCommand, params DbParameter [] parameters)
+        {
+            iCommand.ExplicitParameters = parameters;
+            // if explicit parameters set, disable ParameterPrefix
+            iCommand.ParameterPrefix = string.Empty;
             return iCommand;
         }
 

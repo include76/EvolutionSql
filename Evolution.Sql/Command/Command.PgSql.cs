@@ -11,7 +11,7 @@ namespace Evolution.Sql
         {
             DbDataTypeDbTypeMap = new Dictionary<string, DbType>()
             {
-                //Numeric
+                //# Numeric
                 {"smallint", DbType.Int16  },
                 {"integer",  DbType.Int32 },
                 {"bigint",  DbType.Int64 },
@@ -22,30 +22,36 @@ namespace Evolution.Sql
                 {"smallserial", DbType.UInt16 },
                 {"serial", DbType.UInt32 },
                 {"bigserial", DbType.UInt64 },
-                //Money
+                //# Money
                 {"money", DbType.Decimal },
-                //Character
+                //# Character
                 {"character varying", DbType.String },
                 {"varchar",  DbType.String},
                 {"character",  DbType.StringFixedLength},
                 {"char",  DbType.StringFixedLength },
                 {"text", DbType.String  },
-                //Binary
+                //# Binary
                 {"bytea",  DbType.Binary},
-                //Date/Time
+                //# Date/Time
                 {"timestamp", DbType.DateTime2},
                 {"date", DbType.Date  },
                 {"time", DbType.Time },
                 {"interval" , DbType.String},
-                //
+                //# Boolean
                 {"boolean", DbType.Boolean  },
-                
-                //bit string
+                //# Enuerated Type: TO BE DECIDED
+                //# Geometric Types: TO BE DECIDED
+                //# Network Address Types: TO BE DECIDED
+                //# bit string
 
-                //UUID
+                //# UUID
                 {"uuid", DbType.Guid },
-                //xml
+                //# xml
                 {"xml", DbType.Xml },
+                //# json
+                {"json", DbType.String },
+                {"jsonb", DbType.String },
+                {"jsonpath", DbType.String }
             };
         }
     }

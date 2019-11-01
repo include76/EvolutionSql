@@ -1,15 +1,14 @@
-﻿using Evolution.Sql.MySqlTest.Modal;
-using MySql.Data.MySqlClient;
+﻿using Evolution.Sql.PgSqlTest.Modal;
+using Npgsql;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Evolution.Sql.MySqlTest
+namespace Evolution.Sql.PgSqlTest
 {
     public class DataTypeTest
     {
@@ -18,12 +17,14 @@ namespace Evolution.Sql.MySqlTest
         [SetUp]
         public void Setup()
         {
+
         }
 
         [Test]
         public void DataType_Test()
         {
-            using (var connection = new MySqlConnection(connectionStr))
+            /*
+            using (var connection = new NpgsqlConnection(connectionStr))
             {
                 var location = new Uri(Assembly.GetEntryAssembly().GetName().CodeBase);
                 var directory = new FileInfo(location.AbsolutePath).Directory.FullName;
@@ -102,7 +103,8 @@ namespace Evolution.Sql.MySqlTest
                 Assert.AreEqual(dataTypeModel.ColVarBinary, newOne.ColVarBinary);
                 Assert.AreEqual(dataTypeModel.ColVarchar, newOne.ColVarchar);
                 Assert.AreEqual(dataTypeModel.ColBool, newOne.ColBool);
-            }
+                
+            }*/
         }
     }
 }
