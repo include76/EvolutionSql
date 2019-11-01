@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Evolution.Sql.Command
+namespace Evolution.Sql
 {
     internal sealed class CommandFactory
     {

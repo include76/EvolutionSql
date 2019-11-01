@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Attribute\CommandAttribute.cs" />
     <Compile Remove="ISqlSession.cs" />
     <Compile Remove="SqlSession.Async.cs" />
     <Compile Remove="SqlSession.cs" />
@@ -24,6 +25,10 @@
 
   <ItemGroup>
     <PackageReference Include="system.data.common" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Attribute\" />
   </ItemGroup>
 
 </Project>
