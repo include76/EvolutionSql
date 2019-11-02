@@ -1,5 +1,6 @@
 ﻿using Evolution.Sql.PgSqlTest.Modal;
 using Evolution.Sql.TestCommon.Interface;
+using Npgsql;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace Evolution.Sql.PgSqlTest
 {
-    public class QueryTest: IQueryTest
+    public class QueryTest : IQueryTest
     {
-        private string connectionStr = @"server=localhost;user=root;database=blog;port=3306;password=root";
+        private string connectionStr = @"Server=127.0.0.1;Port=5432;Database=blog;User Id=postgres;Password=";
         [SetUp]
         public void Setup()
         {
@@ -22,8 +23,7 @@ namespace Evolution.Sql.PgSqlTest
         [Test]
         public async Task QueryOne_With_Inline_Sql()
         {
-            /*
-            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
+            using (var connection = new NpgsqlConnection(connectionStr))
             {
                 var userId1 = Guid.NewGuid();
                 var user = new User
@@ -33,10 +33,13 @@ namespace Evolution.Sql.PgSqlTest
                     LastName = "Lee",
                     CreatedOn = DateTime.Now
                 };
-                var result = sqlSession.Execute<User>("insert", user);
+
+                var result = connection.Sql("insert into \"user\"(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
+                   .Execute(user);
                 Assert.Greater(result, 0);
 
-                var bruce = sqlSession.QueryOne<User>("get", new { UserId = userId1 });
+                var bruce = connection.Sql("select * from \"user\" where user_id = @UserId")
+                    .Query<User>(new { UserId = userId1 })?.FirstOrDefault();
                 Assert.IsNotNull(bruce);
                 Assert.AreEqual(userId1, bruce.UserId);
 
@@ -49,15 +52,16 @@ namespace Evolution.Sql.PgSqlTest
                     CreatedOn = DateTime.Now
                 };
 
-                result = sqlSession.Execute<User>("insert", user);
+                result = await connection.Sql("insert into \"user\"(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
+                    .ExecuteAsync(user);
                 Assert.Greater(result, 0);
 
-                var tom = sqlSession.QueryOne<User>("get", new { UserId = userId2 });
+                var tom = await connection.Sql("select * from \"user\" where user_id = @UserId").QueryOneAsync<User>(new { UserId = userId2 });
                 Assert.IsNotNull(tom);
                 Assert.AreEqual(userId2, tom.UserId);
 
                 Assert.AreNotEqual(bruce.FirstName, tom.FirstName);
-            }*/
+            }
         }
 
         [Test]

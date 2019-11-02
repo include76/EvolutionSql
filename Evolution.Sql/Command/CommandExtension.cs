@@ -11,6 +11,10 @@ namespace Evolution.Sql
     public static class CommandExtension
     {
         #region QueryOne
+        public static T QueryOne<T>(this ICommand iCommand) where T : class, new()
+        {
+            return iCommand.QueryOne<T>(null);
+        }
         public static T QueryOne<T>(this ICommand iCommand, object parameters) where T : class, new()
         {
             using (var dbCommand = iCommand.Build(parameters))
@@ -18,7 +22,7 @@ namespace Evolution.Sql
                 using (var reader = dbCommand.ExecuteReader())
                 {
                     return reader.ToEntities<T>()?.FirstOrDefault();
-                }
+                } 
             }
         }
 
@@ -36,6 +40,10 @@ namespace Evolution.Sql
             }
         }
 
+        public static async Task<T> QueryOneAsync<T>(this ICommand iCommand) where T : class, new()
+        {
+            return await iCommand.QueryOneAsync<T>(null);
+        }
         public static async Task<T> QueryOneAsync<T>(this ICommand iCommand, object parameters) where T : class, new()
         {
             using (var dbCommand = iCommand.Build(parameters))
@@ -63,6 +71,10 @@ namespace Evolution.Sql
         #endregion
 
         #region Query
+        public static IEnumerable<T> Query<T>(this ICommand iCommand) where T : class, new()
+        {
+            return iCommand.Query<T>(null);
+        }
         public static IEnumerable<T> Query<T>(this ICommand iCommand, object parameters) where T : class, new()
         {
             using (var dbCommand = iCommand.Build(parameters))
@@ -88,6 +100,10 @@ namespace Evolution.Sql
             }
         }
 
+        public static async Task<IEnumerable<T>> QueryAsync<T>(this ICommand iCommand) where T : class, new()
+        {
+            return await iCommand.QueryAsync<T>(null);
+        }
         public static async Task<IEnumerable<T>> QueryAsync<T>(this ICommand iCommand, object parameters) where T : class, new()
         {
             using (var dbCommand = iCommand.Build(parameters))
@@ -115,6 +131,10 @@ namespace Evolution.Sql
         #endregion
 
         #region Execute
+        public static int Execute(this ICommand iCommand)
+        {
+            return iCommand.Execute(null);
+        }
         public static int Execute(this ICommand iCommand, object parameters)
         {
             using (var dbCommand = iCommand.Build(parameters))
@@ -133,6 +153,10 @@ namespace Evolution.Sql
             }
         }
 
+        public static async Task<int> ExecuteAsync(this ICommand iCommand)
+        {
+            return await iCommand.ExecuteAsync(null);
+        }
         public static async Task<int> ExecuteAsync(this ICommand iCommand, object parameters)
         {
             using (var dbCommand = iCommand.Build(parameters))
@@ -153,6 +177,10 @@ namespace Evolution.Sql
         #endregion
 
         #region ExecuteScalar
+        public static object ExecuteScalar(this ICommand iCommand)
+        {
+            return iCommand.ExecuteScalar(null);
+        }
         public static object ExecuteScalar(this ICommand iCommand, object parameters)
         {
             using (var dbCommand = iCommand.Build(parameters))
@@ -172,6 +200,10 @@ namespace Evolution.Sql
             }
         }
 
+        public static async Task<object> ExecuteScalarAsync(this ICommand iCommand)
+        {
+            return await ExecuteScalarAsync(null);
+        }
         public static async Task<object> ExecuteScalarAsync(this ICommand iCommand, object parameters)
         {
             using (var dbCommand = iCommand.Build(parameters))
@@ -180,7 +212,7 @@ namespace Evolution.Sql
                 return result;
             }
         }
-        public static async Task<object> ExecuteScalarAsync<T>(this ICommand iCommand, object parameters, Dictionary<string, dynamic> outputs)
+        public static async Task<object> ExecuteScalarAsync(this ICommand iCommand, object parameters, Dictionary<string, dynamic> outputs)
         {
             using (var dbCommand = iCommand.Build(parameters))
             {
@@ -211,7 +243,7 @@ namespace Evolution.Sql
         /// <param name="iCommand"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public static ICommand SetParameters(this ICommand iCommand, params DbParameter [] parameters)
+        public static ICommand WithParameters(this ICommand iCommand, params DbParameter [] parameters)
         {
             iCommand.ExplicitParameters = parameters;
             // if explicit parameters set, disable ParameterPrefix

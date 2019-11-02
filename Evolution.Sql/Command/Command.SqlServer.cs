@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Evolution.Sql
 {
-    public class SqlServerCommand : AbstractCommand
+    internal class SqlServerCommand : AbstractCommand
     {
         protected override string DefaultSchema
         {
@@ -32,7 +32,7 @@ namespace Evolution.Sql
                 { "float",              DbType.Double },
                 { "image",              DbType.Binary },
                 { "int",                DbType.Int32 },
-                { "money",              DbType.Decimal },
+                { "money",              DbType.Currency },
                 { "nchar",              DbType.StringFixedLength },
                 { "ntext",              DbType.String },
                 { "numeric",            DbType.Decimal },

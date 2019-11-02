@@ -12,6 +12,6 @@ namespace Evolution.Sql
 
         string ParameterPrefix { get; set; }
 
-        DbParameter[] ExplicitParameters { get; set; }
+        internal DbParameter[] ExplicitParameters { get; set; }
     }
 }

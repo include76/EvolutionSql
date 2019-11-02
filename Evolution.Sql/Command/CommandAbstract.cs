@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace Evolution.Sql
 {
-    public abstract class AbstractCommand : ICommand
+    internal abstract class AbstractCommand : ICommand
     {
         private Regex regex;
         protected static char[] leftQuote = new char[] { '[', '\'', '`', '"' };
@@ -33,7 +33,13 @@ namespace Evolution.Sql
         public CommandType CommandType { get; set; }
         public string CommandText { get; set; }
         public string ParameterPrefix { get; set; }
-        public DbParameter[] ExplicitParameters { get; set; }
+
+        DbParameter[] _explicitParameters;
+        DbParameter[] ICommand.ExplicitParameters
+        {
+            get { return _explicitParameters; }
+            set { _explicitParameters = value; }
+        }
 
         protected virtual Dictionary<string, DbType> DbDataTypeDbTypeMap { get; set; }
 
@@ -48,7 +54,7 @@ namespace Evolution.Sql
             var dbCommand = Connection.CreateCommand();
             dbCommand.CommandType = CommandType;
             dbCommand.CommandText = CommandText;
-            if (ExplicitParameters != null && ExplicitParameters.Length > 0)
+            if (_explicitParameters != null && _explicitParameters.Length > 0)
             {
                 SetExplicitParameters(dbCommand);
             }
@@ -62,7 +68,7 @@ namespace Evolution.Sql
 
         protected void SetExplicitParameters(DbCommand dbCommand)
         {
-            foreach (var p in ExplicitParameters)
+            foreach (var p in _explicitParameters)
             {
                 dbCommand.Parameters.Add(p);
             }

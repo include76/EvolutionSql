@@ -10,6 +10,7 @@ create table [User](
 	FirstName nvarchar(256) not null,
 	LastName nvarchar(256) not null,
 	CreatedOn datetime2,
+	UpdatedBy varchar(256),
 	UpdatedOn datetime2,
 	constraint pk_user primary key(UserId)
 )

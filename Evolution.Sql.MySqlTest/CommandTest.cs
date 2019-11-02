@@ -48,10 +48,11 @@ namespace Evolution.Sql.MySqlTest
 
         /// <summary>
         /// if SetParameters, then ParameterPrefix shoul be ignored
+        /// parameters of Query/Execute should be ignored
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task SetParameters_ParameterPrefix_Should_Be_Ignore_Test()
+        public async Task WithParameters_ParameterPrefix_And_parameters_Should_Be_Ignore_Test()
         {
             using (var connection = new MySqlConnection(connectionStr))
             {
@@ -65,10 +66,14 @@ namespace Evolution.Sql.MySqlTest
                 connection.Sql("insert into `user`(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
                     .Execute(user);
 
+                var pUserId = new MySqlParameter("pUserId", userId);
+                var pTotalCount = new MySqlParameter("totalCount", MySqlDbType.Int32);
+                pTotalCount.Direction = System.Data.ParameterDirection.InputOutput;
                 var userFromDb = connection.Procedure("usp_user_get")
-                    .SetParameters(new MySqlParameter("pUserId", userId))
+                    .WithParameters(pUserId, pTotalCount)
                     .QueryOne<User>(new { pUserId = "bad_user_id" });//expect: the bad_user_id be ignored
                 Assert.NotNull(userFromDb);
+                Assert.Greater(int.Parse(pTotalCount.Value.ToString()), 0);
 
                 userFromDb.FirstName = "Name should be ignored";
 
@@ -80,7 +85,7 @@ namespace Evolution.Sql.MySqlTest
                 };
                 connection.Procedure("usp_user_upd")
                     .ParameterPrefix("p_")
-                    .SetParameters(parameters)
+                    .WithParameters(parameters)
                     .Execute(userFromDb);//expect: the userFromDb be ingored
 
                 var updatedUser = await connection.Procedure("usp_user_get")

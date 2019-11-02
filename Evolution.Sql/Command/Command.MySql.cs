@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Evolution.Sql
 {
-    public class MySqlCommand : AbstractCommand
+    internal class MySqlCommand : AbstractCommand
     {
         public MySqlCommand() : base()
         {

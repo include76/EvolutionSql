@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Evolution.Sql
 {
-    public class PgSqlCommand : AbstractCommand
+    internal class PgSqlCommand : AbstractCommand
     {
         public PgSqlCommand() : base()
         {
@@ -23,7 +23,7 @@ namespace Evolution.Sql
                 {"serial", DbType.UInt32 },
                 {"bigserial", DbType.UInt64 },
                 //# Money
-                {"money", DbType.Decimal },
+                {"money", DbType.Currency },
                 //# Character
                 {"character varying", DbType.String },
                 {"varchar",  DbType.String},

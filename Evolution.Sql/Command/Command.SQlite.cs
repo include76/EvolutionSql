@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Evolution.Sql
 {
-    public class SQLiteCommand : AbstractCommand
+    internal class SQLiteCommand : AbstractCommand
     {
         public SQLiteCommand()
         {

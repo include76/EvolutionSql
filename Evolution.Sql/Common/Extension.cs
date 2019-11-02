@@ -11,9 +11,9 @@ using System.Text;
 
 namespace Evolution.Sql
 {
-    public static class Extension
+    internal static class Extension
     {
-        public static void TryOpen(this IDbConnection dbConnection)
+        internal static void TryOpen(this IDbConnection dbConnection)
         {
             if (dbConnection.State != ConnectionState.Open)
             {
@@ -21,7 +21,7 @@ namespace Evolution.Sql
             }
         }
 
-        public static IEnumerable<T> ToEntities<T>(this DbDataReader dataReader) where T : class, new()
+        internal static IEnumerable<T> ToEntities<T>(this DbDataReader dataReader) where T : class, new()
         {
             if (dataReader == null || !dataReader.HasRows)
             {

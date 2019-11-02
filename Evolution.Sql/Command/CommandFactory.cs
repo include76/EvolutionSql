@@ -14,6 +14,8 @@ namespace Evolution.Sql
                     return new SqlServerCommand();
                 case "MySqlClientFactory":
                     return new MySqlCommand();
+                case "NpgsqlFactory":
+                    return new PgSqlCommand();
                 default:
                     throw new Exception($"{dbFactoryName} is not supported.");
             }
