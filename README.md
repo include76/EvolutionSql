@@ -43,6 +43,7 @@ by using EvolutionSql, it's very simple to execute either inline sql or stored p
 
 ###### get sample with stored procedure
   ```sql
+  //Stored Procedure
   create procedure uspUserGet(
     @userId uniqueidentifier,
     @totalCount int out
@@ -80,6 +81,7 @@ When query from database, column name are auto mapped to property of modal, the 
 
 ```
 ```SQL
+  #Stored Procedure
   DROP PROCEDURE IF EXISTS usp_user_get;
   DELIMITER //
   CREATE PROCEDURE usp_user_get(
@@ -103,6 +105,7 @@ When query from database, column name are auto mapped to property of modal, the 
 
 ```
 ```SQL
+  #Stored Procedure
   DROP PROCEDURE IF EXISTS usp_user_upd;
   DELIMITER //
   CREATE PROCEDURE usp_user_upd(
