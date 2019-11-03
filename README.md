@@ -1,7 +1,7 @@
 # EvolutionSql
 Simple dot net database access library, if you don't like Full-ORM framework such as EntityFramework, and you want to write your own sql and/or stored procedure, EvolutionSql is what you want.
 
-by using EvolutionSql, it's very simple to execute either inline sql or stored procedure; EvolutionSql extend DbConnection with two methods ```Sql()``` and ```Procedure()```, for execute inline sql and stored procedure respectively.
+by using EvolutionSql, it's very simple to execute either inline sql or stored procedure; EvolutionSql extend DbConnection with ONLY two methods ```Sql()``` and ```Procedure()```, for execute inline sql and stored procedure respectively.
 
 ## Supported Database
 - [x] Mysql
@@ -31,15 +31,19 @@ by using EvolutionSql, it's very simple to execute either inline sql or stored p
       CreatedOn = DateTime.Now
   };
   //
+  var sql =@"INSERT INTO [user](UserId, FirstName, LastName, CreatedOn) 
+              VALUES(@UserId, @FirstName, @LastName, @CreatedOn)";
   using (var connection = new SqlConnection(connectionStr))
   {
-    var result = connection.Sql(@"insert into [user](UserId, FirstName, LastName, CreatedOn) 
-                                  values(@UserId, @FirstName, @LastName, @CreatedOn)").Execute(user);
+    var result = connection.Sql(sql).Execute(user);
   }
 ```
 
+
+
 ###### get sample with stored procedure
   ```sql
+  //Stored Procedure
   create procedure uspUserGet(
     @userId uniqueidentifier,
     @totalCount int out
@@ -54,14 +58,14 @@ by using EvolutionSql, it's very simple to execute either inline sql or stored p
   ```c#
   using (var connection = new SqlConnection(connectionStr))
   {
-      var userFromDb = connection.Procedure("uspUserGet").Query<User>(new { UserId = userId }).FirstOrDefault();
+      var userFromDb = connection.Procedure("uspUserGet").QueryOne<User>(new { UserId = userId });
   }
   
   // if you want the output value from the stored procedure
   var outPuts = new Dictionary<string, dynamic>();
   using (var connection = new SqlConnection(connectionStr))
   {
-      var userFromDb = connection.Procedure("uspUserGet").Query<User>(new { UserId = userId }, outPuts).FirstOrDefault();
+      var userFromDb = connection.Procedure("uspUserGet").QueryOne<User>(new { UserId = userId }, outPuts);
   }
 ```
 ## Result mapping
@@ -77,6 +81,7 @@ When query from database, column name are auto mapped to property of modal, the 
 
 ```
 ```SQL
+  #Stored Procedure
   DROP PROCEDURE IF EXISTS usp_user_get;
   DELIMITER //
   CREATE PROCEDURE usp_user_get(
@@ -91,15 +96,16 @@ When query from database, column name are auto mapped to property of modal, the 
 
 ###### use named type as parameter
 ```C#
-    userFromDb.FirstName = "Bob";
-    userFromDb.UpdatedBy = "system";
-    userFromDb.UpdatedOn = DateTime.Now;
+    user.FirstName = "Bob";
+    user.UpdatedBy = "systemuser";
+    user.UpdatedOn = DateTime.Now;
     connection.Procedure("usp_user_upd")
         .ParameterPrefix("p_")// call this to indicate that the stored procedure parameters have p_ prefix
-        .Execute(userFromDb);
+        .Execute(user);
 
 ```
 ```SQL
+  #Stored Procedure
   DROP PROCEDURE IF EXISTS usp_user_upd;
   DELIMITER //
   CREATE PROCEDURE usp_user_upd(
@@ -118,4 +124,22 @@ When query from database, column name are auto mapped to property of modal, the 
     WHERE user_id = p_user_id;
   END//
   DELIMITER ;
+```
+###### use WithParameters() set parameters explicitly
+
+```C#
+  //You can set Parameters explicitly via WithParameters() method, 
+  //this is very useful when the parameter data type is not a standard SQL data type
+  //for previous example, you can set parameters like this
+  MySqlParameter[] parameters = {
+      new MySqlParameter("p_user_id",userId),
+      new MySqlParameter("p_first_name", "Bruce"),
+      new MySqlParameter("p_last_name", "Lee"),
+      new MySqlParameter("p_updated_by", "systemuser"),
+      new MySqlParameter("p_updated_on", DateTime.Now)
+  };
+  var result = connection.Procedure("usp_user_upd")
+    .WithParameters(parameters)
+    .Execute();
+
 ```
