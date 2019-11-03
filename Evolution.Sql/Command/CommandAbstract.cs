@@ -222,13 +222,19 @@ namespace Evolution.Sql
                         {
                             continue;
                         }
-                        normalizePrameterName = param.ParameterName;
-                        if (!string.IsNullOrEmpty(ParameterPrefix))
+                        //#property name and parameter name exact match
+                        property = properties.FirstOrDefault(p => p.Name.ToUpper() == param.ParameterName.ToUpper());
+                        //#if exact match failed, use parameter prefix and remove under_score
+                        if(property == null)
                         {
-                            normalizePrameterName = normalizePrameterName.Substring(ParameterPrefix.Length, normalizePrameterName.Length - ParameterPrefix.Length);
+                            normalizePrameterName = param.ParameterName;
+                            if (!string.IsNullOrEmpty(ParameterPrefix))
+                            {
+                                normalizePrameterName = normalizePrameterName.Substring(ParameterPrefix.Length, normalizePrameterName.Length - ParameterPrefix.Length);
+                            }
+                            normalizePrameterName = normalizePrameterName.Replace("_", "");
+                            property = properties.FirstOrDefault(p => p.Name.ToUpper() == normalizePrameterName.ToUpper());
                         }
-                        normalizePrameterName = normalizePrameterName.Replace("_", "");
-                        property = properties.FirstOrDefault(p => p.Name.ToUpper() == normalizePrameterName.ToUpper());
                         if (property != null)
                         {
                             //param.DbType = GetDbTypeByClrType(property.PropertyType);

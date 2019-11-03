@@ -7,6 +7,7 @@ namespace Evolution.Sql
 {
     internal class PgSqlCommand : AbstractCommand
     {
+        protected override string ParameterSymbal => "@";
         public PgSqlCommand() : base()
         {
             DbDataTypeDbTypeMap = new Dictionary<string, DbType>()
@@ -34,9 +35,11 @@ namespace Evolution.Sql
                 {"bytea",  DbType.Binary},
                 //# Date/Time
                 {"timestamp", DbType.DateTime2},
-                {"date", DbType.Date  },
+                {"timestamp with timezone", DbType.DateTime2 },
+                {"date", DbType.Date },
                 {"time", DbType.Time },
-                {"interval" , DbType.String},
+                {"time with timezone", DbType.DateTimeOffset },
+                //{"interval" , DbType.},
                 //# Boolean
                 {"boolean", DbType.Boolean  },
                 //# Enuerated Type: TO BE DECIDED

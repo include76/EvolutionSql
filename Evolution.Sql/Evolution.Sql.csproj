@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>0.3.3</Version>
+    <Version>0.3.4</Version>
     <Authors>Locke Duan</Authors>
     <PackageProjectUrl>https://github.com/lockeduan/EvolutionSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/lockeduan/EvolutionSql</RepositoryUrl>
     <Description>Simple .NET Data Access library for SQL Server, MySQL</Description>
-    <PackageReleaseNotes>add extention method ParameterPrefix() of ICommand</PackageReleaseNotes>
+    <PackageReleaseNotes>add extention method WithParameters() of ICommand</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

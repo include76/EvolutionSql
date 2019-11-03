@@ -14,6 +14,9 @@ namespace Evolution.Sql.PgSqlTest
     public class QueryTest : IQueryTest
     {
         private string connectionStr = @"Server=127.0.0.1;Port=5432;Database=blog;User Id=postgres;Password=";
+
+        private string userInsSql = "insert into \"user\"(user_id, first_name, last_name, created_by, created_on)" +
+            "                        values(@UserId, @FirstName, @LastName, @CreatedBy, @CreatedOn)";
         [SetUp]
         public void Setup()
         {
@@ -31,10 +34,11 @@ namespace Evolution.Sql.PgSqlTest
                     UserId = userId1,
                     FirstName = "Bruce",
                     LastName = "Lee",
+                    UpdatedBy = "Locke",
                     CreatedOn = DateTime.Now
                 };
 
-                var result = connection.Sql("insert into \"user\"(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
+                var result = connection.Sql(userInsSql)
                    .Execute(user);
                 Assert.Greater(result, 0);
 
@@ -49,6 +53,7 @@ namespace Evolution.Sql.PgSqlTest
                     UserId = userId2,
                     FirstName = "Tom",
                     LastName = "Ren",
+                    CreatedBy = "Locke",
                     CreatedOn = DateTime.Now
                 };
 
@@ -67,34 +72,35 @@ namespace Evolution.Sql.PgSqlTest
         [Test]
         public void QueryOne_With_StoredProcedure()
         {
-            /*
-            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
+            using (var connection = new NpgsqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
                 var user = new User
                 {
                     UserId = userId,
                     FirstName = "Bruce",
-                    LastName = "Lee"
+                    LastName = "Lee",
+                    CreatedBy = "Locke",
+                    CreatedOn = DateTime.UtcNow
                 };
-                var result = sqlSession.Execute<User>("insert", user);
-                Assert.Greater(result, 0);
+                var result = connection.Sql(userInsSql).Execute(user);
+                Assert.AreEqual(result, 1);
 
                 var outPuts = new Dictionary<string, dynamic>();
-                var userFromDb = sqlSession.QueryOne<User>("usp_user_get", new { pUserId = userId }, outPuts);
+                var userFromDb = connection.Sql($"call usp_user_get(@p_user_id, @p_total_count)")
+                    .QueryOne<User>(new { p_user_id = userId, p_total_count = 0 }, outPuts);
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
-                Assert.True(outPuts.ContainsKey("totalCount"));
-                Assert.Greater(outPuts["totalCount"], 0);
+                Assert.True(outPuts.ContainsKey("p_total_count"));
+                Assert.Greater(outPuts["p_total_count"], 0);
             }
-            */
         }
 
         [Test]
         public void Query_With_Inline_Sql()
         {
             /*
-            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
+            using (var connection = new NpgsqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
                 var user = new User
@@ -141,7 +147,7 @@ namespace Evolution.Sql.PgSqlTest
         public void Get_Null_Value_From_DB_Property_Should_Set_Default_Value()
         {
             /*
-            using (var sqlSession = new SqlSession("MySql.Data.MySqlClient", connectionStr))
+            using (var connection = new NpgsqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
                 var user = new User
