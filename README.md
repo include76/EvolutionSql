@@ -1,7 +1,7 @@
 # EvolutionSql
 Simple dot net database access library, if you don't like Full-ORM framework such as EntityFramework, and you want to write your own sql and/or stored procedure, EvolutionSql is what you want.
 
-by using EvolutionSql, it's very simple to execute either inline sql or stored procedure; EvolutionSql extend DbConnection with two methods ```Sql()``` and ```Procedure()```, for execute inline sql and stored procedure respectively.
+by using EvolutionSql, it's very simple to execute either inline sql or stored procedure; EvolutionSql extend DbConnection with ONLY two methods ```Sql()``` and ```Procedure()```, for execute inline sql and stored procedure respectively.
 
 ## Supported Database
 - [x] Mysql
@@ -37,18 +37,6 @@ by using EvolutionSql, it's very simple to execute either inline sql or stored p
   {
     var result = connection.Sql(sql).Execute(user);
   }
-  
-  //Or you set Parameter explicity via WithParameters() method, 
-  //this very useful when the parameter date type is not a standard SQL data type
-  SqlParameter[] parameters = {
-      new SqlParameter("UserId",userId),
-      new SqlParameter("FirstName", "Bruce"),
-      new SqlParameter("LastName", "Lee"),
-      new SqlParameter("CreatedOn", DateTime.Now)
-  };
-  var result = connection.Sql(sql)
-    .WithParameters(parameters)
-    .Execute();
 ```
 
 
@@ -106,12 +94,12 @@ When query from database, column name are auto mapped to property of modal, the 
 
 ###### use named type as parameter
 ```C#
-    userFromDb.FirstName = "Bob";
-    userFromDb.UpdatedBy = "system";
-    userFromDb.UpdatedOn = DateTime.Now;
+    user.FirstName = "Bob";
+    user.UpdatedBy = "systemuser";
+    user.UpdatedOn = DateTime.Now;
     connection.Procedure("usp_user_upd")
         .ParameterPrefix("p_")// call this to indicate that the stored procedure parameters have p_ prefix
-        .Execute(userFromDb);
+        .Execute(user);
 
 ```
 ```SQL
@@ -133,4 +121,22 @@ When query from database, column name are auto mapped to property of modal, the 
     WHERE user_id = p_user_id;
   END//
   DELIMITER ;
+```
+###### use WithParameters() set parameters explicitly
+
+```C#
+  //You can set Parameters explicitly via WithParameters() method, 
+  //this is very useful when the parameter data type is not a standard SQL data type
+  //for previous example, you can set parameters like this
+  MySqlParameter[] parameters = {
+      new MySqlParameter("p_user_id",userId),
+      new MySqlParameter("p_first_name", "Bruce"),
+      new MySqlParameter("p_last_name", "Lee"),
+      new MySqlParameter("p_updated_by", "systemuser"),
+      new MySqlParameter("p_updated_on", DateTime.Now)
+  };
+  var result = connection.Procedure("usp_user_upd")
+    .WithParameters(parameters)
+    .Execute();
+
 ```
