@@ -31,12 +31,27 @@ by using EvolutionSql, it's very simple to execute either inline sql or stored p
       CreatedOn = DateTime.Now
   };
   //
+  var sql =@"INSERT INTO [user](UserId, FirstName, LastName, CreatedOn) 
+              VALUES(@UserId, @FirstName, @LastName, @CreatedOn)";
   using (var connection = new SqlConnection(connectionStr))
   {
-    var result = connection.Sql(@"insert into [user](UserId, FirstName, LastName, CreatedOn) 
-                                  values(@UserId, @FirstName, @LastName, @CreatedOn)").Execute(user);
+    var result = connection.Sql(sql).Execute(user);
   }
+  
+  //Or you set Parameter explicity via WithParameters() method, 
+  //this very useful when the parameter date type is not a standard SQL data type
+  SqlParameter[] parameters = {
+      new SqlParameter("UserId",userId),
+      new SqlParameter("FirstName", "Bruce"),
+      new SqlParameter("LastName", "Lee"),
+      new SqlParameter("CreatedOn", DateTime.Now)
+  };
+  var result = connection.Sql(sql)
+    .WithParameters(parameters)
+    .Execute();
 ```
+
+
 
 ###### get sample with stored procedure
   ```sql
