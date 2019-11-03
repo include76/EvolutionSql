@@ -57,14 +57,14 @@ by using EvolutionSql, it's very simple to execute either inline sql or stored p
   ```c#
   using (var connection = new SqlConnection(connectionStr))
   {
-      var userFromDb = connection.Procedure("uspUserGet").Query<User>(new { UserId = userId }).FirstOrDefault();
+      var userFromDb = connection.Procedure("uspUserGet").QueryOne<User>(new { UserId = userId });
   }
   
   // if you want the output value from the stored procedure
   var outPuts = new Dictionary<string, dynamic>();
   using (var connection = new SqlConnection(connectionStr))
   {
-      var userFromDb = connection.Procedure("uspUserGet").Query<User>(new { UserId = userId }, outPuts).FirstOrDefault();
+      var userFromDb = connection.Procedure("uspUserGet").QueryOne<User>(new { UserId = userId }, outPuts);
   }
 ```
 ## Result mapping
