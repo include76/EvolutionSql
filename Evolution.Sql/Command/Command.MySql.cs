@@ -25,13 +25,13 @@ namespace Evolution.Sql
                 {"float", DbType.Single},
                 {"double", DbType.Double},
                 {"real", DbType.Double},
-                //
+                //# what if bit(n) and n>1???
                 {"bit", DbType.Boolean},
                 //date type
                 {"datetime", DbType.DateTime},
                 {"date", DbType.Date},
                 {"time", DbType.Time},
-                {"timestamp", DbType.Binary},
+                {"timestamp", DbType.DateTime},
                 {"year", DbType.Int16},
                 //string type
                 {"char", DbType.StringFixedLength},

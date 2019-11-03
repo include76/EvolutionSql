@@ -50,7 +50,7 @@ namespace Evolution.Sql.MySqlTest
                     ColDate = DateTime.Now,
                     //ColTime = DateTime.Now,
                     ColTime = new TimeSpan(23, 59, 59),
-                    ColTimeStamp = new DateTime(2019, 10, 27, 16, 1, 1),
+                    ColTimeStamp = DateTime.Now,// new DateTime(2019, 10, 27, 16, 1, 1),
                     ColYear = 2019,
 
                     //ColChar = new char[] { 't', 'h', 'i', 's', ' ', 'a', ' ', 'c', 'h', 'a', 'r' },
