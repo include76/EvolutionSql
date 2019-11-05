@@ -26,7 +26,7 @@ namespace Evolution.Sql.SqlServerTest.Modal
         public DateTimeOffset? ColDatetimeOffset { get; set; }
         public DateTime? ColSmallDatetime { get; set; }
         //https://stackoverflow.com/questions/8503825/what-is-the-correct-sql-type-to-store-a-net-timespan-with-values-240000
-        //public TimeSpan? ColTime { get; set; } do NOT use TimeSpan
+        //public TimeSpan? ColTime { get; set; } do NOT use TimeSpan, you can never set DbType to Time becaus .NET bug
         public DateTime? ColTime { get; set; }
 
         public char[] ColChar { get; set; }

@@ -39,7 +39,7 @@ namespace Evolution.Sql
             { "tinyint",            DbType.Byte },
             { "uniqueidentifier",   DbType.Guid },
             { "varbinary",          DbType.Binary },
-            { "varchar",            DbType.AnsiStringFixedLength },
+            { "varchar",            DbType.AnsiString },
             { "xml",                DbType.Xml },
             //{ "table type",         DbType.Object }:::Not works, when it's table type, let clr infer the DbType
         };
