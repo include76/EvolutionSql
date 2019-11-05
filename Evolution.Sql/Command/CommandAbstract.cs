@@ -17,7 +17,7 @@ namespace Evolution.Sql
         protected static char[] rightQuote = new char[] { ']', '\'', '`', '"' };
         protected string ParameterPattern
         {
-            get { return ParameterSymbal + "([^',;=<>\\s\\)]+)"; }
+            get { return ParameterSymbol + "([^',;=<>\\s\\)]+)"; }
         }
 
         protected virtual string Sql2GetProcedureParameters
@@ -27,7 +27,7 @@ namespace Evolution.Sql
 
         protected virtual string DefaultSchema { get; }
 
-        protected virtual string ParameterSymbal => "@";
+        protected virtual string ParameterSymbol => "@";
 
         public DbConnection Connection { get; set; }
         public CommandType CommandType { get; set; }
@@ -42,6 +42,46 @@ namespace Evolution.Sql
         }
 
         protected virtual Dictionary<string, DbType> DbDataTypeDbTypeMap { get; set; }
+        /*protected static Dictionary<Type, DbType> ClrTypeDbTypeMap => new Dictionary<Type, DbType>
+        {
+            [typeof(byte)] = DbType.Byte,
+            [typeof(sbyte)] = DbType.SByte,
+            [typeof(short)] = DbType.Int16,
+            [typeof(ushort)] = DbType.UInt16,
+            [typeof(int)] = DbType.Int32,
+            [typeof(uint)] = DbType.UInt32,
+            [typeof(long)] = DbType.Int64,
+            [typeof(ulong)] = DbType.UInt64,
+            [typeof(float)] = DbType.Single,
+            [typeof(double)] = DbType.Double,
+            [typeof(decimal)] = DbType.Decimal,
+            [typeof(bool)] = DbType.Boolean,
+            [typeof(string)] = DbType.String,
+            [typeof(char)] = DbType.StringFixedLength,
+            [typeof(Guid)] = DbType.Guid,
+            [typeof(DateTime)] = DbType.DateTime2,
+            [typeof(DateTimeOffset)] = DbType.DateTimeOffset,
+            [typeof(TimeSpan)] = DbType.Time,
+            [typeof(byte[])] = DbType.Binary,
+            [typeof(byte?)] = DbType.Byte,
+            [typeof(sbyte?)] = DbType.SByte,
+            [typeof(short?)] = DbType.Int16,
+            [typeof(ushort?)] = DbType.UInt16,
+            [typeof(int?)] = DbType.Int32,
+            [typeof(uint?)] = DbType.UInt32,
+            [typeof(long?)] = DbType.Int64,
+            [typeof(ulong?)] = DbType.UInt64,
+            [typeof(float?)] = DbType.Single,
+            [typeof(double?)] = DbType.Double,
+            [typeof(decimal?)] = DbType.Decimal,
+            [typeof(bool?)] = DbType.Boolean,
+            [typeof(char?)] = DbType.StringFixedLength,
+            [typeof(Guid?)] = DbType.Guid,
+            [typeof(DateTime?)] = DbType.DateTime2,
+            [typeof(DateTimeOffset?)] = DbType.DateTimeOffset,
+            [typeof(TimeSpan?)] = DbType.Time,
+            [typeof(object)] = DbType.Object
+        };*/
 
         public AbstractCommand()
         {
@@ -147,7 +187,6 @@ namespace Evolution.Sql
                         var parameter = command.CreateParameter();
                         parameter.ParameterName = parameterName;
                         parameter.Direction = GetDirection(reader.GetString(1));
-                        //parameter.DbType = GetDbTypeByString(reader.GetString(2).Trim());
                         SetParameterType(parameter, reader.GetString(2).Trim());
                         command.Parameters.Add(parameter);
                         // cache the parameter
@@ -165,7 +204,7 @@ namespace Evolution.Sql
             var parameterName = string.Empty;
             foreach (var item in results)
             {
-                parameterName = item.ToString().TrimStart(ParameterSymbal.ToCharArray());
+                parameterName = item.ToString().TrimStart(ParameterSymbol.ToCharArray());
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = parameterName;
                 //#Note: sql parameter not set DbType, the DbType will infered when assign value
@@ -237,7 +276,7 @@ namespace Evolution.Sql
                         }
                         if (property != null)
                         {
-                            //param.DbType = GetDbTypeByClrType(property.PropertyType);
+                            //param.DbType = ClrTypeDbTypeMap[property.PropertyType];
                             param.Value = property.GetValue(parameters);
                         }
                         // if it's pure OUT parameter, Value of InputOutput parameter should set to DBNull.Value, or parameter not provided excetpion would be thrown
