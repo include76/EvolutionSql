@@ -26,8 +26,9 @@ namespace Evolution.Sql.SqlServerTest
 
                 var blog = new
                 {
+                    BlogId = 0,
                     Title = "this is a test post title",
-                    //Content = "this is a test post content",
+                    //Content = "this comment out on purpose",
                     CreatedBy = userId,
                     CreatedOn = DateTime.Now,
                     UpdatedOn = DateTime.Now

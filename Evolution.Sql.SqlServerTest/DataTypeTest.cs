@@ -22,6 +22,7 @@ namespace Evolution.Sql.SqlServerTest
 
         }
 
+        /*
         [Test]
         public void DataTableParameter_Test()
         {
@@ -39,7 +40,7 @@ namespace Evolution.Sql.SqlServerTest
                 Assert.NotNull(users);
                 Assert.AreEqual("XYZ", users.First().FirstName);
             }
-        }
+        }*/
 
         [Test]
         public void StoredProcedure_Parameter_Direction_Test()
@@ -47,7 +48,7 @@ namespace Evolution.Sql.SqlServerTest
             using (var connection = new SqlConnection(connectionStr))
             {
                 var outPuts = new Dictionary<string, dynamic>();
-                var result = connection.Procedure("uspParamDirection").Execute(new { pIn = 2, pInOut = 5 }, outPuts); 
+                var result = connection.Procedure("uspParamDirection").Execute(new { pIn = 2, pInOut = 5, pOut = 0 }, outPuts); 
             }
         }
 
@@ -80,12 +81,16 @@ namespace Evolution.Sql.SqlServerTest
                     ColSmallDatetime = DateTime.Now,
                     //ColTime = new TimeSpan(23, 59, 59),
                     ColTime = DateTime.Now,
-                    ColChar = new char[] { 't', 'h', 'i', 's', ' ', 'a', ' ', 'c', 'h', 'a', 'r' },
+                    //ColChar = new char[] { 't', 'h', 'i', 's', ' ', 'a', ' ', 'c', 'h', 'a', 'r' },
+                    ColChar = "this a char",
                     ColText = "this is a text",
-                    ColVarchar = new char[] { 't', 'h', 'i', 's', ' ', 'a', ' ', 'v', 'a', 'r', ' ', 'c', 'h', 'a', 'r' },
-                    ColNChar = new char[] { 'a', 'b', 'c' },
+                    //ColVarchar = new char[] { 't', 'h', 'i', 's', ' ', 'a', ' ', 'v', 'a', 'r', ' ', 'c', 'h', 'a', 'r' },
+                    ColVarchar = "this is a var char",
+                    //ColNChar = new char[] { 'a', 'b', 'c' },
+                    ColNChar = "this is a n char",
                     ColNText = "这是一段文字",
-                    ColNVarchar = new char[] { '这', '也', '是', '一', '段', '文', '字' },
+                    //ColNVarchar = new char[] { '这', '也', '是', '一', '段', '文', '字' },
+                    ColNVarchar = "这也是一段文字",
                     ColBinary = bytes,
                     ColImage = bytes,
                     ColVarBinary = bytes,
@@ -110,7 +115,7 @@ namespace Evolution.Sql.SqlServerTest
                 Assert.AreEqual(dataTypeModel.ColImage, newOne.ColImage);
                 Assert.AreEqual(dataTypeModel.ColInt, newOne.ColInt);
                 Assert.AreEqual(dataTypeModel.ColMoney, newOne.ColMoney);
-                Assert.AreEqual(dataTypeModel.ColNChar, newOne.ColNChar.Take(3));
+                Assert.AreEqual(dataTypeModel.ColNChar, newOne.ColNChar.TrimEnd());
                 Assert.AreEqual(dataTypeModel.ColNText, newOne.ColNText);
                 Assert.AreEqual(dataTypeModel.ColNumeric, newOne.ColNumeric);
                 Assert.AreEqual(dataTypeModel.ColNVarchar, newOne.ColNVarchar);

@@ -84,15 +84,11 @@ namespace Evolution.Sql.MySqlTest
                     UpdatedOn = null
                 };
 
-                var outPuts = new Dictionary<string, dynamic>();
-                connection.Procedure("usp_blog_ins").Execute(blog, outPuts);
-                var postId = outPuts["BlogId"];
+                var postId = connection.Procedure("usp_blog_ins").ExecuteScalar(blog);
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
                 // just for test cache parameter
-                outPuts = new Dictionary<string, dynamic>();
-                connection.Procedure("usp_blog_ins").Execute(blog, outPuts);
-                postId = outPuts["BlogId"];
+                postId = connection.Procedure("usp_blog_ins").ExecuteScalar(blog);
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
             }

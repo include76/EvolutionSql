@@ -42,7 +42,7 @@ namespace Evolution.Sql
         }
 
         protected virtual Dictionary<string, DbType> DbDataTypeDbTypeMap { get; set; }
-        /*protected static Dictionary<Type, DbType> ClrTypeDbTypeMap => new Dictionary<Type, DbType>
+        protected static Dictionary<Type, DbType> ClrTypeDbTypeMap => new Dictionary<Type, DbType>
         {
             [typeof(byte)] = DbType.Byte,
             [typeof(sbyte)] = DbType.SByte,
@@ -59,7 +59,7 @@ namespace Evolution.Sql
             [typeof(string)] = DbType.String,
             [typeof(char)] = DbType.StringFixedLength,
             [typeof(Guid)] = DbType.Guid,
-            [typeof(DateTime)] = DbType.DateTime2,
+            [typeof(DateTime)] = DbType.DateTime,
             [typeof(DateTimeOffset)] = DbType.DateTimeOffset,
             [typeof(TimeSpan)] = DbType.Time,
             [typeof(byte[])] = DbType.Binary,
@@ -77,11 +77,11 @@ namespace Evolution.Sql
             [typeof(bool?)] = DbType.Boolean,
             [typeof(char?)] = DbType.StringFixedLength,
             [typeof(Guid?)] = DbType.Guid,
-            [typeof(DateTime?)] = DbType.DateTime2,
+            [typeof(DateTime?)] = DbType.DateTime,
             [typeof(DateTimeOffset?)] = DbType.DateTimeOffset,
             [typeof(TimeSpan?)] = DbType.Time,
             [typeof(object)] = DbType.Object
-        };*/
+        };
 
         public AbstractCommand()
         {
@@ -187,7 +187,7 @@ namespace Evolution.Sql
                         var parameter = command.CreateParameter();
                         parameter.ParameterName = parameterName;
                         parameter.Direction = GetDirection(reader.GetString(1));
-                        SetParameterType(parameter, reader.GetString(2).Trim());
+                        //SetParameterType(parameter, reader.GetString(2).Trim());
                         command.Parameters.Add(parameter);
                         // cache the parameter
                         cachedParameters.Add(new DbParameterCacheItem { Name = parameterName, DbType = parameter.DbType, Direction = parameter.Direction });
@@ -276,7 +276,7 @@ namespace Evolution.Sql
                         }
                         if (property != null)
                         {
-                            //param.DbType = ClrTypeDbTypeMap[property.PropertyType];
+                            param.DbType = ClrTypeDbTypeMap[property.PropertyType];
                             param.Value = property.GetValue(parameters);
                         }
                         // if it's pure OUT parameter, Value of InputOutput parameter should set to DBNull.Value, or parameter not provided excetpion would be thrown

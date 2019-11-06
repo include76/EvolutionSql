@@ -29,12 +29,16 @@ namespace Evolution.Sql.SqlServerTest.Modal
         //public TimeSpan? ColTime { get; set; } do NOT use TimeSpan, you can never set DbType to Time becaus .NET bug
         public DateTime? ColTime { get; set; }
 
-        public char[] ColChar { get; set; }
+        //public char[] ColChar { get; set; }
+        public string ColChar { get; set; }
         public string ColText { get; set; }
-        public char[] ColVarchar { get; set; }
-        public char[] ColNChar { get; set; }
+        //public char[] ColVarchar { get; set; }
+        public string ColVarchar { get; set; }
+        //public char[] ColNChar { get; set; }
+        public string ColNChar { get; set; }
         public string ColNText { get; set; }
-        public char[] ColNVarchar { get; set; }
+        //public char[] ColNVarchar { get; set; }
+        public string ColNVarchar { get; set; }
 
         public byte[] ColBinary { get; set; }
         public byte[] ColImage { get; set; }

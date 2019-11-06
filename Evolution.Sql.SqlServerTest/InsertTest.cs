@@ -90,15 +90,11 @@ namespace Evolution.Sql.SqlServerTest
                     UpdatedOn = DateTime.Now
                 };
 
-                var outPuts = new Dictionary<string, dynamic> ();
-                connection.Procedure("uspBlogIns").Execute(blog, outPuts);
-                var postId = outPuts["BlogId"];
+                var postId = connection.Procedure("uspBlogIns").ExecuteScalar(blog);
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
                 // just for test cache parameter
-                outPuts = new Dictionary<string, dynamic>();
-                connection.Procedure("uspBlogIns").Execute(blog, outPuts);
-                postId = outPuts["BlogId"];
+                postId = connection.Procedure("uspBlogIns").ExecuteScalar(blog);
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
             }
