@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Evolution.Sql.MySqlTest.Modal
+namespace Evolution.Sql.MySqlTest.Model
 {
-    public class DataTypeModal
+    public class DataTypeModel
     {
         //int
         public byte ColTinyInt { get; set; }

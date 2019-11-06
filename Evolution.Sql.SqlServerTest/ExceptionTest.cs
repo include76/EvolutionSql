@@ -1,4 +1,4 @@
-﻿using Evolution.Sql.SqlServerTest.Modal;
+﻿using Evolution.Sql.SqlServerTest.Model;
 using Evolution.Sql.TestCommon;
 using NUnit.Framework;
 using System;

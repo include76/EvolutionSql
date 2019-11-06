@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Evolution.Sql.SqlServerTest.Modal
+namespace Evolution.Sql.SqlServerTest.Model
 {
     public class DummyModel
     {

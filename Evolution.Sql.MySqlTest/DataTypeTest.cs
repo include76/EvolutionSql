@@ -1,4 +1,4 @@
-﻿using Evolution.Sql.MySqlTest.Modal;
+﻿using Evolution.Sql.MySqlTest.Model;
 using MySql.Data.MySqlClient;
 using NUnit.Framework;
 using System;
@@ -29,7 +29,7 @@ namespace Evolution.Sql.MySqlTest
                 var directory = new FileInfo(location.AbsolutePath).Directory.FullName;
                 var bytes = File.ReadAllBytes(Path.Combine(directory, "bridge.jpg"));
 
-                var dataTypeModel = new DataTypeModal
+                var dataTypeModel = new DataTypeModel
                 {
                     ColTinyInt = 127,
                     ColSmallInt = (short)32767,
@@ -72,7 +72,7 @@ namespace Evolution.Sql.MySqlTest
                 };
                 var result = connection.Procedure("usp_data_type_ins").Execute(dataTypeModel);
                 Assert.Greater(result, 0);
-                var dataFromDb = connection.Sql("SELECT * FROM `data_type` ORDER BY ColDateTime").Query<DataTypeModal>(null);
+                var dataFromDb = connection.Sql("SELECT * FROM `data_type` ORDER BY ColDateTime").Query<DataTypeModel>(null);
                 Assert.NotNull(dataFromDb);
                 Assert.Greater(dataFromDb.Count(), 0);
                 var newOne = dataFromDb.First();

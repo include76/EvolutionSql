@@ -1,4 +1,4 @@
-﻿using Evolution.Sql.SqlServerTest.Modal;
+﻿using Evolution.Sql.SqlServerTest.Model;
 using Evolution.Sql.TestCommon;
 using NUnit.Framework;
 using System;
@@ -61,7 +61,7 @@ namespace Evolution.Sql.SqlServerTest
                 var directory = new FileInfo(location.AbsolutePath).Directory.FullName;
                 var bytes = File.ReadAllBytes(Path.Combine(directory, "bridge.jpg"));
 
-                var dataTypeModel = new DataTypeModal
+                var dataTypeModel = new DataTypeModel
                 {
                     ColBigInt = 9223372036854775807,
                     ColBit = true,
@@ -98,7 +98,7 @@ namespace Evolution.Sql.SqlServerTest
                 };
                 var result = connection.Procedure("uspDataTypeIns").Execute(dataTypeModel);
                 Assert.Greater(result, 0);
-                var dataFromDb = connection.Sql("SELECT * FROM [DataTypeTable] ORDER BY ColDateTime DESC").Query<DataTypeModal>(null);
+                var dataFromDb = connection.Sql("SELECT * FROM [DataTypeTable] ORDER BY ColDateTime DESC").Query<DataTypeModel>(null);
                 Assert.NotNull(dataFromDb);
                 Assert.Greater(dataFromDb.Count(), 0);
                 var newOne = dataFromDb.First();
