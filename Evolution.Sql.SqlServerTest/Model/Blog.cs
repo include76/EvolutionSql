@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace Evolution.Sql.MySqlTest.Modal
+namespace Evolution.Sql.SqlServerTest.Model
 {
     public class Blog
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Evolution.Sql.SqlServerTest.Modal
+namespace Evolution.Sql.PgSqlTest.Model
 {
     public class Post
     {

@@ -1,4 +1,4 @@
-﻿using Evolution.Sql.PgSqlTest.Modal;
+﻿using Evolution.Sql.PgSqlTest.Model;
 using Evolution.Sql.TestCommon.Interface;
 using Npgsql;
 using NUnit.Framework;

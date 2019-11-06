@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Evolution.Sql.PgSqlTest.Modal
+namespace Evolution.Sql.PgSqlTest.Model
 {
-    public class DataTypeModal
+    public class DataTypeModel
     {
         #region Numeric Types
         public Int16 ColSmallInt { get; set; }

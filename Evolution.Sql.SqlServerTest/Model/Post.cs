@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Evolution.Sql.MySqlTest.Modal
+namespace Evolution.Sql.SqlServerTest.Model
 {
     public class Post
     {

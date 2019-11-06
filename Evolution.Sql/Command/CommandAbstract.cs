@@ -239,7 +239,7 @@ namespace Evolution.Sql
                         }
                     }
                 }
-                else//is modal or anonymouse type
+                else//is Model or anonymouse type
                 {
                     var properties = CacheHelper.GetTypePropertyInfos(type.FullName);
                     if (properties == null)

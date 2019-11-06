@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace Evolution.Sql.SqlServerTest.Modal
+namespace Evolution.Sql.SqlServerTest.Model
 {
-    public class DataTypeModal
+    public class DataTypeModel
     {
         public long? ColBigInt { get; set; }
         public bool? ColBit { get; set; }

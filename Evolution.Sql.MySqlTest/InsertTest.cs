@@ -1,4 +1,4 @@
-﻿using Evolution.Sql.MySqlTest.Modal;
+﻿using Evolution.Sql.MySqlTest.Model;
 using Evolution.Sql.TestCommon.Interface;
 using MySql.Data.MySqlClient;
 using NUnit.Framework;
