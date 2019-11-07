@@ -41,6 +41,13 @@ namespace Evolution.Sql
             set { _explicitParameters = value; }
         }
 
+        Dictionary<Type, ITypeHandler> _typeHandlers = new Dictionary<Type, ITypeHandler>();
+        Dictionary<Type, ITypeHandler> ICommand.TypeHandlers
+        {
+            get { return _typeHandlers; }
+            set { _typeHandlers = value; }
+        }
+
         protected virtual Dictionary<string, DbType> DbDataTypeDbTypeMap { get; set; }
         protected static Dictionary<Type, DbType> ClrTypeDbTypeMap => new Dictionary<Type, DbType>
         {
@@ -264,7 +271,7 @@ namespace Evolution.Sql
                         //#property name and parameter name exact match
                         property = properties.FirstOrDefault(p => p.Name.ToUpper() == param.ParameterName.ToUpper());
                         //#if exact match failed, use parameter prefix and remove under_score
-                        if(property == null)
+                        if (property == null)
                         {
                             normalizePrameterName = param.ParameterName;
                             if (!string.IsNullOrEmpty(ParameterPrefix))
@@ -276,7 +283,15 @@ namespace Evolution.Sql
                         }
                         if (property != null)
                         {
-                            param.DbType = ClrTypeDbTypeMap[property.PropertyType];
+                            if (ClrTypeDbTypeMap.ContainsKey(property.PropertyType))
+                            {
+                                param.DbType = ClrTypeDbTypeMap[property.PropertyType];
+                            }
+
+                            if (_typeHandlers.Count() > 0 && _typeHandlers.ContainsKey(property.PropertyType))
+                            {
+                                _typeHandlers[property.PropertyType].SetDbParameter(param);
+                            }
                             param.Value = property.GetValue(parameters);
                         }
                         // if it's pure OUT parameter, Value of InputOutput parameter should set to DBNull.Value, or parameter not provided excetpion would be thrown

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
-using System.Text;
 
 namespace Evolution.Sql
 {
@@ -13,5 +11,6 @@ namespace Evolution.Sql
         string ParameterPrefix { get; set; }
 
         internal DbParameter[] ExplicitParameters { get; set; }
+        internal Dictionary<Type, ITypeHandler> TypeHandlers { get; set; }
     }
 }

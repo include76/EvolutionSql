@@ -1,4 +1,5 @@
 ﻿using Evolution.Sql.SqlServerTest.Model;
+using Evolution.Sql.SqlServerTest.TypeHandler;
 using Evolution.Sql.TestCommon;
 using NUnit.Framework;
 using System;
@@ -22,7 +23,9 @@ namespace Evolution.Sql.SqlServerTest
 
         }
 
-        /*
+        /// <summary>
+        /// Test Sql Server DataTable as parameter
+        /// </summary>
         [Test]
         public void DataTableParameter_Test()
         {
@@ -34,13 +37,24 @@ namespace Evolution.Sql.SqlServerTest
 
                 myDataTable.Rows.Add(Guid.NewGuid(), "XYZ");
                 myDataTable.Rows.Add(Guid.NewGuid(), "ABC");
-
-                var users = connection.Procedure("uspWithTableParameter").Query<User>(new { myData = myDataTable });
+                //# option 1: we can use explicit parameter using WithParameter()
+                var parameter = new SqlParameter("myData", myDataTable) { SqlDbType = SqlDbType.Structured };
+                var users = connection.Procedure("uspWithTableParameter")
+                    .WithParameters(parameter)
+                    .Query<User>();
 
                 Assert.NotNull(users);
                 Assert.AreEqual("XYZ", users.First().FirstName);
+
+                //# option 2: we can create a TypeHandler
+                users = connection.Procedure("uspWithTableParameter")
+                    .WithTypeHandler<DataTable, DataTableHandler>()
+                    .Query<User>(new { myData = myDataTable });
+                Assert.NotNull(users);
+                Assert.AreEqual("XYZ", users.First().FirstName);
+
             }
-        }*/
+        }
 
         [Test]
         public void StoredProcedure_Parameter_Direction_Test()
@@ -96,9 +110,12 @@ namespace Evolution.Sql.SqlServerTest
                     ColVarBinary = bytes,
                     ColXml = @"<note><to>Tove</to><from>Jani</from><heading>Reminder</heading><body>Don't forget me this weekend!</body></note>"
                 };
-                var result = connection.Procedure("uspDataTypeIns").Execute(dataTypeModel);
+                var result = connection.Procedure("uspDataTypeIns")
+                    .WithTypeHandler<DateTime?, DateTimeHandler>()
+                    .Execute(dataTypeModel);
                 Assert.Greater(result, 0);
-                var dataFromDb = connection.Sql("SELECT * FROM [DataTypeTable] ORDER BY ColDateTime DESC").Query<DataTypeModel>(null);
+                var dataFromDb = connection.Sql("SELECT * FROM [DataTypeTable] ORDER BY ColDateTime DESC")
+                    .Query<DataTypeModel>(null);
                 Assert.NotNull(dataFromDb);
                 Assert.Greater(dataFromDb.Count(), 0);
                 var newOne = dataFromDb.First();
@@ -108,7 +125,7 @@ namespace Evolution.Sql.SqlServerTest
                 Assert.AreEqual(dataTypeModel.ColChar, newOne.ColChar.Take(11));
                 //Assert.AreEqual(dataTypeModel.ColDate, newOne.ColDate);
                 //Assert.AreEqual(dataTypeModel.ColDatetime, newOne.ColDatetime);
-                Assert.AreEqual(dataTypeModel.ColDatetime2, newOne.ColDatetime2);
+                Assert.AreEqual(dataTypeModel.ColDatetime2, newOne.ColDatetime2);// the fraction changed when use DbType.Datetime
                 Assert.AreEqual(dataTypeModel.ColDatetimeOffset, newOne.ColDatetimeOffset);
                 Assert.AreEqual(dataTypeModel.ColDecimal, newOne.ColDecimal);
                 Assert.AreEqual(dataTypeModel.ColFloat, newOne.ColFloat);

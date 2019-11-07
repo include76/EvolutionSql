@@ -22,7 +22,7 @@ namespace Evolution.Sql
                 using (var reader = dbCommand.ExecuteReader())
                 {
                     return reader.ToEntities<T>()?.FirstOrDefault();
-                } 
+                }
             }
         }
 
@@ -224,12 +224,25 @@ namespace Evolution.Sql
         #endregion
 
         /// <summary>
+        /// Obsolete, please use WithParameterPrefix
+        /// </summary>
+        /// <param name="iCommand"></param>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
+        [Obsolete]
+        public static ICommand ParameterPrefix(this ICommand iCommand, string prefix)
+        {
+            iCommand.ParameterPrefix = prefix;
+            return iCommand;
+        }
+
+        /// <summary>
         /// Indicate store procedure parameters have prefix
         /// </summary>
         /// <param name="iCommand"></param>
         /// <param name="prefix"></param>
         /// <returns></returns>
-        public static ICommand ParameterPrefix(this ICommand iCommand, string prefix)
+        public static ICommand WithParameterPrefix(this ICommand iCommand, string prefix)
         {
             iCommand.ParameterPrefix = prefix;
             return iCommand;
@@ -243,11 +256,22 @@ namespace Evolution.Sql
         /// <param name="iCommand"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public static ICommand WithParameters(this ICommand iCommand, params DbParameter [] parameters)
+        public static ICommand WithParameters(this ICommand iCommand, params DbParameter[] parameters)
         {
             iCommand.ExplicitParameters = parameters;
             // if explicit parameters set, disable ParameterPrefix
             iCommand.ParameterPrefix = string.Empty;
+            return iCommand;
+        }
+
+        /// <summary>
+        /// Map a provider specific type
+        /// </summary>
+        /// <param name="iCommand"></param>
+        /// <returns></returns>
+        public static ICommand WithTypeHandler<TType, THandler>(this ICommand iCommand) where THandler: ITypeHandler
+        {
+            iCommand.TypeHandlers.Add(typeof(TType), Activator.CreateInstance<THandler>());
             return iCommand;
         }
 
