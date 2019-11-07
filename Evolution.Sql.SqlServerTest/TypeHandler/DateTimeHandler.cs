@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Reflection;
 using System.Text;
 
 namespace Evolution.Sql.SqlServerTest.TypeHandler
 {
     public class DateTimeHandler : ITypeHandler
     {
-        public void GetValue(DbDataReader dbDataReader)
+        public object GetValue(DbDataReader dataReader, int index)
         {
-            throw new NotImplementedException();
+            if (dataReader.GetFieldType(index) == typeof(TimeSpan))
+            {
+                return new DateTime(dataReader.GetFieldValue<TimeSpan>(index).Ticks);
+            }
+            return dataReader.GetFieldValue<DateTime>(index);
         }
 
         public void SetDbParameter(DbParameter dbParameter)

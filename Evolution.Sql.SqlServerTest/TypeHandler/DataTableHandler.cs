@@ -8,7 +8,7 @@ namespace Evolution.Sql.SqlServerTest.TypeHandler
 {
     public class DataTableHandler : ITypeHandler
     {
-        public void GetValue(DbDataReader dbDataReader)
+        public object GetValue(DbDataReader dbDataReader, int index)
         {
             throw new NotImplementedException();
         }

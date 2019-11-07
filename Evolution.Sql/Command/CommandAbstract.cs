@@ -288,10 +288,22 @@ namespace Evolution.Sql
                                 param.DbType = ClrTypeDbTypeMap[property.PropertyType];
                             }
 
-                            if (_typeHandlers.Count() > 0 && _typeHandlers.ContainsKey(property.PropertyType))
+                            if (_typeHandlers.Any())
                             {
-                                _typeHandlers[property.PropertyType].SetDbParameter(param);
+                                if (_typeHandlers.ContainsKey(property.PropertyType))
+                                {
+                                    _typeHandlers[property.PropertyType].SetDbParameter(param);
+                                }
+                                else if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                                {
+                                    var genericType = Nullable.GetUnderlyingType(property.PropertyType);
+                                    if (_typeHandlers.ContainsKey(genericType))
+                                    {
+                                        _typeHandlers[genericType].SetDbParameter(param);
+                                    }
+                                }
                             }
+
                             param.Value = property.GetValue(parameters);
                         }
                         // if it's pure OUT parameter, Value of InputOutput parameter should set to DBNull.Value, or parameter not provided excetpion would be thrown

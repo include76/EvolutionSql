@@ -111,10 +111,11 @@ namespace Evolution.Sql.SqlServerTest
                     ColXml = @"<note><to>Tove</to><from>Jani</from><heading>Reminder</heading><body>Don't forget me this weekend!</body></note>"
                 };
                 var result = connection.Procedure("uspDataTypeIns")
-                    .WithTypeHandler<DateTime?, DateTimeHandler>()
+                    .WithTypeHandler<DateTime, DateTimeHandler>()
                     .Execute(dataTypeModel);
                 Assert.Greater(result, 0);
                 var dataFromDb = connection.Sql("SELECT * FROM [DataTypeTable] ORDER BY ColDateTime DESC")
+                    .WithTypeHandler<DateTime, DateTimeHandler>()
                     .Query<DataTypeModel>(null);
                 Assert.NotNull(dataFromDb);
                 Assert.Greater(dataFromDb.Count(), 0);

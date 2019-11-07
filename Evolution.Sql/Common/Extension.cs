@@ -21,7 +21,7 @@ namespace Evolution.Sql
             }
         }
 
-        internal static IEnumerable<T> ToEntities<T>(this DbDataReader dataReader) where T : class, new()
+        internal static IEnumerable<T> ToEntities<T>(this DbDataReader dataReader, ICommand iCommand) where T : class, new()
         {
             if (dataReader == null || !dataReader.HasRows)
             {
@@ -57,7 +57,7 @@ namespace Evolution.Sql
                     if (property != null)
                     {
                         //property.SetValue(entity, dataReader[i]);
-                        SetPropertyValue<T>(entity, property, dataReader, i);
+                        SetPropertyValue<T>(entity, property, dataReader, i, iCommand);
                     }
                 }
                 list.Add(entity);
@@ -266,7 +266,11 @@ namespace Evolution.Sql
         /// <param name="obj"></param>
         /// <param name="property"></param>
         /// <param name="value"></param>
-        private static void SetPropertyValue<T>(T obj, PropertyInfo property, DbDataReader dataReader, int index)
+        private static void SetPropertyValue<T>(T obj, 
+            PropertyInfo property, 
+            DbDataReader dataReader, 
+            int index,
+            ICommand iCommand)
         {
             if (dataReader.GetValue(index) == DBNull.Value)
             {
@@ -274,7 +278,7 @@ namespace Evolution.Sql
                 property.SetValue(obj, defaultValue);
                 return;
             }
-            if (property.PropertyType == typeof(char[]))
+            /*if (property.PropertyType == typeof(char[]))
             {
                 //property.SetValue(obj, dataReader.GetFieldValue<char[]>(index));
                 property.SetValue(obj, dataReader.GetString(index).ToCharArray());
@@ -298,17 +302,28 @@ namespace Evolution.Sql
                     return;
                 }
                 property.SetValue(obj, dataReader.GetFieldValue<DateTime?>(index));
-            }
+            }*/
             else if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 var genericType = Nullable.GetUnderlyingType(property.PropertyType);
                 if (genericType != null)
                 {
-                    property.SetValue(obj, Convert.ChangeType(dataReader.GetValue(index), genericType), null);
+                    if (iCommand.TypeHandlers.Any() && iCommand.TypeHandlers.ContainsKey(genericType))
+                    {
+                        property.SetValue(obj, Convert.ChangeType(iCommand.TypeHandlers[genericType].GetValue(dataReader, index), genericType), null);
+                    }
+                    else
+                    {
+                        property.SetValue(obj, Convert.ChangeType(dataReader.GetValue(index), genericType), null);
+                    }
                 }
             }
             else
             {
+                if (iCommand.TypeHandlers.Any() && iCommand.TypeHandlers.ContainsKey(property.PropertyType))
+                {
+                    property.SetValue(obj, iCommand.TypeHandlers[property.PropertyType].GetValue(dataReader, index));
+                }
                 property.SetValue(obj, Convert.ChangeType(dataReader.GetValue(index), property.PropertyType));
             }
         }

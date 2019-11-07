@@ -21,7 +21,7 @@ namespace Evolution.Sql
             {
                 using (var reader = dbCommand.ExecuteReader())
                 {
-                    return reader.ToEntities<T>()?.FirstOrDefault();
+                    return reader.ToEntities<T>(iCommand)?.FirstOrDefault();
                 }
             }
         }
@@ -33,7 +33,7 @@ namespace Evolution.Sql
                 T result;
                 using (var reader = dbCommand.ExecuteReader())
                 {
-                    result = reader.ToEntities<T>()?.FirstOrDefault();
+                    result = reader.ToEntities<T>(iCommand)?.FirstOrDefault();
                 }
                 SetOutputParameters(dbCommand, outputs);
                 return result;
@@ -50,7 +50,7 @@ namespace Evolution.Sql
             {
                 using (var reader = await dbCommand.ExecuteReaderAsync())
                 {
-                    return reader.ToEntities<T>()?.FirstOrDefault();
+                    return reader.ToEntities<T>(iCommand)?.FirstOrDefault();
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace Evolution.Sql
                 T result;
                 using (var reader = await dbCommand.ExecuteReaderAsync())
                 {
-                    result = reader.ToEntities<T>()?.FirstOrDefault();
+                    result = reader.ToEntities<T>(iCommand)?.FirstOrDefault();
                 }
                 SetOutputParameters(dbCommand, outputs);
                 return result;
@@ -81,7 +81,7 @@ namespace Evolution.Sql
             {
                 using (var reader = dbCommand.ExecuteReader())
                 {
-                    return reader.ToEntities<T>();
+                    return reader.ToEntities<T>(iCommand);
                 }
             }
         }
@@ -93,7 +93,7 @@ namespace Evolution.Sql
                 IEnumerable<T> result;
                 using (var reader = dbCommand.ExecuteReader())
                 {
-                    result = reader.ToEntities<T>();
+                    result = reader.ToEntities<T>(iCommand);
                 }
                 SetOutputParameters(dbCommand, outputs);
                 return result;
@@ -110,7 +110,7 @@ namespace Evolution.Sql
             {
                 using (var reader = await dbCommand.ExecuteReaderAsync())
                 {
-                    return reader.ToEntities<T>();
+                    return reader.ToEntities<T>(iCommand);
                 }
             }
         }
@@ -122,7 +122,7 @@ namespace Evolution.Sql
                 IEnumerable<T> result;
                 using (var reader = await dbCommand.ExecuteReaderAsync())
                 {
-                    result = reader.ToEntities<T>();
+                    result = reader.ToEntities<T>(iCommand);
                 }
                 SetOutputParameters(dbCommand, outputs);
                 return result;

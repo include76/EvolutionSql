@@ -8,6 +8,6 @@ namespace Evolution.Sql
     public interface ITypeHandler
     {
         void SetDbParameter(DbParameter dbParameter);
-        void GetValue(DbDataReader dbDataReader);
+        object GetValue(DbDataReader dbDataReader, int index);
     }
 }
