@@ -69,6 +69,9 @@ namespace Evolution.Sql.PgSqlTest
             }
         }
 
+        /// <summary>
+        /// pgsql use function to return recordset/value
+        /// </summary>
         [Test]
         public void QueryOne_With_StoredProcedure()
         {
@@ -87,7 +90,7 @@ namespace Evolution.Sql.PgSqlTest
                 Assert.AreEqual(result, 1);
 
                 var outPuts = new Dictionary<string, dynamic>();
-                var userFromDb = connection.Sql($"call usp_user_get(@p_user_id, @p_total_count)")
+                var userFromDb = connection.Procedure($"user_get")
                     .QueryOne<User>(new { p_user_id = userId, p_total_count = 0 }, outPuts);
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
@@ -99,7 +102,6 @@ namespace Evolution.Sql.PgSqlTest
         [Test]
         public void Query_With_Inline_Sql()
         {
-            /*
             using (var connection = new NpgsqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
@@ -109,7 +111,9 @@ namespace Evolution.Sql.PgSqlTest
                     FirstName = "Bruce",
                     LastName = "Lee"
                 };
-                sqlSession.Execute<User>("insert", user);
+                var result = connection.Sql(userInsSql)
+                   .Execute(user);
+                Assert.Greater(result, 0);
 
                 var blog = new Blog
                 {
@@ -121,20 +125,25 @@ namespace Evolution.Sql.PgSqlTest
                 };
 
                 var outPuts = new Dictionary<string, dynamic>();
-                sqlSession.Execute<Blog>("insert", blog, outPuts);
+                connection.Procedure("blog_ins")
+                    .WithParameterPrefix("p_")
+                    .Execute(blog, outPuts);
                 var postId = outPuts["Id"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
-                sqlSession.Execute<Blog>("insert", blog, outPuts);
+                connection.Procedure("blog_ins")
+                    .WithParameterPrefix("p_")
+                    .Execute(blog, outPuts);
                 postId = outPuts["Id"];
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
 
                 // query
-                var blogs = sqlSession.Query<Blog>("getall", null);
+                var blogs = connection.Sql("select * from blog")
+                    .Query<Blog>();
                 Assert.NotNull(blogs);
                 Assert.Greater(blogs.ToList().Count, 1);
-            }*/
+            }
         }
 
         [Test]

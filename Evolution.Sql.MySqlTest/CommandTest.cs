@@ -36,7 +36,7 @@ namespace Evolution.Sql.MySqlTest
                 userFromDb.UpdatedBy = "system";
                 userFromDb.UpdatedOn = DateTime.Now;
                 connection.Procedure("usp_user_upd")
-                    .ParameterPrefix("p_")
+                    .WithParameterPrefix("p_")
                     .Execute(userFromDb);
 
                 var updatedUser = await connection.Procedure("usp_user_get")
@@ -47,7 +47,7 @@ namespace Evolution.Sql.MySqlTest
         }
 
         /// <summary>
-        /// if SetParameters, then ParameterPrefix shoul be ignored
+        /// if SetParameters, then ParameterPrefix should be ignored
         /// parameters of Query/Execute should be ignored
         /// </summary>
         /// <returns></returns>
@@ -84,7 +84,7 @@ namespace Evolution.Sql.MySqlTest
                     new MySqlParameter("p_updated_on", DateTime.Now)
                 };
                 connection.Procedure("usp_user_upd")
-                    .ParameterPrefix("p_")
+                    .WithParameterPrefix("p_")
                     .WithParameters(parameters)
                     .Execute(userFromDb);//expect: the userFromDb be ingored
 
