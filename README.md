@@ -51,13 +51,6 @@ by using EvolutionSql, it's very simple to execute either inline sql or stored p
   {
       var userFromDb = connection.Procedure("uspUserGet").QueryOne<User>(new { UserId = userId });
   }
-  
-  // if you want the output value from the stored procedure
-  var outPuts = new Dictionary<string, dynamic>();
-  using (var connection = new SqlConnection(connectionStr))
-  {
-      var userFromDb = connection.Procedure("uspUserGet").QueryOne<User>(new { UserId = userId }, outPuts);
-  }
 ```
 ## Result mapping
 When query from database, column name are auto mapped to property of modal, the following two pattern are legal, and both case-insensitive
