@@ -89,7 +89,6 @@ When query from database, column name are auto mapped to property of modal, the 
         new MySqlParameter("p_updated_on", DateTime.Now)
     };
     connection.Procedure("usp_user_upd")
-        .ParameterPrefix("p_")// call this to indicate that the stored procedure parameters have p_ prefix
         .Execute(parameters);
 
 ```
