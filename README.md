@@ -80,12 +80,17 @@ When query from database, column name are auto mapped to property of modal, the 
 
 ###### use named type as parameter
 ```C#
-    user.FirstName = "Bob";
-    user.UpdatedBy = "systemuser";
-    user.UpdatedOn = DateTime.Now;
+    var parameters = new MySqlParameter[]
+    {
+        new MySqlParameter("p_user_id", userId),
+        new MySqlParameter("p_first_name", "Bob"),
+        new MySqlParameter("p_last_name", "Lee"),
+        new MySqlParameter("p_updated_by", "system"),
+        new MySqlParameter("p_updated_on", DateTime.Now)
+    };
     connection.Procedure("usp_user_upd")
         .ParameterPrefix("p_")// call this to indicate that the stored procedure parameters have p_ prefix
-        .Execute(user);
+        .Execute(parameters);
 
 ```
 ```SQL
