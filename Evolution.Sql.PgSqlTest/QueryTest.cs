@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Evolution.Sql.PgSqlTest
 {
-    public class QueryTest : IQueryTest
+    public class QueryTest
     {
         private string connectionStr = @"Server=127.0.0.1;Port=5432;Database=blog;User Id=postgres;Password=";
 
@@ -29,12 +29,12 @@ namespace Evolution.Sql.PgSqlTest
             using (var connection = new NpgsqlConnection(connectionStr))
             {
                 var userId1 = Guid.NewGuid();
-                var user = new User
+                var user = new
                 {
                     UserId = userId1,
                     FirstName = "Bruce",
                     LastName = "Lee",
-                    UpdatedBy = "Locke",
+                    CreatedBy = "Locke",
                     CreatedOn = DateTime.Now
                 };
 
@@ -48,7 +48,7 @@ namespace Evolution.Sql.PgSqlTest
                 Assert.AreEqual(userId1, bruce.UserId);
 
                 var userId2 = Guid.NewGuid();
-                user = new User
+                var parameters = new
                 {
                     UserId = userId2,
                     FirstName = "Tom",
@@ -58,7 +58,7 @@ namespace Evolution.Sql.PgSqlTest
                 };
 
                 result = await connection.Sql("insert into \"user\"(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
-                    .ExecuteAsync(user);
+                    .ExecuteAsync(parameters);
                 Assert.Greater(result, 0);
 
                 var tom = await connection.Sql("select * from \"user\" where user_id = @UserId").QueryOneAsync<User>(new { UserId = userId2 });
@@ -73,12 +73,41 @@ namespace Evolution.Sql.PgSqlTest
         /// pgsql use function to return recordset/value
         /// </summary>
         [Test]
-        public void QueryOne_With_StoredProcedure()
+        public void QueryOne_With_Function_RefCursor()
         {
             using (var connection = new NpgsqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
-                var user = new User
+                var user = new
+                {
+                    UserId = userId,
+                    FirstName = "Bruce",
+                    LastName = "Lee",
+                    CreatedBy = "Locke",
+                    CreatedOn = DateTime.UtcNow
+                };
+                var result = connection.Sql(userInsSql).Execute(user);
+                Assert.AreEqual(result, 1);
+                var trans = connection.BeginTransaction();
+                var cursor = connection.Procedure("user_get_with_refcursor")
+                    .ExecuteScalar(new { p_user_id = userId });
+
+                var userFromDb = connection.Sql($"fetch all in \"{cursor.ToString()}\"")
+                    .QueryOne<User>();
+
+                trans.Commit();
+                Assert.IsNotNull(userFromDb);
+                Assert.AreEqual(userId, userFromDb.UserId);
+            }
+        }
+
+        [Test]
+        public void QueryOne_With_Function_Return_Table()
+        {
+            using (var connection = new NpgsqlConnection(connectionStr))
+            {
+                var userId = Guid.NewGuid();
+                var user = new
                 {
                     UserId = userId,
                     FirstName = "Bruce",
@@ -89,13 +118,40 @@ namespace Evolution.Sql.PgSqlTest
                 var result = connection.Sql(userInsSql).Execute(user);
                 Assert.AreEqual(result, 1);
 
-                var outPuts = new Dictionary<string, dynamic>();
-                var userFromDb = connection.Procedure($"user_get")
-                    .QueryOne<User>(new { p_user_id = userId, p_total_count = 0 }, outPuts);
+                var userFromDb = connection.Procedure("user_get_with_table")
+                    .QueryOne<User>(new { p_user_id = userId });
+                //var userFromDb = connection.Sql("select * from user_get_with_table(@p_user_id)")
+                //    .QueryOne<User>(new { p_user_id = userId, p_total_count = 0 });
+
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
-                Assert.True(outPuts.ContainsKey("p_total_count"));
-                Assert.Greater(outPuts["p_total_count"], 0);
+            }
+        }
+
+        [Test]
+        public void QueryOne_With_Function_Return_Next()
+        {
+            using (var connection = new NpgsqlConnection(connectionStr))
+            {
+                var userId = Guid.NewGuid();
+                var user = new
+                {
+                    UserId = userId,
+                    FirstName = "Bruce",
+                    LastName = "Lee",
+                    CreatedBy = "Locke",
+                    CreatedOn = DateTime.UtcNow
+                };
+                var result = connection.Sql(userInsSql).Execute(user);
+                Assert.AreEqual(result, 1);
+
+                var userFromDb = connection.Procedure("user_get_with_table_loop_next")
+                    .QueryOne<User>(new { p_user_id = userId });
+                //var userFromDb = connection.Sql("select * from user_get_with_table_loop_next(@p_user_id)")
+                //    .QueryOne<User>(new { p_user_id = userId, p_total_count = 0 });
+
+                Assert.IsNotNull(userFromDb);
+                Assert.AreEqual(userId, userFromDb.UserId);
             }
         }
 
@@ -105,36 +161,32 @@ namespace Evolution.Sql.PgSqlTest
             using (var connection = new NpgsqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
-                var user = new User
+                var user = new
                 {
                     UserId = userId,
                     FirstName = "Bruce",
-                    LastName = "Lee"
+                    LastName = "Lee",
+                    CreatedBy = "system",
+                    CreatedOn = DateTime.Now
                 };
                 var result = connection.Sql(userInsSql)
                    .Execute(user);
                 Assert.Greater(result, 0);
 
-                var blog = new Blog
+                var blog = new
                 {
-                    Title = "this is a test post title",
-                    Content = "this is a test post content",
-                    CreatedBy = userId,
-                    CreatedOn = DateTime.Now,
-                    UpdatedOn = DateTime.Now
+                    p_title = "this is a test post title",
+                    p_content = "this is a test post content",
+                    p_created_by = userId,
+                    p_created_on = DateTime.Now
                 };
 
-                var outPuts = new Dictionary<string, dynamic>();
-                connection.Procedure("blog_ins")
-                    .WithParameterPrefix("p_")
-                    .Execute(blog, outPuts);
-                var postId = outPuts["Id"];
+                var postId = connection.Procedure("blog_ins")
+                    .ExecuteScalar(blog);
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
-                connection.Procedure("blog_ins")
-                    .WithParameterPrefix("p_")
-                    .Execute(blog, outPuts);
-                postId = outPuts["Id"];
+                postId = connection.Procedure("blog_ins")
+                    .ExecuteScalar(blog);
                 Assert.NotNull(postId);
                 Assert.Greater(int.Parse(postId.ToString()), 0);
 
@@ -179,5 +231,10 @@ namespace Evolution.Sql.PgSqlTest
         {
             throw new NotImplementedException();
         }
+    }
+
+    public class RefCursorModel
+    {
+        public string RefCursor { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Evolution.Sql.TestCommon.Interface;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,7 @@ namespace Evolution.Sql.SqlServerTest
             using (var connection = new SqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
-                var user = new User
+                var user = new
                 {
                     UserId = userId,
                     FirstName = "Bruce",
@@ -58,7 +59,7 @@ namespace Evolution.Sql.SqlServerTest
             using (var connection = new SqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
-                var user = new User
+                var user = new
                 {
                     UserId = userId,
                     FirstName = "Bruce",
@@ -69,13 +70,15 @@ namespace Evolution.Sql.SqlServerTest
                     .Execute(user);
                 Assert.Greater(result, 0);
 
-                var outPuts = new Dictionary<string, dynamic>();
+                var parameters = new SqlParameter[] {
+                    new SqlParameter("userid", userId),
+                    new SqlParameter("totalCount", SqlDbType.Int){ Direction = ParameterDirection.Output }
+                };
                 var userFromDb = connection.Procedure("uspUserGet")
-                    .Query<User>(new { UserId = userId, totalCount = 0 }, outPuts).FirstOrDefault();
+                    .QueryOne<User>(parameters);
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
-                Assert.True(outPuts.ContainsKey("totalCount"));
-                Assert.Greater(outPuts["totalCount"], 0);
+                Assert.Greater(int.Parse(parameters[1].Value.ToString()), 0);
             }
         }
 
@@ -97,7 +100,7 @@ namespace Evolution.Sql.SqlServerTest
             using (var connection = new SqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
-                var user = new User
+                var user = new
                 {
                     UserId = userId,
                     FirstName = "Bruce",

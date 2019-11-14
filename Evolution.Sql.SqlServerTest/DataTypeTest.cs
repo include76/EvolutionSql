@@ -40,15 +40,14 @@ namespace Evolution.Sql.SqlServerTest
                 //# option 1: we can use explicit parameter using WithParameter()
                 var parameter = new SqlParameter("myData", myDataTable) { SqlDbType = SqlDbType.Structured };
                 var users = connection.Procedure("uspWithTableParameter")
-                    .WithParameters(parameter)
-                    .Query<User>();
+                    .Query<User>(parameter);
 
                 Assert.NotNull(users);
                 Assert.AreEqual("XYZ", users.First().FirstName);
 
                 //# option 2: we can create a TypeHandler
                 users = connection.Procedure("uspWithTableParameter")
-                    .WithTypeHandler<DataTable, DataTableHandler>()
+                    //.WithTypeHandler<DataTable, DataTableHandler>()
                     .Query<User>(new { myData = myDataTable });
                 Assert.NotNull(users);
                 Assert.AreEqual("XYZ", users.First().FirstName);
@@ -56,15 +55,14 @@ namespace Evolution.Sql.SqlServerTest
             }
         }
 
-        [Test]
-        public void StoredProcedure_Parameter_Direction_Test()
-        {
-            using (var connection = new SqlConnection(connectionStr))
-            {
-                var outPuts = new Dictionary<string, dynamic>();
-                var result = connection.Procedure("uspParamDirection").Execute(new { pIn = 2, pInOut = 5, pOut = 0 }, outPuts); 
-            }
-        }
+        //[Test]
+        //public void StoredProcedure_Parameter_Direction_Test()
+        //{
+        //    using (var connection = new SqlConnection(connectionStr))
+        //    {
+        //        var result = connection.Procedure("uspParamDirection").Execute(new { pIn = 2, pInOut = 5, pOut = 0 }); 
+        //    }
+        //}
 
         [Test]
         public void DataType_Test()
@@ -75,7 +73,7 @@ namespace Evolution.Sql.SqlServerTest
                 var directory = new FileInfo(location.AbsolutePath).Directory.FullName;
                 var bytes = File.ReadAllBytes(Path.Combine(directory, "bridge.jpg"));
 
-                var dataTypeModel = new DataTypeModel
+                var dataTypeModel = new
                 {
                     ColBigInt = 9223372036854775807,
                     ColBit = true,

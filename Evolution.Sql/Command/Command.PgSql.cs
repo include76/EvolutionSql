@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Evolution.Sql.Cache;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Text;
 
 namespace Evolution.Sql
@@ -56,6 +58,10 @@ namespace Evolution.Sql
         protected override string DefaultSchema => "public";
         protected override string ParameterSymbol => "@";
         protected override Dictionary<string, DbType> DbDataTypeDbTypeMap => portableType;
+        protected override string Sql2GetProcedureParameters =>
+            @"SELECT p.PARAMETER_NAME, p.PARAMETER_MODE, p.DATA_TYPE , p.SPECIFIC_NAME
+            FROM INFORMATION_SCHEMA.PARAMETERS p INNER JOIN INFORMATION_SCHEMA.ROUTINES r ON r.specific_name = p.specific_name
+            WHERE p.SPECIFIC_SCHEMA= @schema AND r.routine_name = @name";
         public PgSqlCommand() : base()
         {
         }

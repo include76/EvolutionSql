@@ -17,7 +17,7 @@ namespace Evolution.Sql
         protected static char[] rightQuote = new char[] { ']', '\'', '`', '"' };
         protected string ParameterPattern
         {
-            get { return ParameterSymbol + "([^',;=<>\\s\\)]+)"; }
+            get { return ParameterSymbol + "([^'\",;=<>\\s\\)]+)"; }
         }
 
         protected virtual string Sql2GetProcedureParameters
@@ -46,6 +46,20 @@ namespace Evolution.Sql
         {
             get { return _typeHandlers; }
             set { _typeHandlers = value; }
+        }
+
+        int _commandTimeout = 30;
+        int ICommand.CommandTimeout
+        {
+            get { return _commandTimeout; }
+            set { _commandTimeout = value; }
+        }
+
+        DbTransaction _dbTransaction;
+        DbTransaction ICommand.Transaction
+        {
+            get { return _dbTransaction; }
+            set { _dbTransaction = value; }
         }
 
         protected virtual Dictionary<string, DbType> DbDataTypeDbTypeMap { get; set; }
@@ -95,22 +109,83 @@ namespace Evolution.Sql
             regex = new Regex(ParameterPattern);
         }
 
-        public DbCommand Build(object parameters)
+        DbCommand ICommand.Build(object obj)
         {
             Connection.TryOpen();
             var dbCommand = Connection.CreateCommand();
             dbCommand.CommandType = CommandType;
             dbCommand.CommandText = CommandText;
-            if (_explicitParameters != null && _explicitParameters.Length > 0)
+            dbCommand.CommandTimeout = _commandTimeout;
+            dbCommand.Transaction = _dbTransaction;
+            SetParameters(dbCommand, obj);
+
+            //if (_explicitParameters != null && _explicitParameters.Length > 0)
+            //{
+            //    SetExplicitParameters(dbCommand);
+            //}
+            //else
+            //{
+            //    SetParameters(dbCommand);
+            //    AssignParameterValues(dbCommand, parameters);
+            //}
+            return dbCommand;
+        }
+
+        DbCommand ICommand.Build(params DbParameter[] parameters)
+        {
+            Connection.TryOpen();
+            var dbCommand = Connection.CreateCommand();
+            dbCommand.CommandType = CommandType;
+            dbCommand.CommandText = CommandText;
+            dbCommand.CommandTimeout = _commandTimeout;
+            dbCommand.Transaction = _dbTransaction;
+            if (parameters != null)
             {
-                SetExplicitParameters(dbCommand);
-            }
-            else
-            {
-                SetParameters(dbCommand);
-                AssignParameterValues(dbCommand, parameters);
+                foreach (var p in parameters)
+                {
+                    dbCommand.Parameters.Add(p);
+                }
             }
             return dbCommand;
+        }
+
+        protected void SetParameters(DbCommand dbCommand, object obj)
+        {
+            var properties = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            if (properties == null)
+            {
+                return;
+            }
+            foreach (var property in properties)
+            {
+                var parameter = dbCommand.CreateParameter();
+                parameter.ParameterName = ParameterSymbol + property.Name;
+                parameter.Direction = ParameterDirection.Input;
+
+                if (ClrTypeDbTypeMap.ContainsKey(property.PropertyType))
+                {
+                    parameter.DbType = ClrTypeDbTypeMap[property.PropertyType];
+                }
+
+                if (_typeHandlers.Any())
+                {
+                    if (_typeHandlers.ContainsKey(property.PropertyType))
+                    {
+                        _typeHandlers[property.PropertyType].SetDbParameter(parameter);
+                    }
+                    else if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    {
+                        var genericType = Nullable.GetUnderlyingType(property.PropertyType);
+                        if (_typeHandlers.ContainsKey(genericType))
+                        {
+                            _typeHandlers[genericType].SetDbParameter(parameter);
+                        }
+                    }
+                }
+                parameter.Value = property.GetValue(obj);
+
+                dbCommand.Parameters.Add(parameter);
+            }
         }
 
         protected void SetExplicitParameters(DbCommand dbCommand)
@@ -264,7 +339,7 @@ namespace Evolution.Sql
                     string normalizePrameterName;
                     foreach (DbParameter param in dbCommand.Parameters)
                     {
-                        if (param.Direction == ParameterDirection.Output)
+                        if (param.Direction == ParameterDirection.Output || param.Direction == ParameterDirection.ReturnValue)
                         {
                             continue;
                         }
@@ -316,7 +391,7 @@ namespace Evolution.Sql
             }
         }
 
-        private ParameterDirection GetDirection(string direction)
+        protected ParameterDirection GetDirection(string direction)
         {
             switch (direction.ToUpper())
             {

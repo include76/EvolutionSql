@@ -8,6 +8,7 @@ namespace Evolution.Sql.MySqlTest.Model
     {
         //int
         public byte ColTinyInt { get; set; }
+        public byte ColUTinyInt { get; set; }
         public Int16 ColSmallInt { get; set; }
         public Int32 ColMediumInt { get; set; }
         public Int32 ColInt { get; set; }

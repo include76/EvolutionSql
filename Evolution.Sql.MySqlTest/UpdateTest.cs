@@ -4,6 +4,7 @@ using MySql.Data.MySqlClient;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -33,19 +34,27 @@ namespace Evolution.Sql.MySqlTest
                 connection.Sql("insert into `user`(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
                     .Execute(user);
 
+                var pUserId = new MySqlParameter("pUserId", userId);
+                var pTotalCount = new MySqlParameter("totalCount", MySqlDbType.Int32) { Direction = ParameterDirection.Output };
                 var userFromDb = connection.Procedure("usp_user_get")
-                    .Query<User>(new { pUserId = userId }).FirstOrDefault();
+                    .QueryOne<User>(pUserId, pTotalCount);
                 Assert.NotNull(userFromDb);
 
-                userFromDb.FirstName = "Bob";
-                userFromDb.UpdatedBy = "system";
-                userFromDb.UpdatedOn = DateTime.Now;
+                var parameters = new
+                {
+                    p_user_id = userFromDb.UserId,
+                    p_first_name = "Bob",
+                    p_last_name = userFromDb.LastName,
+                    p_updated_by = "system",
+                    p_updated_on = DateTime.Now
+                };
                 connection.Procedure("usp_user_upd")
-                    .ParameterPrefix("p_")
-                    .Execute(userFromDb);
+                    .Execute(parameters);
 
+                pUserId = new MySqlParameter("pUserId", userId);
+                pTotalCount = new MySqlParameter("totalCount", MySqlDbType.Int32) { Direction = ParameterDirection.Output };
                 var updatedUser = connection.Procedure("usp_user_get")
-                    .Query<User>(new { pUserId = userId }).FirstOrDefault();
+                    .Query<User>(pUserId, pTotalCount).FirstOrDefault();
                 Assert.NotNull(updatedUser);
                 Assert.AreEqual("Bob", updatedUser.FirstName);
             }

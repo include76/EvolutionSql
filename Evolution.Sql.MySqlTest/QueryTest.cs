@@ -4,6 +4,7 @@ using MySql.Data.MySqlClient;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -58,7 +59,6 @@ namespace Evolution.Sql.MySqlTest
                 var tom = (await connection.Sql("select * from `user` where user_id = @UserId").QueryAsync<User>(new { UserId = userId2 }))?.FirstOrDefault();
                 Assert.IsNotNull(tom);
                 Assert.AreEqual(userId2, tom.UserId);
-
                 Assert.AreNotEqual(bruce.FirstName, tom.FirstName);
             }
         }
@@ -69,7 +69,7 @@ namespace Evolution.Sql.MySqlTest
             using (var connection = new MySqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
-                var user = new User
+                var user = new
                 {
                     UserId = userId,
                     FirstName = "Bruce",
@@ -79,13 +79,18 @@ namespace Evolution.Sql.MySqlTest
                     .Execute(user);
                 Assert.Greater(result, 0);
 
-                var outPuts = new Dictionary<string, dynamic>();
+                var parameters = new MySqlParameter[]
+                {
+                    new MySqlParameter("pUserId", userId),
+                    new MySqlParameter("totalCount", MySqlDbType.Int32){ Direction = System.Data.ParameterDirection.Output}
+                };
+
                 var userFromDb = connection.Procedure("usp_user_get")
-                    .QueryOne<User>(new { pUserId = userId, totalCount = 0 }, outPuts);
+                    .QueryOne<User>(parameters);
                 Assert.IsNotNull(userFromDb);
                 Assert.AreEqual(userId, userFromDb.UserId);
-                Assert.True(outPuts.ContainsKey("totalCount"));
-                //Assert.Greater(outPuts["totalCount"], 0);
+                int.TryParse(parameters[1].Value.ToString(), out int totalCount);
+                Assert.Greater(totalCount, 0);
             }
         }
 
@@ -95,7 +100,7 @@ namespace Evolution.Sql.MySqlTest
             using (var connection = new MySqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
-                var user = new User
+                var user = new
                 {
                     UserId = userId,
                     FirstName = "Bruce",
@@ -104,7 +109,7 @@ namespace Evolution.Sql.MySqlTest
                 connection.Sql("insert into `user`(user_id, first_name, last_name) values(@UserId, @FirstName, @LastName);")
                     .Execute(user);
 
-                var blog = new Blog
+                var blog = new
                 {
                     Title = "this is a test post title",
                     Content = "this is a test post content",
@@ -149,12 +154,12 @@ namespace Evolution.Sql.MySqlTest
                     .Execute(user);
                 Assert.Greater(result, 0);
 
-                var outPuts = new Dictionary<string, dynamic>();
+                var pUserId = new MySqlParameter("pUserId", userId);
+                var pTotalCount = new MySqlParameter("totalCount", MySqlDbType.Int32) { Direction = ParameterDirection.Output };
                 var users = await connection.Procedure("usp_user_get")
-                    .QueryAsync<User>(new { pUserId = userId, totalCount = 0 }, outPuts);
+                    .QueryAsync<User>(pUserId, pTotalCount);
                 Assert.IsNotNull(users);
-                Assert.True(outPuts.ContainsKey("totalCount"));
-                //Assert.Greater(outPuts["totalCount"], 0);
+                Assert.Greater(int.Parse(pTotalCount.Value.ToString()), 0);
             }
         }
 
@@ -198,7 +203,10 @@ namespace Evolution.Sql.MySqlTest
                     .Execute(user);
                 Assert.AreEqual(1, result);
 
-                var userFromDb = (await connection.Procedure("usp_user_get").QueryAsync<User>(new { pUserId = userId }))?.FirstOrDefault();
+                var pUserId = new MySqlParameter("pUserId", userId);
+                var pTotalCount = new MySqlParameter("totalCount", MySqlDbType.Int32) { Direction = ParameterDirection.Output };
+                var userFromDb = (await connection.Procedure("usp_user_get")
+                    .QueryOneAsync<User>(pUserId, pTotalCount));
                 Assert.NotNull(userFromDb);
                 Assert.AreEqual("Lily", userFromDb.FirstName);
                 Assert.AreEqual("Chang", userFromDb.LastName);

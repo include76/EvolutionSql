@@ -13,6 +13,7 @@ namespace Evolution.Sql.SqlServerTest.Model
         public DateTime CreatedOn { get; set; }
         public Guid CreatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
+        public Guid UpdatedBy { get; set; }
         public User CreatedUser { get; set; }
         public IList<Tag> Tags { get; set; }
         public IList<Post> Posts { get; set; }

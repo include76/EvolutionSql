@@ -23,7 +23,7 @@ namespace Evolution.Sql.SqlServerTest
             var userId = Guid.NewGuid();
             using (var connection = new SqlConnection(connectionStr))
             {
-                var user = new User
+                var user = new
                 {
                     UserId = userId,
                     FirstName = "Bruce",
@@ -37,15 +37,20 @@ namespace Evolution.Sql.SqlServerTest
 
             using (var connection = new SqlConnection(connectionStr))
             {
-                var user = connection.Sql("select * from [user] where userid = @UserId")
+                var userFromDb = connection.Sql("select * from [user] where userid = @UserId")
                         .Query<User>(new { UserId = userId })?.FirstOrDefault();
-                Assert.NotNull(user);
-                Assert.AreEqual(userId, user.UserId);
+                Assert.NotNull(userFromDb);
+                Assert.AreEqual(userId, userFromDb.UserId);
 
-                user.FirstName = "Luice";
-                user.LastName = "Tom";
-                user.UpdatedOn = DateTime.Now;
-                var result = connection.Sql("update [user] set FirstName=@FirstName, LastName=@LastName, UpdatedOn=@UpdatedOn where UserId = @UserId").Execute(user);
+                var parameters = new
+                {
+                    UserId = userFromDb.UserId,
+                    FirstName = "Luice",
+                    LastName = "Tom",
+                    UpdatedOn = DateTime.Now,
+                };
+                var result = connection.Sql("update [user] set FirstName=@FirstName, LastName=@LastName, UpdatedOn=@UpdatedOn where UserId = @UserId")
+                    .Execute(parameters);
                 Assert.AreEqual(1, result);
             }
 

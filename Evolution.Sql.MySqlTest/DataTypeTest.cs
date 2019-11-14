@@ -32,6 +32,7 @@ namespace Evolution.Sql.MySqlTest
                 var dataTypeModel = new DataTypeModel
                 {
                     ColTinyInt = 127,
+                    ColUTinyInt = 225,
                     ColSmallInt = (short)32767,
                     ColMediumInt = 8388607,
                     ColInt = 123456789,

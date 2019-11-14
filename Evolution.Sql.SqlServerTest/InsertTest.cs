@@ -25,7 +25,7 @@ namespace Evolution.Sql.SqlServerTest
         {
             using(var connection = new SqlConnection(connectionStr))
             {
-                var user = new User
+                var user = new
                 {
                     UserId = Guid.NewGuid(),
                     FirstName = "Bruce",
@@ -34,6 +34,7 @@ namespace Evolution.Sql.SqlServerTest
                 };
                 var result = connection.Sql(@"insert into [user](UserId, FirstName, LastName, CreatedOn) 
                                                 values(@UserId, @FirstName, @LastName, @CreatedOn)")
+                    .SetTimeOut(3)
                     .Execute(user);
                 Assert.Greater(result, 0);
             }
@@ -70,7 +71,7 @@ namespace Evolution.Sql.SqlServerTest
             using (var connection = new SqlConnection(connectionStr))
             {
                 var userId = Guid.NewGuid();
-                var user = new User
+                var user = new
                 {
                     UserId = userId,
                     FirstName = "Bruce",
@@ -81,7 +82,7 @@ namespace Evolution.Sql.SqlServerTest
                                                 values(@UserId, @FirstName, @LastName, @CreatedOn)")
                     .Execute(user);
 
-                var blog = new Blog
+                var blog = new
                 {
                     Title = "this is a test post title",
                     Content = "this is a test post content",

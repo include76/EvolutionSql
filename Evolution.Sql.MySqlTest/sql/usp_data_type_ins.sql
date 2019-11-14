@@ -2,6 +2,7 @@
 DELIMITER //
 CREATE PROCEDURE usp_data_type_ins(
 	ColTinyInt 		TINYINT,
+	ColUTinyInt		tinyint unsigned,
     ColSmallInt		SMALLINT,
     ColMediumInt		mediumint,
     ColInt			int,
