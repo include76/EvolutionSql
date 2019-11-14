@@ -9,9 +9,6 @@ namespace Evolution.Sql
     {
         public SQLiteCommand()
         {
-            DbDataTypeDbTypeMap = new Dictionary<string, DbType>()
-            {
-            };
         }
     }
 }
