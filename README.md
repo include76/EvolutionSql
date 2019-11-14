@@ -6,24 +6,15 @@ by using EvolutionSql, it's very simple to execute either inline sql or stored p
 ## Supported Database
 - [x] Mysql
 - [x] SqlServer
-- [ ] PostgreSql in near furture
+- [x] PostgreSql
 
 ## Sample
-```c#
 
-  public class User
-  {
-      public Guid UserId { get; set; }
-      public string FirstName { get; set; }
-      public string LastName { get; set; }
-      public DateTime CreatedOn { get; set; }
-      public DateTime UpdatedOn { get; set; }
-  }
-```
 
 ###### insert sample with inline sql
 ```c#
-  var user = new User
+  // anonymouse type as parameters
+  var parameters = new
   {
       UserId = Guid.NewGuid(),
       FirstName = "Bruce",
@@ -35,7 +26,7 @@ by using EvolutionSql, it's very simple to execute either inline sql or stored p
               VALUES(@UserId, @FirstName, @LastName, @CreatedOn)";
   using (var connection = new SqlConnection(connectionStr))
   {
-    var result = connection.Sql(sql).Execute(user);
+    var result = connection.Sql(sql).Execute(parameters);
   }
 ```
 
@@ -124,22 +115,4 @@ When query from database, column name are auto mapped to property of modal, the 
     WHERE user_id = p_user_id;
   END//
   DELIMITER ;
-```
-###### use WithParameters() set parameters explicitly
-
-```C#
-  //You can set Parameters explicitly via WithParameters() method, 
-  //this is very useful when the parameter data type is not a standard SQL data type
-  //for previous example, you can set parameters like this
-  MySqlParameter[] parameters = {
-      new MySqlParameter("p_user_id",userId),
-      new MySqlParameter("p_first_name", "Bruce"),
-      new MySqlParameter("p_last_name", "Lee"),
-      new MySqlParameter("p_updated_by", "systemuser"),
-      new MySqlParameter("p_updated_on", DateTime.Now)
-  };
-  var result = connection.Procedure("usp_user_upd")
-    .WithParameters(parameters)
-    .Execute();
-
 ```
