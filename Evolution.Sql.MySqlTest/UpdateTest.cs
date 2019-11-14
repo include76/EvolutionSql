@@ -40,14 +40,24 @@ namespace Evolution.Sql.MySqlTest
                     .QueryOne<User>(pUserId, pTotalCount);
                 Assert.NotNull(userFromDb);
 
-                var parameters = new
+                //var parameters = new
+                //{
+                //    p_user_id = userFromDb.UserId,
+                //    p_first_name = "Bob",
+                //    p_last_name = userFromDb.LastName,
+                //    p_updated_by = "system",
+                //    p_updated_on = DateTime.Now
+                //};
+
+                var parameters = new MySqlParameter[]
                 {
-                    p_user_id = userFromDb.UserId,
-                    p_first_name = "Bob",
-                    p_last_name = userFromDb.LastName,
-                    p_updated_by = "system",
-                    p_updated_on = DateTime.Now
+                    new MySqlParameter("p_user_id", userId),
+                    new MySqlParameter("p_first_name", "Bob"),
+                    new MySqlParameter("p_last_name", "Lee"),
+                    new MySqlParameter("p_updated_by", "system"),
+                    new MySqlParameter("p_updated_on", DateTime.Now)
                 };
+
                 connection.Procedure("usp_user_upd")
                     .Execute(parameters);
 
