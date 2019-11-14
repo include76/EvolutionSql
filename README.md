@@ -78,7 +78,7 @@ When query from database, column name are auto mapped to property of modal, the 
   DELIMITER ;
 ```
 
-###### use named type as parameter
+###### use explict parameter
 ```C#
     var parameters = new MySqlParameter[]
     {
