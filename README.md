@@ -4,9 +4,9 @@ Simple dot net database access library, if you don't like Full-ORM framework suc
 by using EvolutionSql, it's very simple to execute either inline sql or stored procedure; EvolutionSql extend DbConnection with ONLY two methods ```Sql()``` and ```Procedure()```, for execute inline sql and stored procedure respectively.
 
 ## Supported Database
-- [x] Mysql
+- [x] MySQL
 - [x] SqlServer
-- [x] PostgreSql
+- [x] PostgreSQL
 
 ## Sample
 
