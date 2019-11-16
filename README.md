@@ -24,10 +24,7 @@ by using EvolutionSql, it's very simple to execute either inline sql or stored p
   //
   var sql =@"INSERT INTO [user](UserId, FirstName, LastName, CreatedOn) 
               VALUES(@UserId, @FirstName, @LastName, @CreatedOn)";
-  using (var connection = new SqlConnection(connectionStr))
-  {
-    var result = connection.Sql(sql).Execute(parameters);
-  }
+  connection.Sql(sql).Execute(parameters);
 ```
 
 
@@ -47,10 +44,8 @@ by using EvolutionSql, it's very simple to execute either inline sql or stored p
   ```
   
   ```c#
-  using (var connection = new SqlConnection(connectionStr))
-  {
-      var userFromDb = connection.Procedure("uspUserGet").QueryOne<User>(new { UserId = userId });
-  }
+  var userFromDb = connection.Procedure("uspUserGet")
+                             .QueryOne<User>(new { UserId = userId });
 ```
 ## Result mapping
 When query from database, column name are auto mapped to property of modal, the following two pattern are legal, and both case-insensitive
@@ -61,7 +56,7 @@ When query from database, column name are auto mapped to property of modal, the 
 ###### use anonymous type as parameter
 ```C#
     var userFromDb = connection.Procedure("usp_user_get")                    
-                    .QueryOne<User>(new { pUserId = userId });
+                               .QueryOne<User>(new { pUserId = userId });
 
 ```
 ```SQL
