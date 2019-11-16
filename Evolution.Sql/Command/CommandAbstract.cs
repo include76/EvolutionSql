@@ -50,7 +50,6 @@ namespace Evolution.Sql
             set { _dbTransaction = value; }
         }
 
-        protected virtual Dictionary<string, DbType> DbDataTypeDbTypeMap { get; set; }
         protected static Dictionary<Type, DbType> ClrTypeDbTypeMap => new Dictionary<Type, DbType>
         {
             [typeof(byte)] = DbType.Byte,
@@ -126,6 +125,10 @@ namespace Evolution.Sql
 
         protected void SetParameters(DbCommand dbCommand, object obj)
         {
+            if(null == obj)
+            {
+                return;
+            }
             var properties = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             if (properties == null)
             {
@@ -146,14 +149,14 @@ namespace Evolution.Sql
                 {
                     if (_typeHandlers.ContainsKey(property.PropertyType))
                     {
-                        _typeHandlers[property.PropertyType].SetDbParameter(parameter);
+                        _typeHandlers[property.PropertyType].SetParameter(parameter);
                     }
                     else if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
                     {
                         var genericType = Nullable.GetUnderlyingType(property.PropertyType);
                         if (_typeHandlers.ContainsKey(genericType))
                         {
-                            _typeHandlers[genericType].SetDbParameter(parameter);
+                            _typeHandlers[genericType].SetParameter(parameter);
                         }
                     }
                 }

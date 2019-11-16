@@ -335,41 +335,6 @@ namespace Evolution.Sql
         //    return iCommand;
         //}
 
-        /// <summary>
-        /// Map a provider specific type
-        /// </summary>
-        /// <param name="iCommand"></param>
-        /// <returns></returns>
-        public static ICommand WithTypeHandler<TType, THandler>(this ICommand iCommand) where THandler : ITypeHandler
-        {
-            iCommand.TypeHandlers.Add(typeof(TType), Activator.CreateInstance<THandler>());
-            return iCommand;
-        }
-
-        /// <summary>
-        /// set command timeout in seconds, default 30
-        /// </summary>
-        /// <param name="iCommand"></param>
-        /// <param name="timeout"></param>
-        /// <returns></returns>
-        public static ICommand SetTimeOut(this ICommand iCommand, int timeout)
-        {
-            iCommand.CommandTimeout = timeout;
-            return iCommand;
-        }
-
-        /// <summary>
-        /// set command transaction
-        /// </summary>
-        /// <param name="iCommand"></param>
-        /// <param name="dbTransaction"></param>
-        /// <returns></returns>
-        public static ICommand SetTransaction(this ICommand iCommand, DbTransaction dbTransaction)
-        {
-            iCommand.Transaction = dbTransaction;
-            return iCommand;
-        }
-
         #region private methods
         private static void SetOutputParameters(DbCommand dbCommand, Dictionary<string, dynamic> outPuts)
         {

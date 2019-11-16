@@ -7,7 +7,7 @@ namespace Evolution.Sql
 {
     public interface ITypeHandler
     {
-        void SetDbParameter(DbParameter dbParameter);
-        object GetValue(DbDataReader dbDataReader, int index);
+        void SetParameter(DbParameter parameter);
+        object GetValue(DbDataReader dataReader, int index);
     }
 }

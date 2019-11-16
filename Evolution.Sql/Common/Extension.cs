@@ -324,7 +324,10 @@ namespace Evolution.Sql
                 {
                     property.SetValue(obj, iCommand.TypeHandlers[property.PropertyType].GetValue(dataReader, index));
                 }
-                property.SetValue(obj, Convert.ChangeType(dataReader.GetValue(index), property.PropertyType));
+                else
+                {
+                    property.SetValue(obj, Convert.ChangeType(dataReader.GetValue(index), property.PropertyType));
+                }
             }
         }
 

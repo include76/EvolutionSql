@@ -18,7 +18,7 @@ namespace Evolution.Sql.SqlServerTest.TypeHandler
             return dataReader.GetFieldValue<DateTime>(index);
         }
 
-        public void SetDbParameter(DbParameter dbParameter)
+        public void SetParameter(DbParameter dbParameter)
         {
             (dbParameter as SqlParameter).SqlDbType = System.Data.SqlDbType.DateTime2;
         }

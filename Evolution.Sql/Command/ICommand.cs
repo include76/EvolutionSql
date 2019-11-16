@@ -12,5 +12,40 @@ namespace Evolution.Sql
 
         internal DbCommand Build(object parameters);
         internal DbCommand Build(params DbParameter[] parameters);
+
+        /// <summary>
+        /// Map a provider specific type
+        /// </summary>
+        /// <param name="iCommand"></param>
+        /// <returns></returns>
+        public ICommand WithTypeHandler<TType, THandler>() where THandler : ITypeHandler
+        {
+            this.TypeHandlers.Add(typeof(TType), Activator.CreateInstance<THandler>());
+            return this;
+        }
+
+        /// <summary>
+        /// set command timeout in seconds, default 30
+        /// </summary>
+        /// <param name="iCommand"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public ICommand SetTimeOut(int timeout)
+        {
+            this.CommandTimeout = timeout;
+            return this; 
+        }
+
+        /// <summary>
+        /// set command transaction
+        /// </summary>
+        /// <param name="iCommand"></param>
+        /// <param name="dbTransaction"></param>
+        /// <returns></returns>
+        public ICommand SetTransaction(DbTransaction dbTransaction)
+        {
+            this.Transaction = dbTransaction;
+            return this;
+        }
     }
 }
