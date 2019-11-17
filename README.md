@@ -7,6 +7,7 @@ by using EvolutionSql, it's very simple to execute either inline sql or stored p
 - [x] MySQL
 - [x] SqlServer
 - [x] PostgreSQL
+- [x] SQLite
 
 ## Sample
 
