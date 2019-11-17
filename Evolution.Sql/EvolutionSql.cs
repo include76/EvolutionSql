@@ -6,13 +6,13 @@ namespace Evolution.Sql
 {
     public static class EvolutionSql
     {
-        public static ICommand Procedure(this DbConnection connection, string procedureName)
+        public static ICommand Procedure(this DbConnection connection, string procedure)
         {
             //var factory = DbProviderFactories.GetFactory(connection);
             //var command = CommandFactory.Instance(factory.GetType().Name);
             var command = CommandFactory.Instance(connection.GetType().Name);
             command.Connection = connection;
-            command.CommandText = procedureName;
+            command.CommandText = procedure;
             command.CommandType = System.Data.CommandType.StoredProcedure;
             return command;
         }

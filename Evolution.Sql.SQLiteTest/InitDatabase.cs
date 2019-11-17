@@ -11,6 +11,7 @@ namespace Evolution.Sql.SQLiteTest
         public static void Init()
         {
             var conn = new SQLiteConnection(connStr);
+            // create user table
             var sql = "DROP TABLE IF EXISTS user";
             conn.Sql(sql).Execute();
             sql = @"CREATE TABLE IF NOT EXISTS user(
@@ -24,6 +25,19 @@ namespace Evolution.Sql.SQLiteTest
             )";
             conn.Sql(sql).Execute();
             sql = "DELETE FROM user;";
+            conn.Sql(sql).Execute();
+            // create table blog
+            sql = "DROP TABLE IF EXISTS blog";
+            conn.Sql(sql).Execute();
+            sql = @"CREATE TABLE blog(
+                    blog_id     INTEGER PRIMARY KEY AUTOINCREMENT,
+                    title       TEXT,
+                    content     TEXT,
+                    created_by  TEXT,
+                    created_on  REAL,
+                    updated_by  TEXT,
+                    updated_on  INTEGER
+            )";
             conn.Sql(sql).Execute();
             conn.Close();
         }

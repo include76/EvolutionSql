@@ -14,7 +14,7 @@ namespace Evolution.Sql
         internal DbCommand Build(params DbParameter[] parameters);
 
         /// <summary>
-        /// Map a provider specific type
+        /// Map handler for specific type
         /// </summary>
         /// <param name="iCommand"></param>
         /// <returns></returns>
@@ -25,7 +25,7 @@ namespace Evolution.Sql
         }
 
         /// <summary>
-        /// set command timeout in seconds, default 30
+        /// Set command timeout in seconds, default 30
         /// </summary>
         /// <param name="iCommand"></param>
         /// <param name="timeout"></param>
@@ -37,7 +37,7 @@ namespace Evolution.Sql
         }
 
         /// <summary>
-        /// set command transaction
+        /// Set command transaction
         /// </summary>
         /// <param name="iCommand"></param>
         /// <param name="dbTransaction"></param>
