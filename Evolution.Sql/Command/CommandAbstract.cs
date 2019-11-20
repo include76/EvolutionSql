@@ -36,19 +36,8 @@ namespace Evolution.Sql
             set { _typeHandlers = value; }
         }
 
-        int _commandTimeout = 30;
-        int ICommand.CommandTimeout
-        {
-            get { return _commandTimeout; }
-            set { _commandTimeout = value; }
-        }
-
-        DbTransaction _dbTransaction;
-        DbTransaction ICommand.Transaction
-        {
-            get { return _dbTransaction; }
-            set { _dbTransaction = value; }
-        }
+        internal int CommandTimeout { get; set; } = 30;
+        internal DbTransaction Transaction { get; set; }
 
         protected static Dictionary<Type, DbType> ClrTypeDbTypeMap => new Dictionary<Type, DbType>
         {
@@ -102,8 +91,8 @@ namespace Evolution.Sql
             var dbCommand = Connection.CreateCommand();
             dbCommand.CommandType = CommandType;
             dbCommand.CommandText = CommandText;
-            dbCommand.CommandTimeout = _commandTimeout;
-            dbCommand.Transaction = _dbTransaction;
+            dbCommand.CommandTimeout = CommandTimeout;
+            dbCommand.Transaction = Transaction;
             SetParameters(dbCommand, obj);
             return dbCommand;
         }
@@ -114,8 +103,8 @@ namespace Evolution.Sql
             var dbCommand = Connection.CreateCommand();
             dbCommand.CommandType = CommandType;
             dbCommand.CommandText = CommandText;
-            dbCommand.CommandTimeout = _commandTimeout;
-            dbCommand.Transaction = _dbTransaction;
+            dbCommand.CommandTimeout = CommandTimeout;
+            dbCommand.Transaction = Transaction;
             if (parameters != null)
             {
                 dbCommand.Parameters.AddRange(parameters);

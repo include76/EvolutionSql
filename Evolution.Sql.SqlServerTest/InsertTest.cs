@@ -33,8 +33,7 @@ namespace Evolution.Sql.SqlServerTest
                     CreatedOn = DateTime.Now
                 };
                 var result = connection.Sql(@"insert into [user](UserId, FirstName, LastName, CreatedOn) 
-                                                values(@UserId, @FirstName, @LastName, @CreatedOn)")
-                    .SetTimeOut(3)
+                                                values(@UserId, @FirstName, @LastName, @CreatedOn)", 3)
                     .Execute(user);
                 Assert.Greater(result, 0);
             }

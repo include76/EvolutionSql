@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>0.4.0</Version>
+    <Version>0.5.0</Version>
     <Authors>Locke Duan</Authors>
     <PackageProjectUrl>https://github.com/lockeduan/EvolutionSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/lockeduan/EvolutionSql</RepositoryUrl>
-    <Description>NOT ORM, but simple &amp; portable .NET Data Access library for SQL Server, MySQL, PostgreSQL etc.</Description>
-    <PackageReleaseNotes>add test for PostgreSQL</PackageReleaseNotes>
+    <Description>NOT ORM, but simple &amp; portable .NET Data Access library for SQL Server, MySQL, PostgreSQL, SQLite.</Description>
+    <PackageReleaseNotes>add test for SQLite</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

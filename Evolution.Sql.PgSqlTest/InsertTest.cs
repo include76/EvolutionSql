@@ -104,7 +104,7 @@ namespace Evolution.Sql.PgSqlTest
                 tag = new Tag
                 {
                     Name = "C",
-                    Description = "mother langugae"
+                    Description = "morther langugae"
                 };
                 var tagId2 = await connection.Sql("insert into tag(\"name\", description) values(@Name, @Description) returning id")
                     .ExecuteScalarAsync(tag);
